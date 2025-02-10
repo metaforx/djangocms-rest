@@ -118,6 +118,10 @@ class PlaceholderDetailView(BaseAPIView):
 
     permission_classes = [CanViewPageContent]
 
+    @extend_schema(
+        responses=PlaceholderSerializer,
+        description="Get the content of a placeholder as a nested JSON tree.",
+    )
     def get(self, request: Request, language: str, content_type_id: int, object_id: int, slot: str) -> Response:
         placeholder = get_placeholder(content_type_id, object_id, slot)
         if placeholder is None:

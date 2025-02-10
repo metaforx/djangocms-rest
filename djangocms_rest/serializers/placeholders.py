@@ -96,23 +96,37 @@ class PlaceholderSerializer(serializers.Serializer):
     language = serializers.CharField()
     content = serializers.ListSerializer(child=serializers.JSONField(), allow_empty=True, required=False)
 
-    def __init__(self, request: Request, placeholder: Placeholder, language: str, *args, **kwargs):
-        renderer = PlaceholderRenderer(request)
-        placeholder.content = renderer.render_placeholder(
-            placeholder,
+    def __init__(self, *args, **kwargs):
+        # Extract custom parameters from kwargs
+        self.request = kwargs.pop('request', None)
+        self.placeholder = kwargs.pop('placeholder', None)
+        self.language = kwargs.pop('language', None)
+
+        # If we have a placeholder instance, pass it to super().__init__
+        if args and self.placeholder:
+            super().__init__(self.placeholder, *args[1:], **kwargs)
+        else:
+            super().__init__(*args, **kwargs)
+
+        # Skip rendering logic if called for schema generation
+        if not all([self.request, self.placeholder, self.language]):
+            return
+
+        renderer = PlaceholderRenderer(self.request)
+        self.placeholder.content = renderer.render_placeholder(
+            self.placeholder,
             context={},
-            language=language,
+            language=self.language,
             use_cache=True,
         )
-        if request.GET.get("html", False):
-            html = render_html(request, placeholder, language)
+        if self.request.GET.get("html", False):
+            html = render_html(self.request, self.placeholder, self.language)
             for key, value in html.items():
-                if not hasattr(placeholder, key):
-                    setattr(placeholder, key, value)
+                if not hasattr(self.placeholder, key):
+                    setattr(self.placeholder, key, value)
                     self.fields[key] = serializers.CharField()
-        placeholder.label = placeholder.get_label()
-        placeholder.language = language
-        super().__init__(placeholder, *args, **kwargs)
+        self.placeholder.label = self.placeholder.get_label()
+        self.placeholder.language = self.language
 
 
 class PlaceholderRelationFieldSerializer(serializers.Serializer):
