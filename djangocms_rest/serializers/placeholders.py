@@ -97,20 +97,25 @@ class PlaceholderSerializer(serializers.Serializer):
     content = serializers.ListSerializer(child=serializers.JSONField(), allow_empty=True, required=False)
 
     def __init__(self, *args, **kwargs):
-        # Extract custom parameters from kwargs
         self.request = kwargs.pop('request', None)
         self.placeholder = kwargs.pop('placeholder', None)
         self.language = kwargs.pop('language', None)
 
-        # If we have a placeholder instance, pass it to super().__init__
         if args and self.placeholder:
             super().__init__(self.placeholder, *args[1:], **kwargs)
         else:
             super().__init__(*args, **kwargs)
 
         # Skip rendering logic if called for schema generation
-        if not all([self.request, self.placeholder, self.language]):
+        if not (args or kwargs):
             return
+
+        if not self.request:
+            raise serializers.ValidationError("'request' required")
+        if not self.placeholder:
+            raise serializers.ValidationError("'placeholder' required")
+        if not self.language:
+            raise serializers.ValidationError("'language' required")
 
         renderer = PlaceholderRenderer(self.request)
         self.placeholder.content = renderer.render_placeholder(
