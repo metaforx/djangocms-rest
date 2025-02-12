@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from cms.plugin_pool import plugin_pool
 from django.core.exceptions import FieldDoesNotExist
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from django.db.models import Field
 
 class PluginDefinitionSerializer(serializers.Serializer):
@@ -42,7 +42,7 @@ def get_field_type(field: Field) -> str:
     }
     return field_mapping.get(field.__class__.__name__, 'string')
 
-def get_field_format(field: Field) -> str | None:
+def get_field_format(field: Field) -> Optional[str]:
     """
     Get the format for specific field types.
 
@@ -50,7 +50,7 @@ def get_field_format(field: Field) -> str | None:
         field (Field): Django model field instance
 
     Returns:
-        str | None: JSON Schema format string if applicable, None otherwise
+        Optional[str]: JSON Schema format string if applicable, None otherwise
     """
     format_mapping = {
         'URLField': 'uri',
