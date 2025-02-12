@@ -13,6 +13,7 @@ from djangocms_rest.serializers.pages import PageContentSerializer, PageMetaSeri
 from djangocms_rest.serializers.placeholders import PlaceholderSerializer
 from djangocms_rest.utils import get_object, get_placeholder
 from djangocms_rest.views_base import BaseAPIView
+from djangocms_rest.serializers.plugins import PluginDefinitionSerializer, PLUGIN_DEFINITIONS
 
 
 class LanguageListView(BaseAPIView):
@@ -101,3 +102,23 @@ class PlaceholderDetailView(BaseAPIView):
 
         serializer = self.serializer_class(instance=placeholder, request=request, language=language, read_only=True)
         return Response(serializer.data)
+
+
+class PluginDefinitionView(BaseAPIView):
+    """
+    API view for retrieving plugin definitions
+    """
+    serializer_class = PluginDefinitionSerializer
+
+    def get(self, request: Request) -> Response:
+        """Get all plugin definitions"""
+        definitions = [
+            {
+                "plugin_type": plugin_type,
+                "title": definition["title"],
+                "type": definition["type"],
+                "properties": definition["properties"]
+            }
+            for plugin_type, definition in PLUGIN_DEFINITIONS.items()
+        ]
+        return Response(definitions)

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from djangocms_rest.views import LanguageListView, PageDetailView, PageTreeListView, PlaceholderDetailView
+from djangocms_rest.views import LanguageListView, PageDetailView, PageTreeListView, PlaceholderDetailView, PluginDefinitionView
 
 urlpatterns = [
     path("languages/", LanguageListView.as_view(), name="language-list"),
@@ -12,4 +12,5 @@ urlpatterns = [
         PlaceholderDetailView.as_view(),
         name="placeholder-detail",
     ),
+    path('plugins/', PluginDefinitionView.as_view(), name='plugin-list'),
 ]
