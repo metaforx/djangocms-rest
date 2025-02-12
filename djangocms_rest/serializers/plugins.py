@@ -1,16 +1,28 @@
 from rest_framework import serializers
 from cms.plugin_pool import plugin_pool
 from django.core.exceptions import FieldDoesNotExist
+from typing import Dict, Any
+from django.db.models import Field
 
 class PluginDefinitionSerializer(serializers.Serializer):
-    """Serializer for plugin type definitions"""
+    """
+    Serializer for plugin type definitions.
+    """
     plugin_type = serializers.CharField(help_text="Unique identifier for the plugin type")
     title = serializers.CharField(help_text="Human readable name of the plugin")
     type = serializers.CharField(help_text="Schema type")
     properties = serializers.DictField(help_text="Property definitions")
 
-def get_field_type(field):
-    """Convert Django field types to JSON Schema types"""
+def get_field_type(field: Field) -> str:
+    """
+    Convert Django field types to JSON Schema types.
+
+    Args:
+        field (Field): Django model field instance
+
+    Returns:
+        str: JSON Schema type corresponding to the Django field type
+    """
     field_mapping = {
         'CharField': 'string',
         'TextField': 'string',
@@ -30,8 +42,16 @@ def get_field_type(field):
     }
     return field_mapping.get(field.__class__.__name__, 'string')
 
-def get_field_format(field):
-    """Get the format for specific field types"""
+def get_field_format(field: Field) -> str | None:
+    """
+    Get the format for specific field types.
+
+    Args:
+        field (Field): Django model field instance
+
+    Returns:
+        str | None: JSON Schema format string if applicable, None otherwise
+    """
     format_mapping = {
         'URLField': 'uri',
         'EmailField': 'email',
@@ -43,11 +63,20 @@ def get_field_format(field):
     }
     return format_mapping.get(field.__class__.__name__)
 
-def generate_plugin_definitions():
-    """Generate plugin definitions from registered plugins"""
+def generate_plugin_definitions() -> Dict[str, Any]:
+    """
+    Generate plugin definitions from registered plugins.
+
+    Returns:
+        Dict[str, Any]: A dictionary mapping plugin types to their definitions.
+        Each definition contains:
+            - title: Human readable name
+            - type: Schema type (always "object")
+            - properties: Field definitions following JSON Schema format
+            - required: List of required field names
+    """
     definitions = {}
 
-    # Fields to exclude from the schema
     excluded_fields = {
         'cmsplugin_ptr',
         'id',
@@ -56,7 +85,7 @@ def generate_plugin_definitions():
         'changed_date',
         'position',
         'language',
-        'plugin_type',  # We'll add this manually
+        'plugin_type',
         'placeholder',
     }
 
