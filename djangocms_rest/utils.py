@@ -20,7 +20,7 @@ def get_object(site: Site, path: str) -> Page:
 
 def get_placeholder(content_type_id: int, object_id: int, slot:str) -> Placeholder:
     try:
-        placeholder = Placeholder.objects.get(
+        placeholder = Placeholder.admin_objects.get(
             content_type_id=content_type_id, object_id=object_id, slot=slot
         )
     except Placeholder.DoesNotExist:
