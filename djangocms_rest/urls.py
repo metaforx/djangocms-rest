@@ -1,11 +1,13 @@
 from django.urls import path
 
-from djangocms_rest.views import LanguageListView, PageDetailView, PageTreeListView, PlaceholderDetailView, PreviewPageView, PreviewPlaceholderDetailView, PreviewPageTreeListView
+from djangocms_rest.views import LanguageListView, PageDetailView, PageListView, PageTreeListView, \
+    PlaceholderDetailView, PreviewPageView, PreviewPlaceholderDetailView, PreviewPageTreeListView
 
 urlpatterns = [
     # Published content endpoints
     path("languages/", LanguageListView.as_view(), name="language-list"),
     path("<slug:language>/pages-tree/", PageTreeListView.as_view(), name="page-tree-list"),
+    path("<slug:language>/pages-list/", PageListView.as_view(), name="page-list"),
     path("<slug:language>/pages-root/", PageDetailView.as_view(), name="page-root"),
     path("<slug:language>/pages/<path:path>/", PageDetailView.as_view(), name="page-detail"),
     path(

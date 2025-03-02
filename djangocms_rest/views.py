@@ -4,15 +4,17 @@ from cms.utils.page_permissions import user_can_view_page
 from django.contrib.sites.shortcuts import get_current_site
 from django.http import Http404
 from django.urls import reverse
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.request import Request
 from rest_framework.response import Response
 
 from djangocms_rest.permissions import CanViewPage, CanViewPageContent, IsAllowedLanguage
 from djangocms_rest.serializers.languages import LanguageSerializer
-from djangocms_rest.serializers.pages import PageContentSerializer, PageMetaSerializer, PreviewPageContentSerializer
+from djangocms_rest.serializers.pages import PageContentSerializer, PageListSerializer, PageMetaSerializer, \
+    PreviewPageContentSerializer
 from djangocms_rest.serializers.placeholders import PlaceholderSerializer
 from djangocms_rest.utils import get_object, get_placeholder
-from djangocms_rest.views_base import BaseAPIView
+from djangocms_rest.views_base import BaseAPIView, BaseListAPIView
 from rest_framework.permissions import IsAdminUser
 
 
@@ -29,6 +31,29 @@ class LanguageListView(BaseAPIView):
             conf["pages"] = f"{request.scheme}://{request.get_host()}" + reverse("page-tree-list", args=(conf["code"],))
         serializer = LanguageSerializer(languages, many=True)
         return Response(serializer.data)
+
+
+class PageListView(BaseListAPIView):
+    permission_classes = [IsAllowedLanguage]
+    serializer_class = PageListSerializer
+    pagination_class = LimitOffsetPagination
+
+    def get_queryset(self):
+        """Get queryset of pages for the given language."""
+        language = self.kwargs['language']
+        site = self.site
+        qs = Page.objects.filter(node__site=site)
+
+        if self.request.user.is_anonymous:
+            qs = qs.filter(login_required=False)
+
+        pages = [
+            page.get_content_obj(language, fallback=True)
+            for page in qs
+            if user_can_view_page(self.request.user, page) and page.get_content_obj(language, fallback=True)
+        ]
+
+        return pages
 
 
 class PageTreeListView(BaseAPIView):
