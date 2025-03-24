@@ -161,3 +161,8 @@ cython_debug/
 /.idea/vcs.xml
 /.idea/.gitignore
 /.python-version
+.idea/djangocms-rest.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/inspectionProfiles/Project_Default.xml
