@@ -17,13 +17,3 @@ def get_object(site: Site, path: str) -> Page:
     else:
         page.urls_cache = {url.language: url for url in page_urls}
     return page
-
-def get_placeholder(content_type_id: int, object_id: int, slot:str) -> Placeholder:
-    try:
-        placeholder = Placeholder.objects.get(
-            content_type_id=content_type_id, object_id=object_id, slot=slot
-        )
-    except Placeholder.DoesNotExist:
-        raise Http404
-    return placeholder
-

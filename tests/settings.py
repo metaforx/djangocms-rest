@@ -36,8 +36,7 @@ INSTALLED_APPS = [
     'djangocms_text',
     'filer',
     'easy_thumbnails',
-
-    #'tests.test_app',
+    'tests.test_app',
 ]
 
 MIDDLEWARE = [
