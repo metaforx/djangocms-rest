@@ -13,7 +13,7 @@ from djangocms_rest.serializers.languages import LanguageSerializer
 from djangocms_rest.serializers.pages import PageContentSerializer, PageListSerializer, PageMetaSerializer, \
     PreviewPageContentSerializer
 from djangocms_rest.serializers.placeholders import PlaceholderSerializer
-from djangocms_rest.utils import get_object, get_placeholder
+from djangocms_rest.utils import get_object
 from djangocms_rest.views_base import BaseAPIView, BaseListAPIView
 from rest_framework.permissions import IsAdminUser
 
@@ -67,23 +67,23 @@ class PageTreeListView(BaseAPIView):
         """List of all pages on this site for a given language."""
         site = self.site
         qs = Page.objects.filter(node__site=site)
-        
+
         #Filter out pages which require login
         if self.request.user.is_anonymous:
             qs = qs.filter(login_required=False)
-        
+
         try:
             pages = [
                 page.get_content_obj(language, fallback=True)
                 for page in qs
                 if user_can_view_page(self.request.user, page) and page.get_content_obj(language, fallback=True)
             ]
-            
+
             if not any(pages):
                 raise PageContent.DoesNotExist()
         except PageContent.DoesNotExist:
             raise NotFound()
-            
+
         serializer = self.serializer_class(pages, many=True, read_only=True)
         return Response(serializer.data)
 
@@ -98,7 +98,7 @@ class PageDetailView(BaseAPIView):
         site = self.site
         page = get_object(site, path)
         self.check_object_permissions(request, page)
-        
+
         try:
             page_content = page.get_content_obj(language, fallback=True)
             if page_content is None:
@@ -126,8 +126,11 @@ class PlaceholderDetailView(BaseAPIView):
         Optional (if the get parameter `?html=1` is added to the API url):
         - "html": The content rendered as html. Sekizai blocks such as "js" or "css" will be added
           as separate attributes"""
-        placeholder = get_placeholder(content_type_id, object_id, slot)
-        if placeholder is None:
+        try:
+            placeholder = Placeholder.objects.get(
+                content_type_id=content_type_id, object_id=object_id, slot=slot
+            )
+        except Placeholder.DoesNotExist:
             raise NotFound()
 
         source = placeholder.content_type.model_class().objects.filter(pk=placeholder.object_id).first()
@@ -137,8 +140,8 @@ class PlaceholderDetailView(BaseAPIView):
         self.check_object_permissions(request, source)
 
         serializer = self.serializer_class(
-            instance=placeholder, 
-            request=request, 
+            instance=placeholder,
+            request=request,
             language=language,
             read_only=True
         )
@@ -161,8 +164,8 @@ class PreviewPlaceholderDetailView(BaseAPIView):
             raise NotFound()
 
         serializer = self.serializer_class(
-            instance=placeholder, 
-            request=request, 
+            instance=placeholder,
+            request=request,
             language=language,
             read_only=True
         )
@@ -172,26 +175,26 @@ class PreviewPlaceholderDetailView(BaseAPIView):
 class PreviewPageView(BaseAPIView):
     """View for previewing unpublished page content"""
     permission_classes = [IsAdminUser, CanViewPage]
-    serializer_class = PreviewPageContentSerializer 
+    serializer_class = PreviewPageContentSerializer
 
     def get(self, request: Request, language: str, path: str = "") -> Response:
         """Retrieve a draft/preview version of a page instance."""
         site = self.site
         page = get_object(site, path)
         self.check_object_permissions(request, page)
-        
+
         try:
             # Get all draft versions for this page and language
             page_content = PageContent.admin_manager.filter(
                 page=page,
                 language=language
             ).order_by('-creation_date').first()
-            
+
             if page_content is None:
                 raise PageContent.DoesNotExist()
         except PageContent.DoesNotExist:
             raise NotFound()
-            
+
         serializer = self.serializer_class(page_content, read_only=True)
         return Response(serializer.data)
 
@@ -204,7 +207,7 @@ class PreviewPageTreeListView(BaseAPIView):
         """List of all draft/preview pages on this site for a given language."""
         site = self.site
         qs = Page.objects.filter(node__site=site)
-        
+
         try:
             # Create a generator similar to PageTreeListView but using admin_manager
             pages = [
@@ -215,12 +218,12 @@ class PreviewPageTreeListView(BaseAPIView):
                 for page in qs
                 if user_can_view_page(self.request.user, page)
             ]
-            
+
             if not any(pages):
                 raise PageContent.DoesNotExist()
         except PageContent.DoesNotExist:
             raise NotFound()
-            
+
         serializer = self.serializer_class(pages, many=True, read_only=True)
         return Response(serializer.data)
 
@@ -244,10 +247,10 @@ class PreviewPageListView(BaseListAPIView):
                 for page in qs
                 if user_can_view_page(self.request.user, page)
             ]
-            
+
             if not any(pages):
                 raise PageContent.DoesNotExist()
         except PageContent.DoesNotExist:
             raise NotFound()
-            
+
         return pages
