@@ -17,6 +17,26 @@ from djangocms_rest.utils import get_object
 from djangocms_rest.views_base import BaseAPIView, BaseListAPIView
 from rest_framework.permissions import IsAdminUser
 
+try:
+    from drf_spectacular.utils import extend_schema, OpenApiParameter
+    from drf_spectacular.types import OpenApiTypes
+
+    extend_placeholder_schema = extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name='html',
+                type=OpenApiTypes.INT,
+                location=OpenApiParameter.QUERY,
+                description='Set to 1 to include HTML rendering in response',
+                required=False,
+                enum=[1]
+            )
+        ]
+    )
+except ImportError:
+    def extend_placeholder_schema(func):
+        return func
+
 
 class LanguageListView(BaseAPIView):
     serializer_class = LanguageSerializer
@@ -113,6 +133,8 @@ class PlaceholderDetailView(BaseAPIView):
     serializer_class = PlaceholderSerializer
     permission_classes = [CanViewPageContent]
 
+    @extend_placeholder_schema
+
     def get(self, request: Request, language: str, content_type_id: int, object_id: int, slot: str) -> Response:
         """Placeholder contain the dynamic content. This view retrieves the content as a
         structured nested object.
@@ -151,6 +173,8 @@ class PlaceholderDetailView(BaseAPIView):
 class PreviewPlaceholderDetailView(BaseAPIView):
     serializer_class = PlaceholderSerializer
     permission_classes = [IsAdminUser, CanViewPage]
+
+    @extend_placeholder_schema
 
     def get(self, request: Request, language: str, content_type_id: int, object_id: int, slot: str) -> Response:
         """Placeholder contain the dynamic content. This view retrieves the content as a
