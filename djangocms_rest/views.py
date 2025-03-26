@@ -1,5 +1,3 @@
-from typing import TYPE_CHECKING
-
 from cms.models import Page, PageContent, Placeholder
 from cms.utils.conf import get_languages
 from cms.utils.page_permissions import user_can_view_page
@@ -7,22 +5,33 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from rest_framework.exceptions import NotFound
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from djangocms_rest.permissions import CanViewPage, CanViewPageContent, IsAllowedLanguage
+from djangocms_rest.permissions import (
+    CanViewPage,
+    CanViewPageContent,
+    IsAllowedLanguage,
+)
 from djangocms_rest.serializers.languages import LanguageSerializer
-from djangocms_rest.serializers.pages import PageContentSerializer, PageListSerializer, PageMetaSerializer, \
-    PreviewPageContentSerializer
+from djangocms_rest.serializers.pages import (
+    PageContentSerializer,
+    PageListSerializer,
+    PageMetaSerializer,
+    PreviewPageContentSerializer,
+)
 from djangocms_rest.serializers.placeholders import PlaceholderSerializer
+from djangocms_rest.serializers.plugins import (
+    PLUGIN_DEFINITIONS,
+    PluginDefinitionSerializer,
+)
 from djangocms_rest.utils import get_object
 from djangocms_rest.views_base import BaseAPIView, BaseListAPIView
-from rest_framework.permissions import IsAdminUser
-from djangocms_rest.serializers.plugins import PluginDefinitionSerializer, PLUGIN_DEFINITIONS
 
 try:
-    from drf_spectacular.utils import extend_schema, OpenApiParameter # noqa`
-    from drf_spectacular.types import OpenApiTypes # noqa`
+    from drf_spectacular.types import OpenApiTypes  # noqa: F401
+    from drf_spectacular.utils import OpenApiParameter, extend_schema  # noqa: F401
 
     extend_placeholder_schema = extend_schema(
         parameters=[

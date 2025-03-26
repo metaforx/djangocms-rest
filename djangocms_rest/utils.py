@@ -1,4 +1,4 @@
-from cms.models import Page, PageUrl, Placeholder
+from cms.models import Page, PageUrl
 from django.contrib.sites.models import Site
 from django.http import Http404
 
