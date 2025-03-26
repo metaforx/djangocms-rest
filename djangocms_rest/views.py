@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from cms.models import Page, PageContent, Placeholder
 from cms.utils.conf import get_languages
 from cms.utils.page_permissions import user_can_view_page
@@ -16,10 +18,11 @@ from djangocms_rest.serializers.placeholders import PlaceholderSerializer
 from djangocms_rest.utils import get_object
 from djangocms_rest.views_base import BaseAPIView, BaseListAPIView
 from rest_framework.permissions import IsAdminUser
+from djangocms_rest.serializers.plugins import PluginDefinitionSerializer, PLUGIN_DEFINITIONS
 
 try:
-    from drf_spectacular.utils import extend_schema, OpenApiParameter
-    from drf_spectacular.types import OpenApiTypes
+    from drf_spectacular.utils import extend_schema, OpenApiParameter # noqa`
+    from drf_spectacular.types import OpenApiTypes # noqa`
 
     extend_placeholder_schema = extend_schema(
         parameters=[
@@ -36,6 +39,7 @@ try:
 except ImportError:
     def extend_placeholder_schema(func):
         return func
+
 
 
 class LanguageListView(BaseAPIView):
@@ -194,6 +198,26 @@ class PreviewPlaceholderDetailView(BaseAPIView):
             read_only=True
         )
         return Response(serializer.data)
+
+
+class PluginDefinitionView(BaseAPIView):
+    """
+    API view for retrieving plugin definitions
+    """
+    serializer_class = PluginDefinitionSerializer
+
+    def get(self, request: Request) -> Response:
+        """Get all plugin definitions"""
+        definitions = [
+            {
+                "plugin_type": plugin_type,
+                "title": definition["title"],
+                "type": definition["type"],
+                "properties": definition["properties"]
+            }
+            for plugin_type, definition in PLUGIN_DEFINITIONS.items()
+        ]
+        return Response(definitions)
 
 #NOTE: This is working, but might need refactoring
 class PreviewPageView(BaseAPIView):

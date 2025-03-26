@@ -10,6 +10,7 @@ from djangocms_rest.views import (
     PreviewPlaceholderDetailView,
     PreviewPageTreeListView,
     PreviewPageListView,
+    PluginDefinitionView,
 )
 
 urlpatterns = [
@@ -43,6 +44,11 @@ urlpatterns = [
         "<slug:language>/placeholders/<int:content_type_id>/<int:object_id>/<str:slot>/",
         PlaceholderDetailView.as_view(),
         name="placeholder-detail",
+    ),
+    path(
+        'plugins/',
+         PluginDefinitionView.as_view(),
+         name='plugin-list'
     ),
 
     # Preview content endpoints
