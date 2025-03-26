@@ -71,7 +71,8 @@ class PageMetaSerializer(BasePageSerializer):
         return PageTreeSerializer(tree, context=context, *args[1:], **kwargs)
 
     def to_representation(self, page_content: PageContent) -> Dict:
-        relative_url = page_content.page.get_absolute_url(page_content.language)
+        relative_url = page_content.page.get_path(page_content.language)
+        absolute_url = page_content.page.get_absolute_url(page_content.language)
 
         return {
             "title": page_content.title,
@@ -86,6 +87,7 @@ class PageMetaSerializer(BasePageSerializer):
             "limit_visibility_in_menu": page_content.limit_visibility_in_menu,
             "language": page_content.language,
             "path": relative_url,
+            "absolute_url": absolute_url,
             "is_home": page_content.page.is_home,
             "languages": page_content.page.languages.split(","),
         }
@@ -113,7 +115,8 @@ class PageContentSerializer(BasePageSerializer):
             for placeholder in placeholders
         ]
 
-        relative_url = page_content.page.get_absolute_url(page_content.language)
+        relative_url = page_content.page.get_path(page_content.language)
+        absolute_url = page_content.page.get_absolute_url(page_content.language)
 
         return {
             "title": page_content.title,
@@ -129,6 +132,7 @@ class PageContentSerializer(BasePageSerializer):
             "limit_visibility_in_menu": page_content.limit_visibility_in_menu,
             "language": page_content.language,
             "path": relative_url,
+            "absolute_url": absolute_url,
             "is_home": page_content.page.is_home,
             "languages": page_content.page.languages.split(","),
         }
@@ -151,7 +155,8 @@ class PreviewPageContentSerializer(PageContentSerializer):
             for placeholder in placeholders
         ]
 
-        relative_url = page_content.page.get_absolute_url(page_content.language)
+        relative_url = page_content.page.get_path(page_content.language)
+        absolute_url = page_content.page.get_absolute_url(page_content.language)
 
         return {
             "title": page_content.title,
@@ -167,6 +172,7 @@ class PreviewPageContentSerializer(PageContentSerializer):
             "limit_visibility_in_menu": page_content.limit_visibility_in_menu,
             "language": page_content.language,
             "path": relative_url,
+            "absolute_url": absolute_url,
             "is_home": page_content.page.is_home,
             "languages": page_content.page.languages.split(","),
             "is_preview": True,
@@ -180,7 +186,9 @@ class PageListSerializer(BasePageSerializer):
         self.request = self.context.get("request")
 
     def to_representation(self, page_content: PageContent) -> Dict:
-        relative_url = page_content.page.get_absolute_url(page_content.language)
+
+        relative_url = page_content.page.get_path(page_content.language)
+        absolute_url = page_content.page.get_absolute_url(page_content.language)
 
         return {
             "title": page_content.title,
@@ -195,6 +203,7 @@ class PageListSerializer(BasePageSerializer):
             "limit_visibility_in_menu": page_content.limit_visibility_in_menu,
             "language": page_content.language,
             "path": relative_url,
+            "absolute_url": absolute_url,
             "is_home": page_content.page.is_home,
             "languages": page_content.page.languages.split(","),
         }
