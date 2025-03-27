@@ -31,7 +31,7 @@ class LanguagesAPITestCase(BaseCMSRestTestCase):
         # GET
         response = self.client.get(reverse("language-list"))
         self.assertEqual(response.status_code, 200)
-        data = response.json()
+        data = {item["code"]: item for item in response.json()}
 
         for lang_config in languages:
             lang = lang_config["code"]
