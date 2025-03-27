@@ -17,28 +17,6 @@ class PageTreeListAPITestCase(BaseCMSRestTestCase):
         - Invalid language code returns 404
         """
 
-        check_items = (
-            "title",
-            "page_title",
-            "menu_title",
-            "meta_description",
-            "redirect",
-            "in_navigation",
-            "soft_root",
-            "template",
-            "xframe_options",
-            "limit_visibility_in_menu",
-            "language",
-            "path",
-            "absolute_url",
-            "is_home",
-            "languages",
-            "is_preview",
-            "creation_date",
-            "changed_date",
-            "children",
-        )
-
         type_checks = {
             "title": str,
             "page_title": str,
@@ -69,10 +47,8 @@ class PageTreeListAPITestCase(BaseCMSRestTestCase):
         # Data & Type Validation
         self.assertIsInstance(tree_data, list)
         for page in tree_data:
-            for item in check_items:
-                self.assertIn(item, page, f"Field {item} is missing")
-
             for field, expected_type in type_checks.items():
+                self.assertIn(field, page, f"Field {field} is missing")
                 if isinstance(expected_type, tuple):
                     self.assertTrue(
                         isinstance(page[field], expected_type),

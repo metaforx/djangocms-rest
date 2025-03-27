@@ -24,27 +24,6 @@ class PageListAPITestCase(BaseCMSRestTestCase):
 
         expected_total = PageContent.objects.filter(language="en", page__node__site=site).count()
 
-        check_items = (
-            "title",
-            "page_title",
-            "menu_title",
-            "meta_description",
-            "redirect",
-            "in_navigation",
-            "soft_root",
-            "template",
-            "xframe_options",
-            "limit_visibility_in_menu",
-            "language",
-            "path",
-            "absolute_url",
-            "is_home",
-            "languages",
-            "is_preview",
-            "creation_date",
-            "changed_date",
-        )
-
         type_checks = {
             "title": str,
             "page_title": str,
@@ -82,10 +61,9 @@ class PageListAPITestCase(BaseCMSRestTestCase):
 
         # Data & Type Validation
         for page in results:
-            for item in check_items:
-                self.assertIn(item, page, f"Field {item} is missing")
-
             for field, expected_type in type_checks.items():
+                self.assertIn(field, page, f"Field {field} is missing")
+
                 if isinstance(expected_type, tuple):
                     self.assertTrue(
                         isinstance(page[field], expected_type),
