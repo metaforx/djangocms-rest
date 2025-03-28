@@ -1,6 +1,7 @@
 from rest_framework.reverse import reverse
 
 from tests.base import BaseCMSRestTestCase
+from tests.utils import assert_field_types
 
 
 class PageRootAPITestCase(BaseCMSRestTestCase):
@@ -41,25 +42,21 @@ class PageRootAPITestCase(BaseCMSRestTestCase):
         }
 
         # GET
-        # response = self.client.get(reverse("page-root", kwargs={"language": "en"}))
-        # self.assertEqual(response.status_code, 200)
-        # data = response.json()
-        #
-        # #Data & Type Validation
-        # for field, expected_type in type_checks.items():
-        #     self.assertIn(field, data, f"Field {field} is missing")
-        #
-        #     if isinstance(expected_type, tuple):
-        #         self.assertTrue(
-        #             isinstance(data[field], expected_type),
-        #             f"Field {field} should be one of types {expected_type}, got {type(data[field])}",
-        #         )
-        #     else:
-        #         self.assertIsInstance(
-        #             data[field],
-        #             expected_type,
-        #             f"Field {field} should be {expected_type}, got {type(data[field])}",
-        #         )
+        response = self.client.get(reverse("page-root", kwargs={"language": "en"}))
+        self.assertEqual(response.status_code, 200)
+        page = response.json()
+
+        #Data & Type Validation
+        for field, expected_type in type_checks.items():
+            self.assertIn(field, page, f"Field {field} is missing")
+
+            if isinstance(expected_type, tuple):
+                assert_field_types(
+                    self,
+                    page,
+                    field,
+                    expected_type,
+                )
 
         # Check Invalid Language
         response = self.client.get(reverse("page-root", kwargs={"language": "xx"}))
