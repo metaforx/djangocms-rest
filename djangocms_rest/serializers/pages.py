@@ -67,6 +67,7 @@ class PageTreeSerializer(serializers.ListSerializer):
 
     def tree_to_representation(self, item: PageContent) -> Dict:
         serialized_data = self.child.to_representation(item)
+        serialized_data["children"] = []
         if item.page.node in self.tree:
             serialized_data["children"] = [self.tree_to_representation(child) for child in self.tree[item.page.node]]
         return serialized_data

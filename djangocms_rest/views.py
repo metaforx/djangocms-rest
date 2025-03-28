@@ -2,7 +2,6 @@ from cms.models import Page, PageContent, Placeholder
 from cms.utils.conf import get_languages
 from cms.utils.page_permissions import user_can_view_page
 from django.contrib.sites.shortcuts import get_current_site
-from django.urls import reverse
 from rest_framework.exceptions import NotFound
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAdminUser
@@ -55,13 +54,11 @@ class LanguageListView(BaseAPIView):
     serializer_class = LanguageSerializer
 
     def get(self, request: Request | None) -> Response:
-        """List of languages available for the site. For each language the API returns the
-        link to the list of pages for that languages."""
+        """List of languages available for the site."""
         languages = get_languages().get(get_current_site(request).id, None)
         if languages is None:
             raise NotFound()
-        for conf in languages:
-            conf["pages"] = f"{request.scheme}://{request.get_host()}" + reverse("page-tree-list", args=(conf["code"],))
+
         serializer = self.serializer_class(languages, many=True, read_only=True)
         return Response(serializer.data)
 

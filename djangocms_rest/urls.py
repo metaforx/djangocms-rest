@@ -6,11 +6,11 @@ from djangocms_rest.views import (
     PageListView,
     PageTreeListView,
     PlaceholderDetailView,
+    PluginDefinitionView,
+    PreviewPageListView,
+    PreviewPageTreeListView,
     PreviewPageView,
     PreviewPlaceholderDetailView,
-    PreviewPageTreeListView,
-    PreviewPageListView,
-    PluginDefinitionView,
 )
 
 urlpatterns = [
@@ -60,7 +60,7 @@ urlpatterns = [
     path(
         "preview/<slug:language>/pages-tree/",
         PreviewPageTreeListView.as_view(),
-        name="preview-page-tree",
+        name="preview-page-tree-list",
     ),
     path(
         "preview/<slug:language>/pages-list/",

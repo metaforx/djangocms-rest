@@ -11,4 +11,3 @@ class LanguageSerializer(serializers.Serializer):
     )
     redirect_on_fallback = serializers.BooleanField()
     hide_untranslated = serializers.BooleanField()
-    pages = serializers.URLField()

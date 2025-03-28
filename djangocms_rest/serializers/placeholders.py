@@ -2,14 +2,13 @@ from cms.models import Placeholder
 from cms.plugin_rendering import BaseRenderer
 from cms.utils.conf import get_cms_setting
 from cms.utils.plugins import get_plugins
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.shortcuts import get_current_site
-from django.db import models
-from django.urls import reverse
 from rest_framework import serializers
-from rest_framework.request import Request
 
-from djangocms_rest.serializers.utils.cache import get_placeholder_rest_cache, set_placeholder_rest_cache
+from djangocms_rest.serializers.utils.cache import (
+    get_placeholder_rest_cache,
+    set_placeholder_rest_cache,
+)
 from djangocms_rest.serializers.utils.render import render_html, render_plugin
 
 
@@ -95,6 +94,7 @@ class PlaceholderSerializer(serializers.Serializer):
     label = serializers.CharField()
     language = serializers.CharField()
     content = serializers.ListSerializer(child=serializers.JSONField(), allow_empty=True, required=False)
+    html = serializers.CharField(default="", required=False)
 
     def __init__(self, *args, **kwargs):
         request = kwargs.pop('request', None)
@@ -119,39 +119,6 @@ class PlaceholderSerializer(serializers.Serializer):
             placeholder.label = placeholder.get_label()
             placeholder.language = language
             self.instance = placeholder
-
-
-class PlaceholderRelationFieldSerializer(serializers.Serializer):
-    def __init__(self, request: Request, instance: models.Model, placeholders, language: str, *args, **kwargs) -> None:
-        self.placeholders = placeholders
-        self.language: str = language
-        super().__init__(instance, *args, **kwargs)
-        self.host: str = f"{request.scheme}://{request.get_host()}"
-
-        for placeholder in self.placeholders:
-            self.fields[placeholder.slot] = serializers.JSONField()
-
-    def to_representation(self, instance):
-        content_type_id = ContentType.objects.get_for_model(instance.__class__).pk
-
-        return (
-            {
-                placeholder.slot: self.host
-                + reverse(
-                    "placeholder-detail",
-                    args=(
-                        self.language,
-                        content_type_id,
-                        instance.pk,
-                        placeholder.slot,
-                    ),
-                )
-                for placeholder in self.placeholders
-            }
-            if instance
-            else {}
-        )
-
 
 class PlaceholderRelationSerializer(serializers.Serializer):
     content_type_id = serializers.IntegerField()
