@@ -144,11 +144,190 @@ urlpatterns = [
     ...
 ]
 ```
-
 ## Usage
 
 Navigate to django rest framework's browsable API at `http://localhost:8000/api/`.
 
+## OpenAPI 3 Support
+
+djangocms-rest supports OpenAPI 3 schema generation for Django REST framework and type generation
+for all endpoints and installed plugins using `drf-spectacular`.
+
+```bash
+pip install drf-spectacular
+```
+
+Update your `INSTALLED_APPS` setting:
+
+```python
+INSTALLED_APPS = [
+    ...
+    'drf_spectacular',
+    ...
+]
+```
+
+Update your `urls.py` settings.
+
+```python
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
+urlpatterns = [
+    ...
+    # OpenAPI schema and documentation
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    ...
+```
+
+Test endpoints and check expected response types: `http://localhost:8000/api/docs/`
+
+Fetch api schema as json/xml: `http://localhost:8000/api/schema/`
+
+Fur further instructions visit drf_spectacular documentation:
+https://drf-spectacular.readthedocs.io/en/latest/index.html
+
+### Response schema as JSON for a page object in a list
+
+```json
+{
+    "title": "string",
+    "page_title": "string",
+    "menu_title": "string",
+    "meta_description": "string",
+    "redirect": "string",
+    "absolute_url": "string",
+    "path": "string",
+    "is_home": true,
+    "in_navigation": true,
+    "soft_root": true,
+    "template": "string",
+    "xframe_options": "string",
+    "limit_visibility_in_menu": true,
+    "language": "string",
+    "languages": [
+        "string"
+    ],
+    "children": []
+}
+```
+
+## API Endpoints
+
+The following endpoints are available:
+
+### Public endpoints
+
+If the API is not specifically protected, anyone can access all public content. It's a good idea to
+disallow/limit public access, or at least implement proper caching.
+
+- `/api/languages/` fetch available languages.
+- `/api/plugins/` fetch types for all installed plugins. This is very useful to use for automatic
+  type checks with frontend frameworks.
+- `/api/{language}/pages-root/` fetch the root page for a given language.
+- `/api/{language}/pages-tree/` fetch the complete page tree of all published documents for a given
+  language. This is fine for smaller projects and allows automatic navigation generation in the
+  frontend, but might be
+  problematic when dealing with a lot of pages, in that case
+  use `page-list` endpoint which is not nested.
+- `/api/{language}/pages-list/` fetch a paginated list. Use `limit` and `offset` to build the
+  desired structure in the frontend.
+- `/api/{language}/pages/{path}/` fetch page details by path for a given language. You can receive
+  path and language information using the `pages-list` and `pages-tree` endpoints.
+- `/api/{language}/placeholders/{content_type_id}/{object_id}/{slot}/` fetch published page content
+  objects for given language. You can receive the needed parameters from page detail.
+
+### Preview endpoints
+
+For all page related endpoints draft content can be fetched, if the user has the permission to view
+preview content.
+To determine permissions `user_can_view_page()` from djangcms is used, usually editors with
+`is_staff` are allowed to view draft content.
+
+- `/api/preview/{language}/pages-root` fetch latest draft content.
+- `/api/preview/{language}/pages-tree` fetch tree including unpublished pages.
+- `/api/preview/{language}/pages-list` fetch tree including unpublished pages.
+- `/api/preview/{language}/pages/{path}` fetch latest draft content from published/unpublished page
+  and latest unpublished content objects.
+- `/api/preview/{language}/placeholders/{content_type_id}/{object_id}/{slot}` Fetch latest draft
+  objects.
+
+### Api Response: api/{en}/pages/{sub}/
+
+```json
+{
+    "title": "sub",
+    "page_title": "sub",
+    "menu_title": "sub",
+    "meta_description": "",
+    "redirect": null,
+    "in_navigation": true,
+    "soft_root": false,
+    "template": "INHERIT",
+    "xframe_options": 0,
+    "limit_visibility_in_menu": null,
+    "language": "en",
+    "path": "sub",
+    "absolute_url": "/sub/",
+    "is_home": false,
+    "languages": [
+        "en"
+    ],
+    "is_preview": false,
+    "creation_date": "2025-02-26T21:22:16.844637Z",
+    "changed_date": "2025-02-26T21:22:16.856326Z",
+    // GET CONTENT using `/api/{language}/placeholders/{content_type_id}/{object_id}/{slot}/`
+    "placeholders": [
+        {
+            "content_type_id": 5,
+            "object_id": 5,
+            "slot": "content"
+        }
+    ]
+}
+```
+
+### API Response: api/{en}/placeholders/{5}/{5}/{content}/[?html=1]
+
+```json
+{
+    "slot": "content",
+    "label": "Content",
+    "language": "en",
+    "content": [
+        {
+            "plugin_type": "TextPlugin",
+            "body": "<p>Test Content</p>",
+            "json": {
+                "type": "doc",
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "attrs": {
+                            "textAlign": "left"
+                        },
+                        "content": [
+                            {
+                                "text": "Test Content",
+                                "type": "text"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "rte": "tiptap"
+        }
+    ],
+    "html": "<p>Test Content</p>"
+    //Rendered HTML when uins ?html=1
+}
+```
+
+### OpenAPI Type Generation
+
+Use the provided schema to quickly generate generate clients, SDKs, validators, and more.
+
+**TypeScript** : https://github.com/hey-api/openapi-ts
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would
