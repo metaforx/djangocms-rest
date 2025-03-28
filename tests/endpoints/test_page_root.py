@@ -1,4 +1,4 @@
-from django.urls import reverse
+from rest_framework.reverse import reverse
 
 from tests.base import BaseCMSRestTestCase
 

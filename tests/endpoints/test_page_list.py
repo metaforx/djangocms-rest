@@ -1,6 +1,6 @@
 from cms.models import PageContent
 from django.contrib.sites.models import Site
-from django.urls import reverse
+from rest_framework.reverse import reverse
 
 from tests.base import BaseCMSRestTestCase
 from tests.utils import assert_field_types
