@@ -168,3 +168,4 @@ cython_debug/
 .idea/inspectionProfiles/Project_Default.xml
 /.idea/jsLinters/eslint.xml
 /.idea/ruff.xml
+/coverage_html/
