@@ -221,15 +221,15 @@ The following endpoints are available:
 If the API is not specifically protected, anyone can access all public content. It's a good idea to
 disallow/limit public access, or at least implement proper caching.
 
-| Public Endpoints                                                     | Description                                                                                                                                                                                                  |
-|:---------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `/api/languages/`                                                    | Fetch available languages.                                                                                                                                                                                   |
-| `/api/plugins/`                                                      | Fetch types for all installed plugins. Used for automatic type checks with frontend frameworks.                                                                                                              |
-| `/api/{language}/pages-root/`                                        | Fetch the root page for a given language.                                                                                                                                                                    |
-| `/api/{language}/pages-tree/`                                        | Fetch the complete page tree of all published documents for a given language. Suitable for smaller projects for automatic navigation generation. For large page sets, use the `pages-list` endpoint instead. |
-| `/api/{language}/pages-list/`                                        | Fetch a paginated list. Supports `limit` and `offset` parameters for frontend structure building.                                                                                                            |
-| `/api/{language}/pages/{path}/`                                      | Fetch page details by path for a given language. Path and language information is available via `pages-list` and `pages-tree` endpoints.                                                                     |
-| `/api/{language}/placeholders/{content_type_id}/{object_id}/{slot}/` | Fetch published page content objects for a given language. Parameters available from page detail.                                                                                                            |
+| Public Endpoints                                                            | Description                                                                                                                                                                                                  |
+|:----------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `/api/languages/`                                                           | Fetch available languages.                                                                                                                                                                                   |
+| `/api/plugins/`                                                             | Fetch types for all installed plugins. Used for automatic type checks with frontend frameworks.                                                                                                              |
+| `/api/{language}/pages-root/`                                               | Fetch the root page for a given language.                                                                                                                                                                    |
+| `/api/{language}/pages-tree/`                                               | Fetch the complete page tree of all published documents for a given language. Suitable for smaller projects for automatic navigation generation. For large page sets, use the `pages-list` endpoint instead. |
+| `/api/{language}/pages-list/`                                               | Fetch a paginated list. Supports `limit` and `offset` parameters for frontend structure building.                                                                                                            |
+| `/api/{language}/pages/{path}/`                                             | Fetch page details by path for a given language. Path and language information is available via `pages-list` and `pages-tree` endpoints.                                                                     |
+| `/api/{language}/placeholders/`<br/>`{content_type_id}/{object_id}/{slot}/` | Fetch published page content objects for a given language. Parameters available from page detail.                                                                                                            |
 
 ### Private API (Preview)
 
@@ -238,13 +238,14 @@ preview content.
 To determine permissions `user_can_view_page()` from djangocms is used, usually editors with
 `is_staff` are allowed to view draft content.
 
-| Private Endpoints                                                           | Description                                                                                                        |
-|:----------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------|
-| `/api/preview/{language}/pages-root`                                        | Fetch the latest draft content for the root page.                                                                  |
-| `/api/preview/{language}/pages-tree`                                        | Fetch the page tree including unpublished pages.                                                                   |
-| `/api/preview/{language}/pages-list`                                        | Fetch a paginated list including unpublished pages.                                                                |
-| `/api/preview/{language}/pages/{path}`                                      | Fetch the latest draft content from a published or unpublished page, including latest unpublished content objects. |
-| `/api/preview/{language}/placeholders/{content_type_id}/{object_id}/{slot}` | Fetch the latest draft content objects for the given language.                                                     |
+| Private Endpoints                                                                  | Description                                                                                                        |
+|:-----------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------|
+| `/api/preview/{language}/pages-root`                                               | Fetch the latest draft content for the root page.                                                                  |
+| `/api/preview/{language}/pages-tree`                                               | Fetch the page tree including unpublished pages.                                                                   |
+| `/api/preview/{language}/pages-list`                                               | Fetch a paginated list including unpublished pages.                                                                |
+| `/api/preview/{language}/pages/{path}`                                             | Fetch the latest draft content from a published or unpublished page, including latest unpublished content objects. |
+| `/api/preview/{language}/placeholders/`<br/>`{content_type_id}/{object_id}/{slot}` | Fetch the latest draft content objects for the given language.                                                     |
+|                                                                                    |
 
 ### Sample API-Response: api/{en}/pages/{sub}/
 
