@@ -43,11 +43,11 @@ class PageTreeListAPITestCase(BaseCMSRestTestCase):
         # GET
         response = self.client.get(reverse("page-tree-list", kwargs={"language": "en"}))
         self.assertEqual(response.status_code, 200)
-        tree_data = response.json()
+        data = response.json()
 
         # Data & Type Validation
-        self.assertIsInstance(tree_data, list)
-        for page in tree_data:
+        self.assertIsInstance(data, list)
+        for page in data:
             for field, expected_type in type_checks.items():
                 assert_field_types(
                     self,
