@@ -21,6 +21,7 @@ class PlaceholdersAPITestCase(BaseCMSRestTestCase):
             in_navigation=True,
         )
         cls.page_content = PageContent.objects.get(page=cls.page, language="en")
+        cls.page_content_type = ContentType.objects.get(model="pagecontent")
         cls.placeholder = cls.page.get_placeholders(language="en").get(slot="content")
         cls.plugin = add_plugin(
             placeholder=cls.placeholder,
@@ -46,6 +47,7 @@ class PlaceholdersAPITestCase(BaseCMSRestTestCase):
             }
         )
 
+
     def test_get(self):
         """
         Tests the placeholder detail endpoint API functionality.
@@ -64,6 +66,7 @@ class PlaceholdersAPITestCase(BaseCMSRestTestCase):
             "label": str,
             "language": str,
             "content": list,
+            "html": str, #optional, ?html=1
         }
 
         plugin_type_checks = {
@@ -73,18 +76,15 @@ class PlaceholdersAPITestCase(BaseCMSRestTestCase):
             "rte": str,
         }
 
-        page_content_type = ContentType.objects.get(model="pagecontent")
-
         # GET request
         response = self.client.get(
             reverse("placeholder-detail", kwargs={
                 "language": "en",
-                "content_type_id": page_content_type.id,
+                "content_type_id": self.page_content_type.id,
                 "object_id": self.page_content.id,
                 "slot": "content"
             })
         )
-
         self.assertEqual(response.status_code, 200)
         placeholder = response.json()
 
@@ -106,11 +106,26 @@ class PlaceholdersAPITestCase(BaseCMSRestTestCase):
                     expected_type,
                 )
 
+        # Test with html=1 parameter
+        response = self.client.get(
+            reverse(
+                "placeholder-detail",
+                kwargs={
+                    "language": "en",
+                    "content_type_id": self.page_content_type.id,
+                    "object_id": self.page_content.id,
+                    "slot": "content",
+                },
+            ),
+            data={"html": "1"},
+        )
+        self.assertEqual(response.status_code, 200)
+
         # Error case - Invalid language
         response = self.client.get(
             reverse("placeholder-detail", kwargs={
                 "language": "xx",
-                "content_type_id": page_content_type.id,
+                "content_type_id": self.page_content_type.id,
                 "object_id": self.page_content.id,
                 "slot": "content"
             })
@@ -132,7 +147,7 @@ class PlaceholdersAPITestCase(BaseCMSRestTestCase):
         response = self.client.get(
             reverse("placeholder-detail", kwargs={
                 "language": "en",
-                "content_type_id": page_content_type.id,
+                "content_type_id": self.page_content_type.id,
                 "object_id": 99999,
                 "slot": "content"
             })
@@ -143,9 +158,35 @@ class PlaceholdersAPITestCase(BaseCMSRestTestCase):
         response = self.client.get(
             reverse("placeholder-detail", kwargs={
                 "language": "en",
-                "content_type_id": page_content_type.id,
+                "content_type_id": self.page_content_type.id,
                 "object_id": self.page_content.id,
                 "slot": "nonexistent"
             })
         )
         self.assertEqual(response.status_code, 404)
+
+
+        # GET PREVIEW
+        response = self.client.get(
+            reverse("preview-placeholder-detail", kwargs={
+                "language": "en",
+                "content_type_id": self.page_content_type.id,
+                "object_id": self.page_content.id,
+                "slot": "content"
+            })
+        )
+        self.assertEqual(response.status_code, 403)
+
+
+    # GET PREVIEW - Protected
+    def test_get_protected(self):
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse("preview-placeholder-detail", kwargs={
+                "language": "en",
+                "content_type_id": self.page_content_type.id,
+                "object_id": self.page_content.id,
+                "slot": "content"
+            })
+        )
+        self.assertEqual(response.status_code, 200)

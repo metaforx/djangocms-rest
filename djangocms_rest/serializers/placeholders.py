@@ -9,7 +9,10 @@ from django.urls import reverse
 from rest_framework import serializers
 from rest_framework.request import Request
 
-from djangocms_rest.serializers.utils.cache import get_placeholder_rest_cache, set_placeholder_rest_cache
+from djangocms_rest.serializers.utils.cache import (
+    get_placeholder_rest_cache,
+    set_placeholder_rest_cache,
+)
 from djangocms_rest.serializers.utils.render import render_html, render_plugin
 
 
@@ -95,6 +98,7 @@ class PlaceholderSerializer(serializers.Serializer):
     label = serializers.CharField()
     language = serializers.CharField()
     content = serializers.ListSerializer(child=serializers.JSONField(), allow_empty=True, required=False)
+    html = serializers.CharField(default="", required=False)
 
     def __init__(self, *args, **kwargs):
         request = kwargs.pop('request', None)
