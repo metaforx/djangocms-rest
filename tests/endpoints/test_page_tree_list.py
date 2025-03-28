@@ -1,6 +1,7 @@
 from django.urls import reverse
 
 from tests.base import BaseCMSRestTestCase
+from tests.utils import assert_field_types
 
 
 class PageTreeListAPITestCase(BaseCMSRestTestCase):
@@ -48,18 +49,12 @@ class PageTreeListAPITestCase(BaseCMSRestTestCase):
         self.assertIsInstance(tree_data, list)
         for page in tree_data:
             for field, expected_type in type_checks.items():
-                self.assertIn(field, page, f"Field {field} is missing")
-                if isinstance(expected_type, tuple):
-                    self.assertTrue(
-                        isinstance(page[field], expected_type),
-                        f"Field {field} should be one of types {expected_type}, got {type(page[field])}",
-                    )
-                else:
-                    self.assertIsInstance(
-                        page[field],
-                        expected_type,
-                        f"Field {field} should be {expected_type}, got {type(page[field])}",
-                    )
+                assert_field_types(
+                    self,
+                    page,
+                    field,
+                    expected_type,
+                )
 
             # Nested Data & Type Validation
             for child in page["children"]:

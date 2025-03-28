@@ -3,6 +3,7 @@ from django.contrib.sites.models import Site
 from django.urls import reverse
 
 from tests.base import BaseCMSRestTestCase
+from tests.utils import assert_field_types
 
 
 class PageListAPITestCase(BaseCMSRestTestCase):
@@ -21,7 +22,6 @@ class PageListAPITestCase(BaseCMSRestTestCase):
 
         # Get current site
         site = Site.objects.get_current()
-
         expected_total = PageContent.objects.filter(language="en", page__node__site=site).count()
 
         type_checks = {
@@ -62,19 +62,12 @@ class PageListAPITestCase(BaseCMSRestTestCase):
         # Data & Type Validation
         for page in results:
             for field, expected_type in type_checks.items():
-                self.assertIn(field, page, f"Field {field} is missing")
-
-                if isinstance(expected_type, tuple):
-                    self.assertTrue(
-                        isinstance(page[field], expected_type),
-                        f"Field {field} should be one of types {expected_type}, got {type(page[field])}",
-                    )
-                else:
-                    self.assertIsInstance(
-                        page[field],
-                        expected_type,
-                        f"Field {field} should be {expected_type}, got {type(page[field])}",
-                    )
+                assert_field_types(
+                    self,
+                    page,
+                    field,
+                    expected_type,
+                )
 
         # Check Invalid Language
         response = self.client.get(reverse("page-list", kwargs={"language": "xx"}))

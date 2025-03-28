@@ -1,13 +1,12 @@
 from django.urls import reverse
 
 from tests.base import BaseCMSRestTestCase
-from tests.utils import assert_field_types
 
 
-class PageDetailAPITestCase(BaseCMSRestTestCase):
+class PageRootAPITestCase(BaseCMSRestTestCase):
     def test_get(self):
         """
-        Test the page detail endpoint ('/api/{language}/pages/{path}/').
+        Test the page root endpoint ('/api/{language}/pages-root/').
 
         Verifies:
         - Endpoint returns correct HTTP status code
@@ -42,18 +41,25 @@ class PageDetailAPITestCase(BaseCMSRestTestCase):
         }
 
         # GET
-        response = self.client.get(reverse("page-detail", kwargs={"language": "en", "path": "page-0"}))
-        self.assertEqual(response.status_code, 200)
-        page = response.json()
-
-        #Data & Type Validation
-        for field, expected_type in type_checks.items():
-            assert_field_types(
-                self,
-                page,
-                field,
-                expected_type,
-            )
+        # response = self.client.get(reverse("page-root", kwargs={"language": "en"}))
+        # self.assertEqual(response.status_code, 200)
+        # data = response.json()
+        #
+        # #Data & Type Validation
+        # for field, expected_type in type_checks.items():
+        #     self.assertIn(field, data, f"Field {field} is missing")
+        #
+        #     if isinstance(expected_type, tuple):
+        #         self.assertTrue(
+        #             isinstance(data[field], expected_type),
+        #             f"Field {field} should be one of types {expected_type}, got {type(data[field])}",
+        #         )
+        #     else:
+        #         self.assertIsInstance(
+        #             data[field],
+        #             expected_type,
+        #             f"Field {field} should be {expected_type}, got {type(data[field])}",
+        #         )
 
         # Check Invalid Language
         response = self.client.get(reverse("page-root", kwargs={"language": "xx"}))

@@ -1,5 +1,6 @@
 from cms.api import create_page
 from cms.test_utils.testcases import CMSTestCase
+from django.contrib.auth import get_user_model
 
 
 class RESTTestCase(CMSTestCase):
@@ -22,7 +23,21 @@ class BaseCMSRestTestCase(RESTTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+
+        User = get_user_model()
+        cls.user = User.objects.create_user(
+            username="admin",
+            email="admin@example.com",
+            password="testpass",
+            is_staff=True,
+            is_superuser=True
+        )
+
         cls._create_pages([2, (3, 1), 2])
+        # homepage = cls.pages[0]
+        # homepage.set_as_homepage()
+        # homepage.refresh_from_db()
+        # publish_page(homepage, user=cls.user, language="en")
 
     @classmethod
     def tearDownClass(cls):
