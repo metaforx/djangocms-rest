@@ -1,17 +1,80 @@
 from django.urls import path
-from rest_framework.urlpatterns import format_suffix_patterns
-from . import views
+
+from djangocms_rest.views import (
+    LanguageListView,
+    PageDetailView,
+    PageListView,
+    PageTreeListView,
+    PlaceholderDetailView,
+    PluginDefinitionView,
+    PreviewPageListView,
+    PreviewPageTreeListView,
+    PreviewPageView,
+    PreviewPlaceholderDetailView,
+)
 
 urlpatterns = [
-    path("", views.LanguageList.as_view(), name="cms-language-list"),
-    path("<slug:language>/pages", views.PageList.as_view(), name="cms-page-list"),
-    path("<slug:language>/pages/", views.PageDetail.as_view(), name="cms-page-root"),
-    path("<slug:language>/pages/<path:path>/", views.PageDetail.as_view(), name="cms-page-detail"),
+    # Published content endpoints
+    path(
+        "languages/",
+        LanguageListView.as_view(),
+        name="language-list",
+    ),
+    path(
+        "<slug:language>/pages-tree/",
+        PageTreeListView.as_view(),
+        name="page-tree-list",
+    ),
+    path(
+        "<slug:language>/pages-list/",
+        PageListView.as_view(),
+        name="page-list",
+    ),
+    path(
+        "<slug:language>/pages-root/",
+        PageDetailView.as_view(),
+        name="page-root",
+    ),
+    path(
+        "<slug:language>/pages/<path:path>/",
+        PageDetailView.as_view(),
+        name="page-detail",
+    ),
     path(
         "<slug:language>/placeholders/<int:content_type_id>/<int:object_id>/<str:slot>/",
-        views.PlaceholderDetail.as_view(),
-        name="cms-placeholder-detail",
+        PlaceholderDetailView.as_view(),
+        name="placeholder-detail",
+    ),
+    path(
+        'plugins/',
+         PluginDefinitionView.as_view(),
+         name='plugin-list'
+    ),
+
+    # Preview content endpoints
+    path(
+        "preview/<slug:language>/pages-root/",
+        PreviewPageView.as_view(),
+        name="preview-page-root",
+    ),
+    path(
+        "preview/<slug:language>/pages-tree/",
+        PreviewPageTreeListView.as_view(),
+        name="preview-page-tree-list",
+    ),
+    path(
+        "preview/<slug:language>/pages-list/",
+        PreviewPageListView.as_view(),
+        name="preview-page-list",
+    ),
+    path(
+        "preview/<slug:language>/pages/<path:path>/",
+        PreviewPageView.as_view(),
+        name="preview-page",
+    ),
+    path(
+        "preview/<slug:language>/placeholders/<int:content_type_id>/<int:object_id>/<str:slot>/",
+        PreviewPlaceholderDetailView.as_view(),
+        name="preview-placeholder-detail",
     ),
 ]
-
-urlpatterns = format_suffix_patterns(urlpatterns)
