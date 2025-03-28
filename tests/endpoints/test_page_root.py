@@ -1,3 +1,4 @@
+from django.test import Client
 from rest_framework.reverse import reverse
 
 from tests.base import BaseCMSRestTestCase
@@ -61,3 +62,19 @@ class PageRootAPITestCase(BaseCMSRestTestCase):
         # Check Invalid Language
         response = self.client.get(reverse("page-root", kwargs={"language": "xx"}))
         self.assertEqual(response.status_code, 404)
+
+        # GET PREVIEW
+        # Check Endpoint Auth Permissions
+        response = self.client.get(reverse("preview-page-root", kwargs={"language": "en"}))
+        self.assertEqual(response.status_code, 403)
+
+        response = self.client.get(reverse("preview-page-root", kwargs={"language": "xx"}))
+        self.assertEqual(response.status_code, 403)
+
+        self.client = Client()
+        self.client.force_login(self.user)
+
+    def test_get_protected(self):
+        self.client.force_login(self.user)
+        response = self.client.get(reverse("preview-page-root", kwargs={"language": "en"}))
+        self.assertEqual(response.status_code, 200)
