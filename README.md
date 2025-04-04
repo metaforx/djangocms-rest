@@ -5,8 +5,29 @@
 
 ## What is djangocms-rest?
 
-djangocms-rest enables frontend projects to consume django CMS content through a browseable
-read-only, REST/JSON API. It is based on the django rest framework (DRF).
+djangocms-rest enables frontend projects to consume django CMS content through a browsable
+read-only, REST/JSON API. It is based on the django rest framework (DRF) and supports OpenAPI
+3 schema generation via drf-spectacular.
+
+**✨ Key Features**
+
+🏢 **Multi-site support** – Supports Django sites<br>
+🌍 **Internationalization (i18n)** – Supports available CMS languages<br>
+🌲 **Structured page tree** – Fetch the full page tree with metadata<br>
+📚 **Paginated page listing** – Retrieve pages as a list with pagination support<br>
+👀 **Preview support** – Access draft content using `djangocms-versioning` supporting
+permissions for authenticated staff user<br>
+🧬 **Typed API schema** – Auto-generate OpenAPI schemas for pages and plugins with
+`drf-spectacular`
+
+🧩 **Flexible responses** – Fetch plugin content as JSON or fully rendered HTML
+
+> ⚠️ **Disclaimer**
+>
+> `djangocms-rest` is under active development. While it is safe to explore and test, using it in
+> production is at your own responsibility.
+>
+> The impact is limited since the API is **read-only** and does not expose any write operations.
 
 ## What is headless mode?
 
@@ -16,14 +37,42 @@ developers to deliver content to any device or platform, such as websites, mobil
 devices, using any technology stack. By separating content management from content presentation,
 a Headless CMS offers greater flexibility and scalability in delivering content.
 
+Used with `drf-spectacular`, djangocms-rest generates complete OpenAPI schemas for both DRF
+endpoints and Django CMS content plugins. This allows seamless, typed integration with
+TypeScript-friendly frameworks.
+
 ## What are the main benefits of running a CMS in headless mode?
 
-Running a CMS in headless mode offers several benefits, including greater flexibility in delivering
-content to multiple platforms and devices through APIs, enabling consistent and efficient
-multi-channel experiences. It enhances performance and scalability by allowing frontend and backend
-development to progress independently using the best-suited technologies. Additionally, it
-streamlines content management, making it easier to update and maintain content across various
-applications without needing to alter the underlying infrastructure.
+Running a CMS in headless mode offers several advantages, particularly for projects that require
+flexibility, scalability, and multi-platform content delivery:
+
+**Benefits of running Django CMS in headless mode:**
+
+- Flexible content delivery to multiple platforms and devices via APIs, enabling consistent
+  multi-channel experiences.
+- Independent development of frontend and backend using best-suited technologies, improving
+  scalability and team efficiency.
+- Improved performance through optimized frontend rendering and decoupled architecture.
+- Streamlined content management, allowing editors to update content across applications without
+  touching the infrastructure.
+- Easier integration with modern frameworks (e.g., React, Nuxt, Next.js) and third-party services.
+
+## Are there any drawbacks to using Django CMS in headless mode?
+
+First, consider whether the benefits of a headless system outweigh the cost of running two separate
+tech stacks for frontend and backend. For larger projects or when working in teams, having a
+separation of concerns across different domains can be a significant advantage. However, for smaller
+projects, this is often not the case.
+
+**Limitations and considerations in headless mode:**
+
+- Inline editing and content preview are currently only available in a structured view. (Solutions
+  are currently being evaluated).
+- API-Caching has yet to be addressed properly and should be handled in the frontend app for the
+  time being.
+- Not all features of a standard Django CMS are available through the API (eg. templates and tags).
+- The API focuses on fetching plugin content and page structure as JSON data.
+- Website rendering is entirely decoupled and must be implemented in the frontend framework.
 
 ## Are there js packages for drop-in support of frontend editing in the javascript framework of my choice?
 
@@ -144,11 +193,185 @@ urlpatterns = [
     ...
 ]
 ```
-
 ## Usage
 
 Navigate to django rest framework's browsable API at `http://localhost:8000/api/`.
 
+## OpenAPI 3 Support
+
+djangocms-rest supports OpenAPI 3 schema generation for Django REST framework and type generation
+for all endpoints and installed plugins using `drf-spectacular`.
+
+```bash
+pip install drf-spectacular
+```
+
+Update your `INSTALLED_APPS` setting:
+
+```python
+INSTALLED_APPS = [
+    ...
+    'drf_spectacular',
+    ...
+]
+```
+
+Update your `urls.py` settings.
+
+```python
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
+urlpatterns = [
+    ...
+    # OpenAPI schema and documentation
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    ...
+```
+
+Test endpoints and check expected response types: `http://localhost:8000/api/docs/`
+
+Fetch api schema as json/xml: `http://localhost:8000/api/schema/`
+
+Fur further instructions visit drf_spectacular documentation:
+https://drf-spectacular.readthedocs.io/en/latest/index.html
+
+### Response schema as JSON for a page object in a list
+
+```json
+{
+    "title": "string",
+    "page_title": "string",
+    "menu_title": "string",
+    "meta_description": "string",
+    "redirect": "string",
+    "absolute_url": "string",
+    "path": "string",
+    "is_home": true,
+    "in_navigation": true,
+    "soft_root": true,
+    "template": "string",
+    "xframe_options": "string",
+    "limit_visibility_in_menu": true,
+    "language": "string",
+    "languages": [
+        "string"
+    ],
+    "children": []
+}
+```
+
+## API Endpoints
+
+The following endpoints are available:
+
+### Public API
+
+If the API is not specifically protected, anyone can access all public content. It's a good idea to
+disallow/limit public access, or at least implement proper caching.
+
+| Public Endpoints                                                            | Description                                                                                                                                                                                                  |
+|:----------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `/api/languages/`                                                           | Fetch available languages.                                                                                                                                                                                   |
+| `/api/plugins/`                                                             | Fetch types for all installed plugins. Used for automatic type checks with frontend frameworks.                                                                                                              |
+| `/api/{language}/pages-root/`                                               | Fetch the root page for a given language.                                                                                                                                                                    |
+| `/api/{language}/pages-tree/`                                               | Fetch the complete page tree of all published documents for a given language. Suitable for smaller projects for automatic navigation generation. For large page sets, use the `pages-list` endpoint instead. |
+| `/api/{language}/pages-list/`                                               | Fetch a paginated list. Supports `limit` and `offset` parameters for frontend structure building.                                                                                                            |
+| `/api/{language}/pages/{path}/`                                             | Fetch page details by path for a given language. Path and language information is available via `pages-list` and `pages-tree` endpoints.                                                                     |
+| `/api/{language}/placeholders/`<br/>`{content_type_id}/{object_id}/{slot}/` | Fetch published page content objects for a given language. Parameters available from page detail.                                                                                                            |
+
+### Private API (Preview)
+
+For all page related endpoints draft content can be fetched, if the user has the permission to view
+preview content.
+To determine permissions `user_can_view_page()` from djangocms is used, usually editors with
+`is_staff` are allowed to view draft content.
+
+| Private Endpoints                                                                  | Description                                                                                                        |
+|:-----------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------|
+| `/api/preview/{language}/pages-root`                                               | Fetch the latest draft content for the root page.                                                                  |
+| `/api/preview/{language}/pages-tree`                                               | Fetch the page tree including unpublished pages.                                                                   |
+| `/api/preview/{language}/pages-list`                                               | Fetch a paginated list including unpublished pages.                                                                |
+| `/api/preview/{language}/pages/{path}`                                             | Fetch the latest draft content from a published or unpublished page, including latest unpublished content objects. |
+| `/api/preview/{language}/placeholders/`<br/>`{content_type_id}/{object_id}/{slot}` | Fetch the latest draft content objects for the given language.                                                     |
+|                                                                                    |
+
+### Sample API-Response: api/{en}/pages/{sub}/
+
+```json
+{
+    "title": "sub",
+    "page_title": "sub",
+    "menu_title": "sub",
+    "meta_description": "",
+    "redirect": null,
+    "in_navigation": true,
+    "soft_root": false,
+    "template": "INHERIT",
+    "xframe_options": 0,
+    "limit_visibility_in_menu": null,
+    "language": "en",
+    "path": "sub",
+    "absolute_url": "/sub/",
+    "is_home": false,
+    "languages": [
+        "en"
+    ],
+    "is_preview": false,
+    "creation_date": "2025-02-26T21:22:16.844637Z",
+    "changed_date": "2025-02-26T21:22:16.856326Z",
+    // GET CONTENT using `/api/{language}/placeholders/{content_type_id}/{object_id}/{slot}/`
+    "placeholders": [
+        {
+            "content_type_id": 5,
+            "object_id": 5,
+            "slot": "content"
+        }
+    ]
+}
+```
+
+### Sample API-Response: api/{en}/placeholders/{5}/{5}/{content}/[?html=1]
+
+```json
+{
+    "slot": "content",
+    "label": "Content",
+    "language": "en",
+    "content": [
+        {
+            "plugin_type": "TextPlugin",
+            "body": "<p>Test Content</p>",
+            "json": {
+                "type": "doc",
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "attrs": {
+                            "textAlign": "left"
+                        },
+                        "content": [
+                            {
+                                "text": "Test Content",
+                                "type": "text"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "rte": "tiptap"
+        }
+    ],
+    "html": "<p>Test Content</p>"
+    //Rendered HTML when uins ?html=1
+}
+```
+
+### OpenAPI Type Generation
+
+Use the provided schema to quickly generate generate clients, SDKs, validators, and more.
+
+**TypeScript** : https://github.com/hey-api/openapi-ts
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would
