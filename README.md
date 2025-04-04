@@ -18,7 +18,8 @@ read-only, REST/JSON API. It is based on the django rest framework (DRF) and sup
 👀 **Preview support** – Access draft content using `djangocms-versioning` supporting
 permissions for authenticated staff user<br>
 🧬 **Typed API schema** – Auto-generate OpenAPI schemas for pages and plugins with
-`drf-spectacular`<br>
+`drf-spectacular`
+
 🧩 **Flexible responses** – Fetch plugin content as JSON or fully rendered HTML
 
 > ⚠️ **Disclaimer**
