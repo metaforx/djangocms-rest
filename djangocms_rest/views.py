@@ -12,6 +12,7 @@ from djangocms_rest.permissions import (
     CanViewPage,
     CanViewPageContent,
     IsAllowedLanguage,
+    IsAllowedPublicLanguage,
 )
 from djangocms_rest.serializers.languages import LanguageSerializer
 from djangocms_rest.serializers.pages import (
@@ -54,17 +55,18 @@ class LanguageListView(BaseAPIView):
     serializer_class = LanguageSerializer
 
     def get(self, request: Request | None) -> Response:
-        """List of languages available for the site."""
+        """List of public languages available for the site."""
         languages = get_languages().get(get_current_site(request).id, None)
-        if languages is None:
+        public_languages = [lang for lang in languages if lang.get("public", True)]
+        if public_languages is None:
             raise NotFound()
 
-        serializer = self.serializer_class(languages, many=True, read_only=True)
+        serializer = self.serializer_class(public_languages, many=True, read_only=True)
         return Response(serializer.data)
 
 
 class PageListView(BaseListAPIView):
-    permission_classes = [IsAllowedLanguage]
+    permission_classes = [IsAllowedPublicLanguage]
     serializer_class = PageListSerializer
     pagination_class = LimitOffsetPagination
 
@@ -90,7 +92,7 @@ class PageListView(BaseListAPIView):
             raise NotFound()
 
 class PageTreeListView(BaseAPIView):
-    permission_classes = [IsAllowedLanguage]
+    permission_classes = [IsAllowedPublicLanguage]
     serializer_class = PageMetaSerializer
 
     def get(self, request, language):
