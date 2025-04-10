@@ -55,13 +55,12 @@ class LanguageListView(BaseAPIView):
     serializer_class = LanguageSerializer
 
     def get(self, request: Request | None) -> Response:
-        """List of public languages available for the site."""
+        """List of languages available for the site."""
         languages = get_languages().get(get_current_site(request).id, None)
-        public_languages = [lang for lang in languages if lang.get("public", True)]
-        if public_languages is None:
+        if languages is None:
             raise NotFound()
 
-        serializer = self.serializer_class(public_languages, many=True, read_only=True)
+        serializer = self.serializer_class(languages, many=True, read_only=True)
         return Response(serializer.data)
 
 
@@ -121,7 +120,7 @@ class PageTreeListView(BaseAPIView):
 
 
 class PageDetailView(BaseAPIView):
-    permission_classes = [CanViewPage]
+    permission_classes = [IsAllowedPublicLanguage, CanViewPage]
     serializer_class = PageContentSerializer
 
     def get(self, request: Request, language: str, path: str = "") -> Response:
@@ -142,8 +141,8 @@ class PageDetailView(BaseAPIView):
 
 
 class PlaceholderDetailView(BaseAPIView):
+    permission_classes = [IsAllowedPublicLanguage, CanViewPageContent]
     serializer_class = PlaceholderSerializer
-    permission_classes = [CanViewPageContent]
 
     @extend_placeholder_schema
 
