@@ -31,11 +31,7 @@ INSTALLED_APPS = [
     'treebeard',
     'sekizai',
 
-    'djangocms_link',
-    'djangocms_picture',
     'djangocms_text',
-    'filer',
-    'easy_thumbnails',
     'tests.test_app',
 ]
 
