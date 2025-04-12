@@ -27,9 +27,7 @@ class IsAllowedPublicLanguage(IsAllowedLanguage):
     Check whether the provided language is allowed and public for a given site.
     """
     def has_permission(self, request: Request, view: BaseAPIView) -> bool:
-        if not super().has_permission(request, view):
-            return False
-
+        super().has_permission(request, view)
         language = view.kwargs.get("language")
         languages = get_languages()
         public_languages = [
