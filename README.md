@@ -1,5 +1,5 @@
 [![codecov](https://codecov.io/gh/django-cms/djangocms-rest/graph/badge.svg?token=RKQJL8L8BT)](https://codecov.io/gh/django-cms/djangocms-rest)
-[![djangocms4]( https://img.shields.io/badge/django%20CMS-4+-blue.svg)](https://www.django-cms.org/en/)
+[![djangocms5]( https://img.shields.io/badge/django%20CMS-5+-blue.svg)](https://www.django-cms.org/en/)
 
 # django CMS Headless Mode
 
