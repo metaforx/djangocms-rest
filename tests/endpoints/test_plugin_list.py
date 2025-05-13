@@ -1,18 +1,14 @@
 from rest_framework.reverse import reverse
 
 from tests.base import BaseCMSRestTestCase
+from tests.types import PLUGIN_FIELD_TYPES
 from tests.utils import assert_field_types
 
 
 class PluginListTestCase(BaseCMSRestTestCase):
     def test_get(self):
 
-        type_checks = {
-            "plugin_type": str,
-            "title": str,
-            "type": str,
-            "properties": dict,
-        }
+        type_checks = PLUGIN_FIELD_TYPES
 
         # GET
         response = self.client.get(reverse("plugin-list"))
