@@ -1,6 +1,7 @@
 from rest_framework.reverse import reverse
 
 from tests.base import BaseCMSRestTestCase
+from tests.types import LANGUAGE_FIELD_TYPES
 
 
 class LanguagesAPITestCase(BaseCMSRestTestCase):
@@ -19,14 +20,7 @@ class LanguagesAPITestCase(BaseCMSRestTestCase):
 
         languages = get_cms_setting("LANGUAGES")[1]
 
-        type_checks = {
-            "code": str,
-            "name": str,
-            "public": bool,
-            "redirect_on_fallback": bool,
-            "fallbacks": list,
-            "hide_untranslated": bool
-        }
+        type_checks = LANGUAGE_FIELD_TYPES
 
         # GET
         response = self.client.get(reverse("language-list"))

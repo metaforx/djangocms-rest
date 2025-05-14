@@ -4,6 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from rest_framework.reverse import reverse
 
 from tests.base import BaseCMSRestTestCase
+from tests.types import PLACEHOLDER_FIELD_TYPES
 from tests.utils import assert_field_types
 
 
@@ -61,13 +62,7 @@ class PlaceholdersAPITestCase(BaseCMSRestTestCase):
         - Content list contains valid plugin data
         """
 
-        type_checks = {
-            "slot": str,
-            "label": str,
-            "language": str,
-            "content": list,
-            "html": str, #optional, ?html=1
-        }
+        type_checks = PLACEHOLDER_FIELD_TYPES
 
         plugin_type_checks = {
             "plugin_type": str,
