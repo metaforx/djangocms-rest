@@ -3,6 +3,7 @@ from django.contrib.sites.models import Site
 from rest_framework.reverse import reverse
 
 from tests.base import BaseCMSRestTestCase
+from tests.types import PAGE_META_FIELD_TYPES
 from tests.utils import assert_field_types
 
 
@@ -26,26 +27,7 @@ class PageListAPITestCase(BaseCMSRestTestCase):
             language="en", page__site=site
         ).count()
 
-        type_checks = {
-            "title": str,
-            "page_title": str,
-            "menu_title": str,
-            "meta_description": (str, type(None)),
-            "redirect": (str, type(None)),
-            "in_navigation": bool,
-            "soft_root": bool,
-            "template": str,
-            "xframe_options": (int, str),
-            "limit_visibility_in_menu": (str, type(None)),
-            "language": str,
-            "path": str,
-            "absolute_url": str,
-            "is_home": bool,
-            "languages": list,
-            "is_preview": bool,
-            "creation_date": str,
-            "changed_date": str,
-        }
+        type_checks = PAGE_META_FIELD_TYPES
 
         # GET
         response = self.client.get(reverse("page-list", kwargs={"language": "en"}))
