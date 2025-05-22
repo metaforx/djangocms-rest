@@ -106,9 +106,9 @@ class PageMetaSerializer(BasePageSerializer, BasePageContentMixin):
             parent = instance.page.parent
             tree.setdefault(parent, []).append(instance)
 
-        # Prepare the child serializer with proper context.
+        # Prepare the child serializer with the proper context.
         kwargs["child"] = cls(context=context)
-        return PageTreeSerializer(tree, context=context, *args[1:], **kwargs)
+        return PageTreeSerializer(tree, *args[1:], **kwargs)
 
     def to_representation(self, page_content: PageContent) -> Dict:
         return self.get_base_representation(page_content)
