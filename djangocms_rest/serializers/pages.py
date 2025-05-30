@@ -16,6 +16,7 @@ class BasePageSerializer(serializers.Serializer):
     absolute_url = serializers.URLField(max_length=200, allow_blank=True)
     path = serializers.CharField(max_length=200)
     is_home = serializers.BooleanField()
+    login_required = serializers.BooleanField()
     in_navigation = serializers.BooleanField()
     soft_root = serializers.BooleanField()
     template = serializers.CharField(max_length=100)
@@ -24,6 +25,7 @@ class BasePageSerializer(serializers.Serializer):
     language = serializers.CharField(max_length=10)
     languages = serializers.ListSerializer(child=serializers.CharField(), allow_empty=True, required=False)
     is_preview = serializers.BooleanField(default=False)
+    application_namespace = serializers.CharField(max_length=200, allow_null=True)
     creation_date = serializers.DateTimeField()
     changed_date = serializers.DateTimeField()
 
@@ -56,8 +58,10 @@ class BasePageContentMixin:
             "path": relative_url,
             "absolute_url": absolute_url,
             "is_home": page_content.page.is_home,
+            "login_required": page_content.page.login_required,
             "languages": page_content.page.get_languages(),
             "is_preview": getattr(self, "is_preview", False),
+            "application_namespace": page_content.page.application_namespace,
             "creation_date": page_content.creation_date,
             "changed_date": page_content.changed_date,
         }

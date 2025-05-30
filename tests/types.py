@@ -19,8 +19,10 @@ PAGE_META_FIELD_TYPES = {
     "path": str,
     "absolute_url": str,
     "is_home": bool,
+    "login_required": bool,
     "languages": list,
     "is_preview": bool,
+    "application_namespace": (str, type(None)),
     "creation_date": (str, "datetime"),
     "changed_date": (str, "datetime"),
 }

@@ -24,12 +24,10 @@ permissions for authenticated staff user<br>
 
 🧩 **Flexible responses** – Fetch plugin content as JSON or fully rendered HTML
 
-> ⚠️ **Disclaimer**
+> ⚠️ **Note**
 >
-> `djangocms-rest` is under active development. While it is safe to explore and test, using it in
-> production is at your own responsibility.
->
-> The impact is limited since the API is **read-only** and does not expose any write operations.
+> `djangocms-rest` is under active development. Since the API is read-only, it's safe to explore
+> without risk of unintended data changes.
 
 ## What is headless mode?
 
@@ -260,15 +258,20 @@ https://drf-spectacular.readthedocs.io/en/latest/index.html
     "absolute_url": "string",
     "path": "string",
     "is_home": true,
+    "login_required": true,
     "in_navigation": true,
     "soft_root": true,
     "template": "string",
     "xframe_options": "string",
-    "limit_visibility_in_menu": true,
+    "limit_visibility_in_menu": false,
     "language": "string",
     "languages": [
         "string"
     ],
+    "is_preview": false,
+    "application_namespace": "string",
+    "creation_date": "2025-05-29T07:59:21.301Z",
+    "changed_date": "2025-05-29T07:59:21.301Z",
     "children": []
 }
 ```
@@ -310,7 +313,9 @@ To determine permissions `user_can_view_page()` from djangocms is used, usually 
 
 ### Sample API-Response: api/{en}/pages/{sub}/
 
+> GET CONTENT using `/api/{language}/placeholders/{content_type_id}/{object_id}/{slot}/`
 ```json
+
 {
     "title": "sub",
     "page_title": "sub",
@@ -319,31 +324,39 @@ To determine permissions `user_can_view_page()` from djangocms is used, usually 
     "redirect": null,
     "in_navigation": true,
     "soft_root": false,
-    "template": "INHERIT",
-    "xframe_options": 0,
-    "limit_visibility_in_menu": null,
+    "template": "home.html",
+    "xframe_options": "",
+    "limit_visibility_in_menu": false,
     "language": "en",
     "path": "sub",
     "absolute_url": "/sub/",
     "is_home": false,
+    "login_required": false,
     "languages": [
         "en"
     ],
     "is_preview": false,
-    "creation_date": "2025-02-26T21:22:16.844637Z",
-    "changed_date": "2025-02-26T21:22:16.856326Z",
-    // GET CONTENT using `/api/{language}/placeholders/{content_type_id}/{object_id}/{slot}/`
+    "application_namespace": null,
+    "creation_date": "2025-02-27T16:49:01.180050Z",
+    "changed_date": "2025-02-27T16:49:01.180214Z",
     "placeholders": [
         {
             "content_type_id": 5,
-            "object_id": 5,
+            "object_id": 6,
             "slot": "content"
+        },
+        {
+            "content_type_id": 5,
+            "object_id": 6,
+            "slot": "cta"
         }
     ]
 }
 ```
 
-### Sample API-Response: api/{en}/placeholders/{5}/{5}/{content}/[?html=1]
+### Sample API-Response: api/{en}/placeholders/{5}/{6}/{content}/[?html=1]
+
+> Rendered HTML with an optional flag ?html=1
 
 ```json
 {
@@ -375,7 +388,6 @@ To determine permissions `user_can_view_page()` from djangocms is used, usually 
         }
     ],
     "html": "<p>Test Content</p>"
-    //Rendered HTML when uins ?html=1
 }
 ```
 
