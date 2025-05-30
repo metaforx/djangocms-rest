@@ -18,8 +18,6 @@ class BasePageSerializer(serializers.Serializer):
     is_home = serializers.BooleanField()
     login_required = serializers.BooleanField()
     in_navigation = serializers.BooleanField()
-    depth = serializers.IntegerField()
-    numchild = serializers.IntegerField()
     soft_root = serializers.BooleanField()
     template = serializers.CharField(max_length=100)
     xframe_options = serializers.CharField(max_length=50, allow_blank=True)
@@ -52,8 +50,6 @@ class BasePageContentMixin:
             "meta_description": page_content.meta_description,
             "redirect": page_content.redirect,
             "in_navigation": page_content.in_navigation,
-            "depth": page_content.page.depth,
-            "numchild": page_content.page.numchild,
             "soft_root": page_content.soft_root,
             "template": page_content.template,
             "xframe_options": xframe_options,

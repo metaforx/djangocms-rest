@@ -11,8 +11,6 @@ PAGE_META_FIELD_TYPES = {
     "meta_description": (str, type(None)),
     "redirect": (str, type(None)),
     "in_navigation": bool,
-    "depth": int,
-    "numchild": int,
     "soft_root": bool,
     "template": str,
     "xframe_options": str,
