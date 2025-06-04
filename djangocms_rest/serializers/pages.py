@@ -5,6 +5,7 @@ from django.db import models
 from rest_framework import serializers
 
 from djangocms_rest.serializers.placeholders import PlaceholderRelationSerializer
+from djangocms_rest.utils import get_absolute_frontend_url
 
 
 class BasePageSerializer(serializers.Serializer):
@@ -39,8 +40,10 @@ class PreviewMixin:
 class BasePageContentMixin:
     def get_base_representation(self, page_content: PageContent) -> Dict:
         relative_url = page_content.page.get_path(page_content.language)
-        absolute_url = page_content.page.get_absolute_url(page_content.language) or ""
+        absolute_url = get_absolute_frontend_url(relative_url)
+        redirect = str(page_content.redirect or "")
         xframe_options = str(page_content.xframe_options or "")
+        application_namespace = str(page_content.page.application_namespace or "")
         limit_visibility_in_menu = bool(page_content.limit_visibility_in_menu)
 
         return {
@@ -48,7 +51,7 @@ class BasePageContentMixin:
             "page_title": page_content.page_title or page_content.title,
             "menu_title": page_content.menu_title or page_content.title,
             "meta_description": page_content.meta_description,
-            "redirect": page_content.redirect,
+            "redirect": redirect,
             "in_navigation": page_content.in_navigation,
             "soft_root": page_content.soft_root,
             "template": page_content.template,
@@ -61,7 +64,7 @@ class BasePageContentMixin:
             "login_required": page_content.page.login_required,
             "languages": page_content.page.get_languages(),
             "is_preview": getattr(self, "is_preview", False),
-            "application_namespace": page_content.page.application_namespace,
+            "application_namespace": application_namespace,
             "creation_date": page_content.creation_date,
             "changed_date": page_content.changed_date,
         }
@@ -78,9 +81,7 @@ class PageTreeSerializer(serializers.ListSerializer):
         serialized_data = self.child.to_representation(item)
         serialized_data["children"] = []
         if item.page in self.tree:
-            serialized_data["children"] = [
-                self.tree_to_representation(child) for child in self.tree[item.page]
-            ]
+            serialized_data["children"] = [self.tree_to_representation(child) for child in self.tree[item.page]]
         return serialized_data
 
     def to_representation(self, data: Dict) -> list[Dict]:
@@ -152,6 +153,7 @@ class PageContentSerializer(BasePageSerializer, BasePageContentMixin):
 
 class PreviewPageContentSerializer(PageContentSerializer, PreviewMixin):
     """Serializer specifically for preview/draft page content"""
+
     placeholders = PlaceholderRelationSerializer(many=True, required=False)
 
     def to_representation(self, page_content: PageContent) -> Dict:
