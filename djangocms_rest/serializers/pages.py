@@ -38,10 +38,10 @@ class PreviewMixin:
 
 
 class BasePageContentMixin:
-    def get_base_representation(self, page_content: PageContent, context: Optional[Dict] = None) -> Dict:
+    def get_base_representation(self, page_content: PageContent) -> Dict:
         request = getattr(self, "request", None)
-        relative_url = page_content.page.get_path(page_content.language)
-        absolute_url = get_absolute_frontend_url(request,relative_url)
+        path = page_content.page.get_path(page_content.language)
+        absolute_url = get_absolute_frontend_url(request,path)
         redirect = str(page_content.redirect or "")
         xframe_options = str(page_content.xframe_options or "")
         application_namespace = str(page_content.page.application_namespace or "")
@@ -59,7 +59,7 @@ class BasePageContentMixin:
             "xframe_options": xframe_options,
             "limit_visibility_in_menu": limit_visibility_in_menu,
             "language": page_content.language,
-            "path": relative_url,
+            "path": path,
             "absolute_url": absolute_url,
             "is_home": page_content.page.is_home,
             "login_required": page_content.page.login_required,

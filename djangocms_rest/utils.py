@@ -2,6 +2,7 @@ from typing import Optional, Union
 
 from cms.models import Page, PageUrl
 from django.contrib.sites.models import Site
+from django.contrib.sites.shortcuts import get_current_site
 from django.http import Http404
 from rest_framework.request import Request
 
@@ -20,32 +21,23 @@ def get_object(site: Site, path: str) -> Page:
     return page
 
 
-def get_absolute_frontend_url(request: Request, path: str, site_id: Union[Site, int, str] = 1) -> str:
+def get_absolute_frontend_url(request: Request, path: str) -> str:
     """
-    Converts a relative path to an absolute URL using the site's domain.
+    Creates an absolute URL for a given relative path using the current site's domain and protocol.
 
     Args:
         request: The HTTP request object
-        path: The relative path to convert
-        site_id: The ID of the site or a Site object
-        protocol: The protocol to use (default is "https")
+        path: The relative path to the page
 
     Returns:
-        A properly formatted absolute URL
+        An absolute URL formatted as a string.
     """
-    # Return the original path if it's already an absolute URL
-    if path.startswith(("http://", "https://")):
-        return path
 
-    site = Site.objects.get(id=int(site_id))
-    domain = site.domain
+    if path.startswith('/'):
+        raise ValueError(f"Path should not start with '/': {path}")
 
-    # Handle start/end slashes for domain and path
-    if domain.endswith("/") and path.startswith("/"):
-        domain = domain.rstrip("/")
-    elif not domain.endswith("/") and not path.startswith("/"):
-        domain = f"{domain}/"
-
+    site = get_current_site(request) if request else Site.objects.get(id=1)
+    domain = site.domain.rstrip('/')
     protocol = getattr(request, "scheme", "http")
 
-    return f"{protocol}://{domain}{path}"
+    return f"{protocol}://{domain}/{path}"
