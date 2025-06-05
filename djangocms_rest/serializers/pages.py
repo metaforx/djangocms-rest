@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict
 
 from cms.models import PageContent
 from django.db import models
