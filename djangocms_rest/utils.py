@@ -1,5 +1,3 @@
-from typing import Optional, Union
-
 from cms.models import Page, PageUrl
 from django.contrib.sites.models import Site
 from django.contrib.sites.shortcuts import get_current_site
