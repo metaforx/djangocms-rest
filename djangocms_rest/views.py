@@ -115,7 +115,7 @@ class PageTreeListView(BaseAPIView):
         except PageContent.DoesNotExist:
             raise NotFound()
 
-        serializer = self.serializer_class(pages, many=True, read_only=True)
+        serializer = self.serializer_class(pages, many=True, read_only=True, context={"request": request})
         return Response(serializer.data)
 
 
@@ -134,7 +134,7 @@ class PageDetailView(BaseAPIView):
             page_content = page.get_content_obj(language, fallback=True)
             if page_content is None:
                 raise PageContent.DoesNotExist()
-            serializer = self.serializer_class(page_content, read_only=True)
+            serializer = self.serializer_class(page_content, read_only=True, context={"request": request})
             return Response(serializer.data)
         except PageContent.DoesNotExist:
             raise NotFound()
@@ -250,7 +250,7 @@ class PreviewPageView(BaseAPIView):
         except PageContent.DoesNotExist:
             raise NotFound()
 
-        serializer = self.serializer_class(page_content, read_only=True)
+        serializer = self.serializer_class(page_content, read_only=True, context={"request": request})
         return Response(serializer.data)
 
 #NOTE: This is working, but might need refactoring
@@ -279,7 +279,7 @@ class PreviewPageTreeListView(BaseAPIView):
         except PageContent.DoesNotExist:
             raise NotFound()
 
-        serializer = self.serializer_class(pages, many=True, read_only=True)
+        serializer = self.serializer_class(pages, many=True, read_only=True, context={"request": request})
         return Response(serializer.data)
 
 class PreviewPageListView(BaseListAPIView):
