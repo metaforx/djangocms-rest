@@ -182,5 +182,3 @@ REST_FRAMEWORK = {
 
 USE_TZ = True
 
-FRONTEND_PROTOCOL = "http" # or "https" depending on your setup
-

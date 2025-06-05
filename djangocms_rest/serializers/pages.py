@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional
 
 from cms.models import PageContent
 from django.db import models
@@ -38,9 +38,10 @@ class PreviewMixin:
 
 
 class BasePageContentMixin:
-    def get_base_representation(self, page_content: PageContent) -> Dict:
+    def get_base_representation(self, page_content: PageContent, context: Optional[Dict] = None) -> Dict:
+        request = getattr(self, "request", None)
         relative_url = page_content.page.get_path(page_content.language)
-        absolute_url = get_absolute_frontend_url(relative_url)
+        absolute_url = get_absolute_frontend_url(request,relative_url)
         redirect = str(page_content.redirect or "")
         xframe_options = str(page_content.xframe_options or "")
         application_namespace = str(page_content.page.application_namespace or "")
