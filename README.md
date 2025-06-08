@@ -166,7 +166,7 @@ content available via the REST API.
 Install using pip:
 
 ```bash
-pip install git+https://github.com/fsbraun/djangocms-rest@main
+pip install git+https://github.com/django-cms/djangocms-rest@main
 ```
 
 Update your `INSTALLED_APPS` setting:
@@ -178,12 +178,6 @@ INSTALLED_APPS = [
     'rest_framework',
     ...
 ]
-```
-
-Set up frontend protocol and caching in your `settings.py`:
-```python
-# Set frontend protocol
-FRONTEND_PROTOCOL = 'http'  # or 'https', needed for absolute URLs in API responses
 ```
 
 ```python
