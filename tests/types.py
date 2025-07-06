@@ -59,7 +59,7 @@ PLACEHOLDER_FIELD_TYPES = {
 
 PLUGIN_FIELD_TYPES = {
     "plugin_type": str,
-    "title": str,
+    "name": str,
     "type": str,
     "properties": dict,
 }

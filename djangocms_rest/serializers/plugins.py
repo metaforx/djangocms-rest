@@ -25,32 +25,34 @@ def map_field_to_schema(field: serializers.Field, field_name: str = "") -> dict:
         field_name: Name of the field (unused but kept for compatibility)
 
     Returns:
-        dict: Basic JSON Schema definition for the field
+        dict: Basic JSON Schema definition for the field for TypeScript compatibility
     """
-    # Basic type mapping
-    if isinstance(field, serializers.IntegerField):
-        schema = {"type": "integer"}
-    elif isinstance(field, (serializers.FloatField, serializers.DecimalField)):
-        schema = {"type": "number"}
-    elif isinstance(field, serializers.BooleanField):
-        schema = {"type": "boolean"}
-    elif isinstance(field, serializers.ListField):
-        schema = {"type": "array"}
-    elif isinstance(field, (serializers.DictField, serializers.JSONField)):
-        schema = {"type": "object"}
-    elif isinstance(field, serializers.PrimaryKeyRelatedField):
-        schema = {"type": "integer"}
-    elif isinstance(field, serializers.DateField):
-        schema = {"type": "string", "format": "date"}
-    elif isinstance(field, serializers.DateTimeField):
-        schema = {"type": "string", "format": "date-time"}
-    elif isinstance(field, serializers.EmailField):
-        schema = {"type": "string", "format": "email"}
-    elif isinstance(field, serializers.URLField):
-        schema = {"type": "string", "format": "uri"}
-    elif isinstance(field, serializers.UUIDField):
-        schema = {"type": "string", "format": "uuid"}
-    elif isinstance(field, serializers.ChoiceField):
+
+    # Field type mapping for TypeScript compatibility
+    field_mapping = {
+        "CharField": {"type": "string"},
+        "TextField": {"type": "string"},
+        "URLField": {"type": "string"},
+        "EmailField": {"type": "string"},
+        "IntegerField": {"type": "integer"},
+        "FloatField": {"type": "number"},
+        "DecimalField": {"type": "number"},
+        "BooleanField": {"type": "boolean"},
+        "DateField": {"type": "string"},
+        "DateTimeField": {"type": "string"},
+        "TimeField": {"type": "string"},
+        "FileField": {"type": "string"},
+        "ImageField": {"type": "string"},
+        "JSONField": {"type": "object"},
+        "ForeignKey": {"type": "integer"},
+        "PrimaryKeyRelatedField": {"type": "integer"},
+        "ListField": {"type": "array"},
+        "DictField": {"type": "object"},
+        "UUIDField": {"type": "string"},
+    }
+
+    # Handle special cases first
+    if isinstance(field, serializers.ChoiceField):
         schema = {"type": "string", "enum": list(field.choices.keys())}
     elif hasattr(field, "fields"):  # Nested serializer
         schema = {"type": "object"}
@@ -61,7 +63,8 @@ def map_field_to_schema(field: serializers.Field, field_name: str = "") -> dict:
         if properties:
             schema["properties"] = properties
     else:
-        schema = {"type": "string"}
+        # Use mapping or default to string
+        schema = field_mapping.get(field.__class__.__name__, {"type": "string"})
 
     # Description from help_text
     if getattr(field, "help_text", None):
