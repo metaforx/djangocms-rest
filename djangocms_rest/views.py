@@ -22,8 +22,7 @@ from djangocms_rest.serializers.pages import (
 )
 from djangocms_rest.serializers.placeholders import PlaceholderSerializer
 from djangocms_rest.serializers.plugins import (
-    PLUGIN_DEFINITIONS,
-    PluginDefinitionSerializer,
+    generate_plugin_definitions,
 )
 from djangocms_rest.utils import get_object, get_site_filtered_queryset
 from djangocms_rest.views_base import BaseAPIView, BaseListAPIView
@@ -211,18 +210,18 @@ class PluginDefinitionView(BaseAPIView):
     API view for retrieving plugin definitions
     """
 
-    serializer_class = PluginDefinitionSerializer
-
     def get(self, request: Request) -> Response:
         """Get all plugin definitions"""
+
+        plugin_definitions = generate_plugin_definitions()
         definitions = [
             {
                 "plugin_type": plugin_type,
-                "title": definition["title"],
+                "name": definition["name"],
                 "type": definition["type"],
                 "properties": definition["properties"],
             }
-            for plugin_type, definition in PLUGIN_DEFINITIONS.items()
+            for plugin_type, definition in plugin_definitions.items()
         ]
         return Response(definitions)
 

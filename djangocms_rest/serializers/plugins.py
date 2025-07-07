@@ -1,153 +1,117 @@
 from rest_framework import serializers
 from cms.plugin_pool import plugin_pool
-from django.core.exceptions import FieldDoesNotExist
-from typing import Dict, Any, Optional
-from django.db.models import Field
+from typing import Dict, Any
+
+# CMS internal fields to exclude from all plugin schemas
+EXCLUDE_CMS_PLUGIN_FIELDS = {
+    "cmsplugin_ptr",
+    "id",
+    "parent",
+    "creation_date",
+    "changed_date",
+    "position",
+    "language",
+    "placeholder",
+}
 
 
-class PluginDefinitionSerializer(serializers.Serializer):
+
+def map_field_to_schema(field: serializers.Field, field_name: str = "") -> dict:
     """
-    Serializer for plugin type definitions.
-    """
-
-    plugin_type = serializers.CharField(
-        help_text="Unique identifier for the plugin type"
-    )
-    title = serializers.CharField(help_text="Human readable name of the plugin")
-    type = serializers.CharField(help_text="Schema type")
-    properties = serializers.DictField(help_text="Property definitions")
-
-
-def get_field_type(field: Field) -> str:
-    """
-    Convert Django field types to JSON Schema types.
+    Map DRF field to simple JSON Schema definition for rendering.
 
     Args:
-        field (Field): Django model field instance
+        field: DRF serializer field instance
+        field_name: Name of the field (unused but kept for compatibility)
 
     Returns:
-        str: JSON Schema type corresponding to the Django field type
+        dict: Basic JSON Schema definition for the field for TypeScript compatibility
     """
+
+    # Field type mapping for TypeScript compatibility
     field_mapping = {
-        "CharField": "string",
-        "TextField": "string",
-        "URLField": "string",
-        "EmailField": "string",
-        "IntegerField": "integer",
-        "FloatField": "number",
-        "DecimalField": "number",
-        "BooleanField": "boolean",
-        "DateField": "string",
-        "DateTimeField": "string",
-        "TimeField": "string",
-        "FileField": "string",
-        "ImageField": "string",
-        "JSONField": "object",
-        "ForeignKey": "integer",
+        "CharField": {"type": "string"},
+        "TextField": {"type": "string"},
+        "URLField": {"type": "string"},
+        "EmailField": {"type": "string"},
+        "IntegerField": {"type": "integer"},
+        "FloatField": {"type": "number"},
+        "DecimalField": {"type": "number"},
+        "BooleanField": {"type": "boolean"},
+        "DateField": {"type": "string"},
+        "DateTimeField": {"type": "string"},
+        "TimeField": {"type": "string"},
+        "FileField": {"type": "string"},
+        "ImageField": {"type": "string"},
+        "JSONField": {"type": "object"},
+        "ForeignKey": {"type": "integer"},
+        "PrimaryKeyRelatedField": {"type": "integer"},
+        "ListField": {"type": "array"},
+        "DictField": {"type": "object"},
+        "UUIDField": {"type": "string"},
     }
-    return field_mapping.get(field.__class__.__name__, "string")
+
+    # Handle special cases first
+    if isinstance(field, serializers.ChoiceField):
+        schema = {"type": "string", "enum": list(field.choices.keys())}
+    elif hasattr(field, "fields"):  # Nested serializer
+        schema = {"type": "object"}
+        # Extract nested properties
+        properties = {}
+        for nested_field_name, nested_field in field.fields.items():
+            properties[nested_field_name] = map_field_to_schema(nested_field, nested_field_name)
+        if properties:
+            schema["properties"] = properties
+    else:
+        # Use mapping or default to string
+        schema = field_mapping.get(field.__class__.__name__, {"type": "string"})
+
+    # Description from help_text
+    if getattr(field, "help_text", None):
+        schema["description"] = str(field.help_text)
+
+    return schema
 
 
-def get_field_format(field: Field) -> Optional[str]:
-    """
-    Get the format for specific field types.
 
-    Args:
-        field (Field): Django model field instance
-
-    Returns:
-        Optional[str]: JSON Schema format string if applicable, None otherwise
-    """
-    format_mapping = {
-        "URLField": "uri",
-        "EmailField": "email",
-        "DateField": "date",
-        "DateTimeField": "date-time",
-        "TimeField": "time",
-        "FileField": "uri",
-        "ImageField": "uri",
-    }
-    return format_mapping.get(field.__class__.__name__)
 
 
 def generate_plugin_definitions() -> Dict[str, Any]:
     """
-    Generate plugin definitions from registered plugins.
-
-    Returns:
-        Dict[str, Any]: A dictionary mapping plugin types to their definitions.
-        Each definition contains:
-            - title: Human readable name
-            - type: Schema type (always "object")
-            - properties: Field definitions following JSON Schema format
-            - required: List of required field names
+    Generate simple plugin definitions for rendering.
     """
     definitions = {}
 
-    excluded_fields = {
-        "cmsplugin_ptr",
-        "id",
-        "parent",
-        "creation_date",
-        "changed_date",
-        "position",
-        "language",
-        "plugin_type",
-        "placeholder",
-    }
-
     for plugin in plugin_pool.get_all_plugins():
-        model = plugin.model
-        plugin_class = plugin_pool.get_plugin(plugin.__name__)
+        # Use plugin's serializer_class or create a simple fallback
+        serializer_cls = getattr(plugin, "serializer_class", None)
 
-        properties = {}
-        required = []
+        if not serializer_cls:
+            class DynamicModelSerializer(serializers.ModelSerializer):
+                class Meta:
+                    model = plugin.model
+                    fields = "__all__"
+            serializer_cls = DynamicModelSerializer
 
-        # Get fields from the model
-        for field in model._meta.get_fields():
-            # Skip excluded and relation fields
-            if field.name in excluded_fields or field.is_relation:
-                continue
+        try:
+            serializer_instance = serializer_cls()
+            properties = {}
 
-            try:
-                model_field = model._meta.get_field(field.name)
-                field_def = {
-                    "type": get_field_type(model_field),
-                    "description": str(getattr(model_field, "help_text", "") or ""),
-                }
+            for field_name, field in serializer_instance.fields.items():
+                # Skip internal CMS fields
+                if field_name in EXCLUDE_CMS_PLUGIN_FIELDS:
+                    continue
 
-                # Add format if applicable
-                field_format = get_field_format(model_field)
-                if field_format:
-                    field_def["format"] = field_format
+                properties[field_name] = map_field_to_schema(field, field_name)
 
-                properties[field.name] = field_def
+            definitions[plugin.__name__] = {
+                "name": getattr(plugin, "name", plugin.__name__),
+                "type": "object",
+                "properties": properties,
+            }
 
-                # Add to required fields if not nullable
-                if not getattr(model_field, "blank", True):
-                    required.append(field.name)
-
-            except FieldDoesNotExist:
-                continue
-
-        # Add plugin_type to properties and required
-        properties["plugin_type"] = {
-            "type": "string",
-            "const": plugin.__name__,
-            "description": "Plugin identifier",
-        }
-        required.append("plugin_type")
-
-        definitions[plugin.__name__] = {
-            "title": getattr(plugin_class, "name", plugin.__name__),
-            "type": "object",
-            "properties": properties,
-            "required": required,
-            "additionalProperties": False,
-        }
+        except Exception:
+            # Skip plugins that fail to process
+            continue
 
     return definitions
-
-
-# Generate plugin definitions
-PLUGIN_DEFINITIONS = generate_plugin_definitions()
