@@ -10,3 +10,6 @@ class RestToolbar(CMSToolbar):
                 'djangocms_rest/highlight.css',
             )
         }
+        js = (
+            'djangocms_rest/toggles.js',
+        )

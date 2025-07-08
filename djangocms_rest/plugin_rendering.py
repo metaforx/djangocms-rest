@@ -29,7 +29,6 @@ def get_auto_model_serializer(model_class: type[ModelType]) -> type:
     common CMS bookkeeping fields.
     """
 
-
     opts = model_class._meta
     real_fields = {f.name for f in opts.get_fields()}
     exclude = tuple(base_exclude & real_fields)
@@ -70,7 +69,7 @@ def render_cms_plugin(instance: Optional[Any], context: Dict[str, Any]) -> Optio
     return serializer_cls(plugin_instance, context=context).data
 
 
-def highlight_data(json_data: Any, depth: int) -> str:
+def highlight_data(json_data: Any) -> str:
     """
     Highlight JSON data using Pygments.
     """
@@ -86,13 +85,13 @@ def highlight_data(json_data: Any, depth: int) -> str:
     if json_data is None:
         return '<span class="null">null</span>'
     if isinstance(json_data, dict):
-        return highlight_json(json_data, depth=depth + 1)
+        return highlight_json(json_data)
     if isinstance(json_data, list):
-        return highlight_list(json_data, depth=depth + 1)
+        return highlight_list(json_data)
 
     return f'<span class="obj">{json_data}</span>'
 
-def highlight_json(json_data: Dict[str, Any], depth: int = 0, children: Iterable|None = None, field: str = "children") -> str:
+def highlight_json(json_data: Dict[str, Any], children: Iterable|None = None, field: str = "children") -> str:
     has_children = children is not None
     if field in json_data:
         del json_data[field]
@@ -100,17 +99,17 @@ def highlight_json(json_data: Dict[str, Any], depth: int = 0, children: Iterable
     if not json_data and not has_children:
         return "{}"
     items = [
-        f'<span class="key">"{escape(key)}"</span>: {highlight_data(value, depth)}'
+        f'<div class="js-kvp"><span class="key">"{escape(key)}"</span>: {highlight_data(value)},</div>'
         for key, value in json_data.items()
     ]
     if has_children:
-        rendered_children = f'<span class="children">"{field}"</span>: [<div class="indent">{",<br>".join(children)}</div>]'
+        rendered_children = f'<div class="js-kvp"><span class="children">"{field}"</span>: [<div class="indent">{"".join(children)}</div></div>]'
         items.append(rendered_children)
-    return f'{{<br><div class="indent js-visibility-toggle">{",<br>".join(items)}</div>}}'
+    return f'{{<div class="indent">{"".join(items)}</div>}}'
 
-def highlight_list(json_data: list, depth: int = 0) -> str:
-    items = [highlight_data(item, depth) for item in json_data]
-    return f'[<br><div class="indent js-visibility-toggle">{",<br>".join(items)}</div>]'
+def highlight_list(json_data: list) -> str:
+    items = [highlight_data(item) for item in json_data]
+    return f'[<div class="indent">{",<br>".join(items)}</div>]'
 
 
 class RESTRenderer(ContentRenderer):
@@ -119,22 +118,16 @@ class RESTRenderer(ContentRenderer):
     CMS plugins in a RESTful way.
     """
 
-    anchor = '<span class="p">}</span>'
-    _pre = """<span class="w">{}</span><span class="str">"children"</span><span class="pun">:</span>
-    <span class="w"> </span><span class="pun">[</span>"""
-    _connector = ',<span class="pln">\n</span>'
-    _post = """<span class="pun">]</span><span class="pln">\n</span><span class="w">{}</span><span class="p">}}"""
-
-    def render_plugin(self, instance, context, placeholder=None, editable: bool = False, depth: int = 1):
+    def render_plugin(self, instance, context, placeholder=None, editable: bool = False):
         """
         Render a CMS plugin instance using the render_cms_plugin function.
         """
         data = render_cms_plugin(instance, context) or {}
         children = [
-            self.render_plugin(child, context, placeholder=placeholder, editable=editable, depth=depth + 1)
+            self.render_plugin(child, context, placeholder=placeholder, editable=editable)
             for child in getattr(instance, 'child_plugin_instances', [])
         ] or None
-        content = highlight_json(data, depth=depth, children=children)
+        content = highlight_json(data, children=children)
 
         if editable:
             content = self.plugin_edit_template.format(
@@ -158,7 +151,6 @@ class RESTRenderer(ContentRenderer):
 
         yield highlight_json(
             placeholder_data,
-            depth=0,
             children=super().render_plugins(
                 placeholder, language, context, editable=editable, template=template
             ),

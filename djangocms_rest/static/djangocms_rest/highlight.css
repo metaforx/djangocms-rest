@@ -49,3 +49,33 @@
         border-inline-start: 1px solid var(--dca-gray-lightest, #f2f2f2);
     }
 }
+
+.rest-placeholder {
+    .js-kvp:has(.indent) {
+        cursor: pointer;
+        position: relative;
+        &.hidden > .indent {
+            max-height: 0;
+            transition: max-height 0.3s linear;
+       }
+    }
+    div.indent {
+        max-height: attr(data-scroll-height px);
+        transition: max-height 0.3s linear;
+        overflow: hidden;
+    }
+    .js-kvp:has(.indent)::before {
+        content: "\2014"; /* em dash (—) */
+        cursor: pointer;
+        display: inline-block;
+        margin-inline-end: 0.5em;
+        transition: transform 0.2s ease-in-out;
+        position: absolute;
+        inset-inline-start: -1.5em;
+        color: var(--dca-gray-light);
+        font-weight: bold;
+    }
+    .js-kvp.hidden:has(.indent)::before {
+        content: "+";
+    }
+}
