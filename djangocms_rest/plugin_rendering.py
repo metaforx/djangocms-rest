@@ -1,4 +1,3 @@
-
 from typing import Any, Dict, Iterable, Optional, TypeVar
 
 from django.db import models
@@ -50,7 +49,9 @@ def get_auto_model_serializer(model_class: type[ModelType]) -> type:
     )
 
 
-def render_cms_plugin(instance: Optional[Any], context: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+def render_cms_plugin(
+    instance: Optional[Any], context: Dict[str, Any]
+) -> Optional[Dict[str, Any]]:
     if not instance or not hasattr(instance, "get_plugin_instance"):
         return None
 
@@ -91,7 +92,10 @@ def highlight_data(json_data: Any) -> str:
 
     return f'<span class="obj">{json_data}</span>'
 
-def highlight_json(json_data: Dict[str, Any], children: Iterable|None = None, field: str = "children") -> str:
+
+def highlight_json(
+    json_data: Dict[str, Any], children: Iterable | None = None, field: str = "children"
+) -> str:
     has_children = children is not None
     if field in json_data:
         del json_data[field]
@@ -111,6 +115,7 @@ def highlight_json(json_data: Dict[str, Any], children: Iterable|None = None, fi
         items.append(rendered_children)
     return f'{{<div class="indent">{"".join(items)}</div>}}'
 
+
 def highlight_list(json_data: list) -> str:
     items = [highlight_data(item) for item in json_data]
     return f'[<div class="indent">{",<br>".join(items)}</div>]'
@@ -122,14 +127,18 @@ class RESTRenderer(ContentRenderer):
     CMS plugins in a RESTful way.
     """
 
-    def render_plugin(self, instance, context, placeholder=None, editable: bool = False):
+    def render_plugin(
+        self, instance, context, placeholder=None, editable: bool = False
+    ):
         """
         Render a CMS plugin instance using the render_cms_plugin function.
         """
         data = render_cms_plugin(instance, context) or {}
         children = [
-            self.render_plugin(child, context, placeholder=placeholder, editable=editable)
-            for child in getattr(instance, 'child_plugin_instances', [])
+            self.render_plugin(
+                child, context, placeholder=placeholder, editable=editable
+            )
+            for child in getattr(instance, "child_plugin_instances", [])
         ] or None
         content = highlight_json(data, children=children)
 
@@ -138,7 +147,7 @@ class RESTRenderer(ContentRenderer):
                 pk=instance.pk,
                 placeholder=instance.placeholder_id,
                 content=content,
-                position=instance.position
+                position=instance.position,
             )
             placeholder_cache = self._rendered_plugins_by_placeholder.setdefault(
                 placeholder.pk, {}
@@ -146,12 +155,19 @@ class RESTRenderer(ContentRenderer):
             placeholder_cache.setdefault("plugins", []).append(instance)
         return mark_safe(content)
 
-    def render_plugins(self, placeholder, language, context, editable=False, template=None):
+    def render_plugins(
+        self, placeholder, language, context, editable=False, template=None
+    ):
         yield "<div class='rest-placeholder' data-placeholder='{placeholder}' data-language='{language}'>".format(
             placeholder=placeholder.slot,
             language=language,
         )
-        placeholder_data = PlaceholderSerializer(instance=placeholder, language=language, request=context["request"], render_plugins=False).data
+        placeholder_data = PlaceholderSerializer(
+            instance=placeholder,
+            language=language,
+            request=context["request"],
+            render_plugins=False,
+        ).data
 
         yield highlight_json(
             placeholder_data,

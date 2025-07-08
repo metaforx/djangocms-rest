@@ -181,7 +181,11 @@ class PlaceholderDetailView(BaseAPIView):
             raise NotFound()
 
         source_model = placeholder.content_type.model_class()
-        source = getattr(source_model, self.content_manager, source_model.objects).filter(pk=placeholder.object_id).first()
+        source = (
+            getattr(source_model, self.content_manager, source_model.objects)
+            .filter(pk=placeholder.object_id)
+            .first()
+        )
 
         if source is None:
             raise NotFound()

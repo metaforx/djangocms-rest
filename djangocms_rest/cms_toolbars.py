@@ -5,11 +5,5 @@ from cms.toolbar_pool import toolbar_pool
 @toolbar_pool.register
 class RestToolbar(CMSToolbar):
     class Media:
-        css = {
-            'all': (
-                'djangocms_rest/highlight.css',
-            )
-        }
-        js = (
-            'djangocms_rest/toggles.js',
-        )
+        css = {"all": ("djangocms_rest/highlight.css",)}
+        js = ("djangocms_rest/toggles.js",)

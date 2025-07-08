@@ -8,7 +8,6 @@ class RESTToolbarMixin:
     """
 
     def __init__(self, *args, **kwargs):
-        print("== RESTToolbarMixin init ==")
         super().__init__(*args, **kwargs)
 
     @cached_property
@@ -16,7 +15,6 @@ class RESTToolbarMixin:
         from .plugin_rendering import RESTRenderer
 
         return RESTRenderer(request=self.request)
-
 
 
 class VersioningCMSConfig(CMSAppConfig):
