@@ -1,5 +1,4 @@
 
-import json
 from typing import Any, Dict, Optional, TypeVar
 
 from django.db import models
@@ -18,7 +17,6 @@ base_exclude = {
     "changed_date",
     "parent",
 }
-
 
 ModelType = TypeVar("ModelType", bound=models.Model)
 
@@ -70,17 +68,67 @@ def render_cms_plugin(instance: Optional[Any], context: Dict[str, Any]) -> Optio
     return serializer_cls(plugin_instance, context=context).data
 
 
+def highlight_data(json_data: Any, depth: int) -> str:
+    """
+    Highlight JSON data using Pygments.
+    """
+    if isinstance(json_data, str):
+        classes = "str"
+        if len(json_data) > 100:
+            classes += " ellipsis"
+        return f'<span class="{classes}">"{escape(json_data)}"</span>'
+    if isinstance(json_data, (int, float)):
+        return f'<span class="num">{json_data}</span>'
+    if isinstance(json_data, bool):
+        return f'<span class="bool">{str(json_data).lower()}</span>'
+    if json_data is None:
+        return '<span class="null">null</span>'
+    if isinstance(json_data, dict):
+        return highlight_json(json_data, depth=depth + 1)
+    if isinstance(json_data, list):
+        return highlight_list(json_data, depth=depth + 1)
+
+    return f'<span class="obj">{json_data}</span>'
+
+def highlight_json(json_data: Dict[str, Any], depth: int = 0, children: list|None = None) -> str:
+    if not json_data and not children:
+        return "{}"
+    items = [
+        f'<span class="key">"{escape(key)}"</span>: {highlight_data(value, depth)}'
+        for key, value in json_data.items()
+    ]
+    if children:
+        items.append(f'<span class="children">"children"</span>: [<div class="indent">{",<br>".join(children)}</div>]')
+    return f'{{<br><div class="indent js-visibility-toggle">{",<br>".join(items)}</div>}}'
+
+def highlight_list(json_data: list, depth: int = 0) -> str:
+    items = [highlight_data(item, depth) for item in json_data]
+    return f'[<br><div class="indent js-visibility-toggle">{",<br>".join(items)}</div>]'
+
+
 class RESTRenderer(ContentRenderer):
     """
     A custom renderer that uses the render_cms_plugin function to render
     CMS plugins in a RESTful way.
     """
 
-    def render_plugin(self, instance, context, placeholder=None, editable=False):
+    anchor = '<span class="p">}</span>'
+    _pre = """<span class="w">{}</span><span class="str">"children"</span><span class="pun">:</span>
+    <span class="w"> </span><span class="pun">[</span>"""
+    _connector = ',<span class="pln">\n</span>'
+    _post = """<span class="pun">]</span><span class="pln">\n</span><span class="w">{}</span><span class="p">}}"""
+
+    def render_plugin(self, instance, context, placeholder=None, editable: bool = False, depth: int = 1):
         """
         Render a CMS plugin instance using the render_cms_plugin function.
         """
-        content = self.pretty_print_data(instance, context)
+        data = render_cms_plugin(instance, context) or {}
+        children = [
+            self.render_plugin(child, context, placeholder=placeholder, editable=editable, depth=depth + 1)
+            for child in getattr(instance, 'child_plugin_instances', [])
+        ]
+        content = highlight_json(data, depth=depth, children=children)
+
         if editable:
             content = self.plugin_edit_template.format(
                 pk=instance.pk,
@@ -94,12 +142,12 @@ class RESTRenderer(ContentRenderer):
             placeholder_cache.setdefault("plugins", []).append(instance)
         return mark_safe(content)
 
-    def pretty_print_data(self, instance, context):
-        """
-        Convert the plugin instance data to a pretty-printed JSON string.
-        """
-        data = render_cms_plugin(instance, context) or {}
-
-        # Use json.dumps to convert the data to a JSON string
-        json_data = json.dumps(data, indent=4, ensure_ascii=False)
-        return escape(json_data)
+    def render_plugins(self, placeholder, language, context, editable=False, template=None):
+        yield "<div class='rest-placeholder' data-placeholder='{placeholder}' data-language='{language}'>".format(
+            placeholder=placeholder.slot,
+            language=language,
+        )
+        yield from super().render_plugins(
+            placeholder, language, context, editable=editable, template=template
+        )
+        yield "</div>"
