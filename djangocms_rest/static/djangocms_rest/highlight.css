@@ -51,8 +51,13 @@
 }
 
 .rest-placeholder {
+    .js-kvp:last-child > .sep {
+        display: none;
+    }
+    .toggle {
+        display: none
+    }
     .js-kvp:has(.indent) {
-        cursor: pointer;
         position: relative;
         &.hidden > .indent {
             max-height: 0;
@@ -64,8 +69,12 @@
         transition: max-height 0.3s linear;
         overflow: hidden;
     }
-    .js-kvp:has(.indent)::before {
-        content: "\2014"; /* em dash (—) */
+    .js-kvp:has(.indent) > .toggle {
+        &::before {
+            content: "\2014"; /* em dash (—) */
+        }
+        width: 1.5em;
+        height: 1.5em;
         cursor: pointer;
         display: inline-block;
         margin-inline-end: 0.5em;
@@ -75,7 +84,7 @@
         color: var(--dca-gray-light);
         font-weight: bold;
     }
-    .js-kvp.hidden:has(.indent)::before {
+    .js-kvp.hidden:has(.indent) > .toggle::before {
         content: "+";
     }
 }

@@ -99,11 +99,15 @@ def highlight_json(json_data: Dict[str, Any], children: Iterable|None = None, fi
     if not json_data and not has_children:
         return "{}"
     items = [
-        f'<div class="js-kvp"><span class="key">"{escape(key)}"</span>: {highlight_data(value)},</div>'
+        f'<div class="js-kvp"><span class="toggle"></span><span class="key">"{escape(key)}"</span>: '
+        f'{highlight_data(value)}<span class="sep">,</span></div>'
         for key, value in json_data.items()
     ]
     if has_children:
-        rendered_children = f'<div class="js-kvp"><span class="children">"{field}"</span>: [<div class="indent">{"".join(children)}</div></div>]'
+        rendered_children = (
+            f'<div class="js-kvp"><span class="toggle"></span><span class="children">"{field}"</span>: '
+            f'[<div class="indent">{", ".join(children)}</div></div>]'
+        )
         items.append(rendered_children)
     return f'{{<div class="indent">{"".join(items)}</div>}}'
 
