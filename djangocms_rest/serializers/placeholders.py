@@ -103,16 +103,18 @@ class PlaceholderSerializer(serializers.Serializer):
         request = kwargs.pop("request", None)
         placeholder = kwargs.pop("instance", None)
         language = kwargs.pop("language", None)
+        render_plugins = kwargs.pop("render_plugins", True)
         super().__init__(*args, **kwargs)
 
         if placeholder and request and language:
-            renderer = PlaceholderRenderer(request)
-            placeholder.content = renderer.render_placeholder(
-                placeholder,
-                context={},
-                language=language,
-                use_cache=True,
-            )
+            if render_plugins:
+                renderer = PlaceholderRenderer(request)
+                placeholder.content = renderer.render_placeholder(
+                    placeholder,
+                    context={},
+                    language=language,
+                    use_cache=True,
+                )
             if request.GET.get("html", False):
                 html = render_html(request, placeholder, language)
                 for key, value in html.items():

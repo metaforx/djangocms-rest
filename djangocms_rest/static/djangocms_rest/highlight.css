@@ -4,6 +4,14 @@
     --value-color: #1E90FF; /* Dodger Blue */
 }
 
+@media (prefers-color-scheme: dark) {
+    :root .rest-placeholder {
+        --string-color: #FF6347; /* Tomato */
+        --key-color: #32CD32; /* Lime Green */
+        --value-color: #1E90FF; /* Dodger Blue */
+    }
+}
+
 .rest-placeholder {
 
     --string-color: #BA2121;
@@ -12,8 +20,6 @@
 
 
     display: block;
-    padding: 1em;
-    border: 1px solid var(--dca-gray, #ccc);
     background-color: var(--dca-white, #fff);
     color: var(--dca-gray-darkest, #333);
     margin-bottom: 1em;

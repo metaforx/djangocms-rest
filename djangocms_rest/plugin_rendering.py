@@ -1,11 +1,13 @@
 
-from typing import Any, Dict, Optional, TypeVar
+from typing import Any, Dict, Iterable, Optional, TypeVar
 
 from django.db import models
 from django.utils.html import escape, mark_safe
 
 from cms.plugin_rendering import ContentRenderer
 from rest_framework import serializers
+
+from djangocms_rest.serializers.placeholders import PlaceholderSerializer
 
 
 base_exclude = {
@@ -90,15 +92,20 @@ def highlight_data(json_data: Any, depth: int) -> str:
 
     return f'<span class="obj">{json_data}</span>'
 
-def highlight_json(json_data: Dict[str, Any], depth: int = 0, children: list|None = None) -> str:
-    if not json_data and not children:
+def highlight_json(json_data: Dict[str, Any], depth: int = 0, children: Iterable|None = None, field: str = "children") -> str:
+    has_children = children is not None
+    if field in json_data:
+        del json_data[field]
+
+    if not json_data and not has_children:
         return "{}"
     items = [
         f'<span class="key">"{escape(key)}"</span>: {highlight_data(value, depth)}'
         for key, value in json_data.items()
     ]
-    if children:
-        items.append(f'<span class="children">"children"</span>: [<div class="indent">{",<br>".join(children)}</div>]')
+    if has_children:
+        rendered_children = f'<span class="children">"{field}"</span>: [<div class="indent">{",<br>".join(children)}</div>]'
+        items.append(rendered_children)
     return f'{{<br><div class="indent js-visibility-toggle">{",<br>".join(items)}</div>}}'
 
 def highlight_list(json_data: list, depth: int = 0) -> str:
@@ -126,7 +133,7 @@ class RESTRenderer(ContentRenderer):
         children = [
             self.render_plugin(child, context, placeholder=placeholder, editable=editable, depth=depth + 1)
             for child in getattr(instance, 'child_plugin_instances', [])
-        ]
+        ] or None
         content = highlight_json(data, depth=depth, children=children)
 
         if editable:
@@ -147,7 +154,14 @@ class RESTRenderer(ContentRenderer):
             placeholder=placeholder.slot,
             language=language,
         )
-        yield from super().render_plugins(
-            placeholder, language, context, editable=editable, template=template
+        placeholder_data = PlaceholderSerializer(instance=placeholder, language=language, request=context["request"], render_plugins=False).data
+
+        yield highlight_json(
+            placeholder_data,
+            depth=0,
+            children=super().render_plugins(
+                placeholder, language, context, editable=editable, template=template
+            ),
+            field="content",
         )
         yield "</div>"
