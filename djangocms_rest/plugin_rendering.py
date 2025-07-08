@@ -1,6 +1,6 @@
 
 import json
-from typing import Any, Callable, Dict, Optional, TypeVar
+from typing import Any, Dict, Optional, TypeVar
 
 from django.db import models
 from django.utils.html import escape, mark_safe
