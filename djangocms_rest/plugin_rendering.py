@@ -115,9 +115,9 @@ def highlight_data(json_data: Any) -> str:
     if json_data is None:
         return '<span class="null">null</span>'
     if isinstance(json_data, dict):
-        return OBJ_TEMPLATE.format(**highlight_json(json_data)) if json_data else '{}'
+        return highlight_json(json_data).get("value", "") if json_data else '{}'
     if isinstance(json_data, list):
-        return OBJ_TEMPLATE.format(**highlight_list(json_data)) if json_data else '[]'
+        return highlight_list(json_data).get("value", "") if json_data else '[]'
 
     return f'<span class="obj">{json_data}</span>'
 
@@ -133,8 +133,8 @@ def highlight_json(
         DETAILS_TEMPLATE.format(
             key=escape(key),
             value=highlight_data(value),
-            open='',
-            close='',
+            open='{' if isinstance(value, dict) else '[',
+            close='}' if isinstance(value, dict) else ']',
         ) if isinstance(value, (dict, list)) and value else SIMPLE_TEMPLATE.format(
             key=escape(key),
             value=highlight_data(value),
