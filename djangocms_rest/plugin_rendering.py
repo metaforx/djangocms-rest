@@ -1,7 +1,7 @@
 from typing import Any, Dict, Iterable, Optional, TypeVar
 
 from django.db import models
-from django.utils.html import escape, mark_safe
+from django.utils.html import escape, escapejs, mark_safe
 
 from cms.plugin_rendering import ContentRenderer
 from rest_framework import serializers
@@ -70,15 +70,39 @@ def render_cms_plugin(
     return serializer_cls(plugin_instance, context=context).data
 
 
+# Template for a collapsable key-value pair
+DETAILS_TEMPLATE = (
+    '<details open><summary><span class="key">"{key}"</span>: {open}</summary>'
+    '<div class="indent">{value}</div></details>{close}<span class="sep">,</span>'
+)
+
+# Template for a collapsable object/list
+OBJ_TEMPLATE = (
+    '<details open><summary>{open}</summary>'
+    '<div class="indent">{value}</div></details>{close}<span class="sep">,</span>'
+)
+
+# Tempalte for a single line key-value pair
+SIMPLE_TEMPLATE = (
+    '<span class="key">"{key}"</span>: {value}<span class="sep">,</span>'
+)
+
+def escapestr(s: str) -> str:
+    """
+    Escape a string for safe HTML rendering.
+    """
+    return escape(s).replace('&quot;', '&bsol;&quot;').replace('\n', '&bsol;n')
+
+
 def highlight_data(json_data: Any) -> str:
     """
     Highlight JSON data using Pygments.
     """
     if isinstance(json_data, str):
-        classes = "str"
-        if len(json_data) > 100:
-            classes += " ellipsis"
-        return f'<span class="{classes}">"{escape(json_data)}"</span>'
+        ellipsis = ""
+        if len(json_data) > 60:
+            return f'<span class="str">"<span class="ellipsis">{escapestr(json_data)}</span>"</span>'
+        return f'<span class="str">"{escapestr(json_data)}"</span>'
     if isinstance(json_data, (int, float)):
         return f'<span class="num">{json_data}</span>'
     if isinstance(json_data, bool):
@@ -86,39 +110,54 @@ def highlight_data(json_data: Any) -> str:
     if json_data is None:
         return '<span class="null">null</span>'
     if isinstance(json_data, dict):
-        return highlight_json(json_data)
+        return OBJ_TEMPLATE.format(**highlight_json(json_data)) if json_data else '{}'
     if isinstance(json_data, list):
-        return highlight_list(json_data)
+        return OBJ_TEMPLATE.format(**highlight_list(json_data)) if json_data else '[]'
 
     return f'<span class="obj">{json_data}</span>'
 
 
 def highlight_json(
     json_data: Dict[str, Any], children: Iterable | None = None, field: str = "children"
-) -> str:
+) -> dict[str, str]:
     has_children = children is not None
     if field in json_data:
         del json_data[field]
 
-    if not json_data and not has_children:
-        return "{}"
     items = [
-        f'<div class="js-kvp"><span class="toggle"></span><span class="key">"{escape(key)}"</span>: '
-        f'{highlight_data(value)}<span class="sep">,</span></div>'
+        DETAILS_TEMPLATE.format(
+            key=escape(key),
+            value=highlight_data(value),
+            open='',
+            close='',
+        ) if isinstance(value, (dict, list)) and value else SIMPLE_TEMPLATE.format(
+            key=escape(key),
+            value=highlight_data(value),
+        )
         for key, value in json_data.items()
     ]
     if has_children:
-        rendered_children = (
-            f'<div class="js-kvp"><span class="toggle"></span><span class="children">"{field}"</span>: '
-            f'[<div class="indent">{", ".join(children)}</div></div>]'
+        rendered_children = DETAILS_TEMPLATE.format(
+            key=escape(field),
+            value=''.join(children),
+            open='[',
+            close=']',
         )
         items.append(rendered_children)
-    return f'{{<div class="indent">{"".join(items)}</div>}}'
+    return {
+        "open": '{',
+        "close": '}',
+        "value": "<br>".join(items),
+    }
 
 
-def highlight_list(json_data: list) -> str:
+def highlight_list(json_data: list) -> dict[str, str]:
     items = [highlight_data(item) for item in json_data]
-    return f'[<div class="indent">{",<br>".join(items)}</div>]'
+    return {
+        "open": '[',
+        "close": ']',
+        "value": ''.join(items),
+    }
 
 
 class RESTRenderer(ContentRenderer):
@@ -140,7 +179,7 @@ class RESTRenderer(ContentRenderer):
             )
             for child in getattr(instance, "child_plugin_instances", [])
         ] or None
-        content = highlight_json(data, children=children)
+        content = OBJ_TEMPLATE.format(**highlight_json(data, children=children))
 
         if editable:
             content = self.plugin_edit_template.format(
@@ -169,11 +208,13 @@ class RESTRenderer(ContentRenderer):
             render_plugins=False,
         ).data
 
-        yield highlight_json(
-            placeholder_data,
-            children=super().render_plugins(
-                placeholder, language, context, editable=editable, template=template
-            ),
-            field="content",
+        yield OBJ_TEMPLATE.format(
+            **highlight_json(
+                placeholder_data,
+                children=super().render_plugins(
+                    placeholder, language, context, editable=editable, template=template
+                ),
+                field="content",
+            )
         )
         yield "</div>"

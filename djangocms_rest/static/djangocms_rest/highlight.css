@@ -32,10 +32,13 @@
     .ellipsis {
         display: inline-block; /* or block, depending on your needs */
         text-overflow: ellipsis;
-        max-width: 100ch;
+        max-width: 60ch;
         overflow: hidden;
         white-space: nowrap;
         vertical-align: bottom; /* optional, for better alignment */
+    }
+    .ellipsis-toggle {
+        cursor: pointer;
     }
     .key, .children {
         color: var(--key-color, red);
@@ -47,44 +50,14 @@
     .indent {
         padding-inline-start: 2em;
         border-inline-start: 1px solid var(--dca-gray-lightest, #f2f2f2);
+        & > .sep:last-child {
+            display: none;
+        }
     }
 }
 
 .rest-placeholder {
-    .js-kvp:last-child > .sep {
-        display: none;
-    }
-    .toggle {
-        display: none
-    }
-    .js-kvp:has(.indent) {
-        position: relative;
-        &.hidden > .indent {
-            max-height: 0;
-            transition: max-height 0.3s linear;
-       }
-    }
-    div.indent {
-        max-height: attr(data-scroll-height px);
-        transition: max-height 0.3s linear;
-        overflow: hidden;
-    }
-    .js-kvp:has(.indent) > .toggle {
-        &::before {
-            content: "\2014"; /* em dash (—) */
-        }
-        width: 1.5em;
-        height: 1.5em;
-        cursor: pointer;
-        display: inline-block;
-        margin-inline-end: 0.5em;
-        transition: transform 0.2s ease-in-out;
-        position: absolute;
-        inset-inline-start: -1.5em;
-        color: var(--dca-gray-light);
-        font-weight: bold;
-    }
-    .js-kvp.hidden:has(.indent) > .toggle::before {
-        content: "+";
+    summary {
+        margin-inline-start: -1.2em;
     }
 }
