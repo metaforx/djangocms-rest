@@ -82,6 +82,11 @@ OBJ_TEMPLATE = (
     '<div class="indent">{value}</div></details>{close}<span class="sep">,</span>'
 )
 
+# Tempalte for a non-collasable object/list
+FIXED_TEMPLATE = (
+    '{open}<div class="indent">{value}</div>{close}<span class="sep">,</span>'
+)
+
 # Tempalte for a single line key-value pair
 SIMPLE_TEMPLATE = (
     '<span class="key">"{key}"</span>: {value}<span class="sep">,</span>'
@@ -137,13 +142,14 @@ def highlight_json(
         for key, value in json_data.items()
     ]
     if has_children:
-        rendered_children = DETAILS_TEMPLATE.format(
-            key=escape(field),
-            value=''.join(children),
-            open='[',
-            close=']',
+        items.append(
+            DETAILS_TEMPLATE.format(
+                key=escape(field),
+                value=''.join(children),
+                open='[',
+                close=']',
+            )
         )
-        items.append(rendered_children)
     return {
         "open": '{',
         "close": '}',
@@ -165,6 +171,7 @@ class RESTRenderer(ContentRenderer):
     A custom renderer that uses the render_cms_plugin function to render
     CMS plugins in a RESTful way.
     """
+    placeholder_edit_template = "{content}{plugin_js}{placeholder_js}"
 
     def render_plugin(
         self, instance, context, placeholder=None, editable: bool = False
@@ -208,13 +215,22 @@ class RESTRenderer(ContentRenderer):
             render_plugins=False,
         ).data
 
-        yield OBJ_TEMPLATE.format(
+        yield FIXED_TEMPLATE.format(
+            placeholder_id=placeholder.pk,
             **highlight_json(
                 placeholder_data,
-                children=super().render_plugins(
+                children=self.get_plugins_and_placeholder_lot(
                     placeholder, language, context, editable=editable, template=template
                 ),
                 field="content",
             )
         )
         yield "</div>"
+
+    def get_plugins_and_placeholder_lot(
+            self, placeholder, language, context, editable=False, template=None
+    ) -> Iterable[str]:
+        yield from super().render_plugins(
+            placeholder, language, context, editable=editable, template=template
+        )
+        yield f'<div class="cms-placeholder cms-placeholder-{placeholder.pk}"></div>'

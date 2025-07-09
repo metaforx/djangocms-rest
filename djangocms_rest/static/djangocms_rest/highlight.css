@@ -48,9 +48,9 @@
         color: var(--value-color, blue);
     }
     .indent {
-        padding-inline-start: 2em;
+        padding-inline-start: 1em;
         border-inline-start: 1px solid var(--dca-gray-lightest, #f2f2f2);
-        & > .sep:last-child {
+        & > .sep:last-child, & > .sep:has(+ .cms-placeholder) {
             display: none;
         }
     }
@@ -61,5 +61,8 @@
         margin-inline-start: -1.2em;
         width: fit-content;
         cursor: pointer;
+    }
+    & > .sep:last-child {
+        display: none;
     }
 }
