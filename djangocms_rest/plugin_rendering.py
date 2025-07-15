@@ -1,4 +1,4 @@
-from typing import Any, Dict, Iterable, Optional, TypeVar
+from typing import Any, Iterable, Optional, TypeVar
 
 from django.contrib.sites.shortcuts import get_current_site
 from django.db import models
@@ -10,7 +10,10 @@ from cms.utils.plugins import get_plugins
 
 from rest_framework import serializers
 from djangocms_rest.serializers.placeholders import PlaceholderSerializer
-from djangocms_rest.serializers.utils.cache import get_placeholder_rest_cache, set_placeholder_rest_cache
+from djangocms_rest.serializers.utils.cache import (
+    get_placeholder_rest_cache,
+    set_placeholder_rest_cache,
+)
 
 
 base_exclude = {
@@ -54,8 +57,8 @@ def get_auto_model_serializer(model_class: type[ModelType]) -> type:
 
 
 def serialize_cms_plugin(
-    instance: Optional[Any], context: Dict[str, Any]
-) -> Optional[Dict[str, Any]]:
+    instance: Optional[Any], context: dict[str, Any]
+) -> Optional[dict[str, Any]]:
     if not instance or not hasattr(instance, "get_plugin_instance"):
         return None
 
@@ -82,7 +85,7 @@ DETAILS_TEMPLATE = (
 
 # Template for a collapsable object/list
 OBJ_TEMPLATE = (
-    '<details open><summary>{open}</summary>'
+    "<details open><summary>{open}</summary>"
     '<div class="indent">{value}</div></details>{close}<span class="sep">,</span>'
 )
 
@@ -92,15 +95,14 @@ FIXED_TEMPLATE = (
 )
 
 # Tempalte for a single line key-value pair
-SIMPLE_TEMPLATE = (
-    '<span class="key">"{key}"</span>: {value}<span class="sep">,</span>'
-)
+SIMPLE_TEMPLATE = '<span class="key">"{key}"</span>: {value}<span class="sep">,</span>'
+
 
 def escapestr(s: str) -> str:
     """
     Escape a string for safe HTML rendering.
     """
-    return escape(s).replace('&quot;', '&bsol;&quot;').replace('\n', '&bsol;n')
+    return escape(s).replace("&quot;", "&bsol;&quot;").replace("\n", "&bsol;n")
 
 
 def highlight_data(json_data: Any) -> str:
@@ -108,7 +110,6 @@ def highlight_data(json_data: Any) -> str:
     Highlight JSON data using Pygments.
     """
     if isinstance(json_data, str):
-        ellipsis = ""
         if len(json_data) > 60:
             return f'<span class="str">"<span class="ellipsis">{escapestr(json_data)}</span>"</span>'
         return f'<span class="str">"{escapestr(json_data)}"</span>'
@@ -119,15 +120,15 @@ def highlight_data(json_data: Any) -> str:
     if json_data is None:
         return '<span class="null">null</span>'
     if isinstance(json_data, dict):
-        return highlight_json(json_data).get("value", "") if json_data else '{}'
+        return highlight_json(json_data).get("value", "") if json_data else "{}"
     if isinstance(json_data, list):
-        return highlight_list(json_data).get("value", "") if json_data else '[]'
+        return highlight_list(json_data).get("value", "") if json_data else "[]"
 
     return f'<span class="obj">{json_data}</span>'
 
 
 def highlight_json(
-    json_data: Dict[str, Any], children: Iterable | None = None, field: str = "children"
+    json_data: dict[str, Any], children: Iterable | None = None, field: str = "children"
 ) -> dict[str, str]:
     has_children = children is not None
     if field in json_data:
@@ -137,9 +138,11 @@ def highlight_json(
         DETAILS_TEMPLATE.format(
             key=escape(key),
             value=highlight_data(value),
-            open='{' if isinstance(value, dict) else '[',
-            close='}' if isinstance(value, dict) else ']',
-        ) if isinstance(value, (dict, list)) and value else SIMPLE_TEMPLATE.format(
+            open="{" if isinstance(value, dict) else "[",
+            close="}" if isinstance(value, dict) else "]",
+        )
+        if isinstance(value, (dict, list)) and value
+        else SIMPLE_TEMPLATE.format(
             key=escape(key),
             value=highlight_data(value),
         )
@@ -149,14 +152,14 @@ def highlight_json(
         items.append(
             DETAILS_TEMPLATE.format(
                 key=escape(field),
-                value=''.join(children),
-                open='[',
-                close=']',
+                value="".join(children),
+                open="[",
+                close="]",
             )
         )
     return {
-        "open": '{',
-        "close": '}',
+        "open": "{",
+        "close": "}",
         "value": "<br>".join(items),
     }
 
@@ -164,9 +167,9 @@ def highlight_json(
 def highlight_list(json_data: list) -> dict[str, str]:
     items = [highlight_data(item) for item in json_data]
     return {
-        "open": '[',
-        "close": ']',
-        "value": ''.join(items),
+        "open": "[",
+        "close": "]",
+        "value": "".join(items),
     }
 
 
@@ -175,6 +178,7 @@ class RESTRenderer(ContentRenderer):
     A custom renderer that uses the serialize_cms_plugin function to render
     CMS plugins in a RESTful way.
     """
+
     placeholder_edit_template = "{content}{plugin_js}{placeholder_js}"
 
     def render_plugin(
@@ -227,12 +231,12 @@ class RESTRenderer(ContentRenderer):
                     placeholder, language, context, editable=editable, template=template
                 ),
                 field="content",
-            )
+            ),
         )
         yield "</div>"
 
     def get_plugins_and_placeholder_lot(
-            self, placeholder, language, context, editable=False, template=None
+        self, placeholder, language, context, editable=False, template=None
     ) -> Iterable[str]:
         yield from super().render_plugins(
             placeholder, language, context, editable=editable, template=template
