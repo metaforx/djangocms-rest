@@ -1,7 +1,7 @@
 from typing import Any, Optional
 
 from django.core.exceptions import FieldDoesNotExist
-from django.db.models import Field, ForeignKey
+from django.db.models import Field, Model
 from django.urls import NoReverseMatch, reverse
 
 from cms.models import CMSPlugin
@@ -10,33 +10,69 @@ from cms.plugin_pool import plugin_pool
 from rest_framework import serializers
 
 
+def serialize_fk(
+    related_model: type[CMSPlugin], pk: Any, obj: Optional[Model] = None
+) -> dict[str, Any]:
+    """
+    Serializes a foreign key reference to a related model as a URL or identifier.
+
+    Attempts to serialize the foreign key in the following order:
+    1. If the related model has a `get_api_endpoint` method, it uses this to obtain the API endpoint for the object.
+    2. If not, it tries to reverse a DRF-style detail URL using the model's name and primary key.
+    3. If reversing fails, it falls back to returning a string in the format "<app_label>.<model_name>:<pk>".
+
+    Args:
+        related_model (type[CMSPlugin]): The related model class.
+        pk (Any): The primary key of the related object.
+        obj (Optional[Model], optional): The related model instance, if already available. Defaults to None.
+
+    Returns:
+        dict[str, Any]: A dictionary representing the serialized foreign key, typically as a URL or identifier.
+    """
+    # First choice: Check for get_api_endpoint method
+    if hasattr(related_model, "get_api_endpoint"):
+        if obj is None:
+            obj = related_model.objects.filter(pk=pk).first()
+        return obj.get_api_endpoint()
+
+    # Second choice: Use DRF naming conventions to build the default API URL for the related model
+    model_name = related_model._meta.model_name
+    try:
+        return reverse(f"{model_name}_details", args=(pk,))
+    except NoReverseMatch:
+        pass
+
+    # Fallback:
+    app_name = related_model._meta.app_label
+    return f"{app_name}.{model_name}:{pk}"
+
+
+base_exclude = {
+    "id",
+    "placeholder",
+    "language",
+    "position",
+    "creation_date",
+    "changed_date",
+    "parent",
+}
+#: Excluded fields for plugin serialization
+
+
 class GenericPluginSerializer(serializers.ModelSerializer):
     def to_representation(self, instance: CMSPlugin):
         ret = super().to_representation(instance)
         for field in self.Meta.model._meta.get_fields():
             if field.is_relation and not field.many_to_many and not field.one_to_many:
                 if field.name in ret and getattr(instance, field.name, None):
-                    ret[field.name] = self.serialize_fk(instance, field)
+                    ret[field.name] = serialize_fk(
+                        field.related_model,
+                        getattr(instance, field.name + "_id"),
+                        obj=getattr(instance, field.name)
+                        if field.is_cached(instance)
+                        else None,
+                    )
         return ret
-
-    def serialize_fk(self, instance: CMSPlugin, field: ForeignKey) -> dict[str, Any]:
-        # First choice: Check for get_api_endpoint method
-        related_model = field.related_model
-        if hasattr(related_model, "get_api_endpoint"):
-            return getattr(getattr(instance, field.name), "get_api_endpoint")()
-
-        # Second choice: Use DRF naming conventions to build the default API URL for the related model
-        model_name = related_model._meta.model_name
-        try:
-            return reverse(
-                f"{model_name}_details", args=(getattr(instance, field.name + "_id"),)
-            )
-        except NoReverseMatch:
-            pass
-
-        # Fallback:
-        app_name = related_model._meta.app_label
-        return f"{app_name}.{model_name}:{getattr(instance, field.name + '_id')}"
 
 
 class PluginDefinitionSerializer(serializers.Serializer):
@@ -181,7 +217,3 @@ def generate_plugin_definitions() -> dict[str, Any]:
         }
 
     return definitions
-
-
-# Generate plugin definitions
-PLUGIN_DEFINITIONS = generate_plugin_definitions()

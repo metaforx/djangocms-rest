@@ -9,22 +9,12 @@ from cms.plugin_rendering import ContentRenderer
 from cms.utils.plugins import get_plugins
 
 from djangocms_rest.serializers.placeholders import PlaceholderSerializer
-from djangocms_rest.serializers.plugins import GenericPluginSerializer
+from djangocms_rest.serializers.plugins import base_exclude, GenericPluginSerializer
 from djangocms_rest.serializers.utils.cache import (
     get_placeholder_rest_cache,
     set_placeholder_rest_cache,
 )
 
-
-base_exclude = {
-    "id",
-    "placeholder",
-    "language",
-    "position",
-    "creation_date",
-    "changed_date",
-    "parent",
-}
 
 ModelType = TypeVar("ModelType", bound=models.Model)
 
@@ -105,7 +95,7 @@ def escapestr(s: str) -> str:
     return escape(s).replace("&quot;", "&bsol;&quot;").replace("\n", "&bsol;n")
 
 
-def highlight_data(json_data: Any) -> str:
+def highlight_data(json_data: Any, drop_frame: bool = False) -> str:
     """
     Highlight JSON data using Pygments.
     """
@@ -120,9 +110,13 @@ def highlight_data(json_data: Any) -> str:
     if json_data is None:
         return '<span class="null">null</span>'
     if isinstance(json_data, dict):
-        return highlight_json(json_data).get("value", "") if json_data else "{}"
+        if drop_frame:
+            return highlight_json(json_data)["value"] if json_data else "{}"
+        return OBJ_TEMPLATE.format(**highlight_json(json_data)) if json_data else "{}"
     if isinstance(json_data, list):
-        return highlight_list(json_data).get("value", "") if json_data else "[]"
+        if drop_frame:
+            return highlight_list(json_data)["value"] if json_data else "[]"
+        return OBJ_TEMPLATE.format(**highlight_list(json_data)) if json_data else "[]"
 
     return f'<span class="obj">{json_data}</span>'
 
@@ -137,7 +131,7 @@ def highlight_json(
     items = [
         DETAILS_TEMPLATE.format(
             key=escape(key),
-            value=highlight_data(value),
+            value=highlight_data(value, drop_frame=True),
             open="{" if isinstance(value, dict) else "[",
             close="}" if isinstance(value, dict) else "]",
         )
@@ -169,7 +163,7 @@ def highlight_list(json_data: list) -> dict[str, str]:
     return {
         "open": "[",
         "close": "]",
-        "value": "".join(items),
+        "value": "<br>".join(items),
     }
 
 

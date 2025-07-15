@@ -16,6 +16,7 @@ class BasePageSerializer(serializers.Serializer):
     redirect = serializers.CharField(max_length=2048, allow_null=True)
     absolute_url = serializers.URLField(max_length=200, allow_blank=True)
     path = serializers.CharField(max_length=200)
+    details = serializers.CharField(max_length=200, allow_blank=True)
     is_home = serializers.BooleanField()
     login_required = serializers.BooleanField()
     in_navigation = serializers.BooleanField()
@@ -44,6 +45,9 @@ class BasePageContentMixin:
         request = getattr(self, "request", None)
         path = page_content.page.get_path(page_content.language)
         absolute_url = get_absolute_frontend_url(request, path)
+        api_endpoint = get_absolute_frontend_url(
+            request, page_content.page.get_api_endpoint(page_content.language)
+        )
         redirect = str(page_content.redirect or "")
         xframe_options = str(page_content.xframe_options or "")
         application_namespace = str(page_content.page.application_namespace or "")
@@ -70,6 +74,7 @@ class BasePageContentMixin:
             "application_namespace": application_namespace,
             "creation_date": page_content.creation_date,
             "changed_date": page_content.changed_date,
+            "details": api_endpoint,
         }
 
 

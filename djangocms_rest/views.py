@@ -20,7 +20,7 @@ from djangocms_rest.serializers.pages import (
 )
 from djangocms_rest.serializers.placeholders import PlaceholderSerializer
 from djangocms_rest.serializers.plugins import (
-    PLUGIN_DEFINITIONS,
+    generate_plugin_definitions,
     PluginDefinitionSerializer,
 )
 from djangocms_rest.utils import get_object, get_site_filtered_queryset
@@ -47,6 +47,9 @@ except ImportError:
 
     def extend_placeholder_schema(func):
         return func
+
+
+PLUGIN_DEFINITIONS = generate_plugin_definitions()
 
 
 class LanguageListView(BaseAPIView):

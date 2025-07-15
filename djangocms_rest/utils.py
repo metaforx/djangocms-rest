@@ -1,5 +1,4 @@
 from django.contrib.sites.models import Site
-from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import FieldError
 from django.db.models import QuerySet
 from django.http import Http404
@@ -46,12 +45,8 @@ def get_absolute_frontend_url(request: Request, path: str) -> str:
     Returns:
         An absolute URL formatted as a string.
     """
-
-    if path.startswith("/"):
-        raise ValueError(f"Path should not start with '/': {path}")
-
-    site = get_current_site(request) if request else Site.objects.get(id=1)
-    domain = site.domain.rstrip("/")
     protocol = getattr(request, "scheme", "http")
-
-    return f"{protocol}://{domain}/{path}"
+    domain = getattr(request, "get_host", lambda: Site.objects.get_current().domain)()
+    if not path.startswith("/"):
+        path = f"/{path}"
+    return f"{protocol}://{domain}{path}"
