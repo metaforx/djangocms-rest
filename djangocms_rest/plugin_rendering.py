@@ -1,12 +1,16 @@
 from typing import Any, Dict, Iterable, Optional, TypeVar
 
+from django.contrib.sites.shortcuts import get_current_site
 from django.db import models
-from django.utils.html import escape, escapejs, mark_safe
+from django.utils.html import escape, mark_safe
 
+from cms.models import Placeholder
 from cms.plugin_rendering import ContentRenderer
-from rest_framework import serializers
+from cms.utils.plugins import get_plugins
 
+from rest_framework import serializers
 from djangocms_rest.serializers.placeholders import PlaceholderSerializer
+from djangocms_rest.serializers.utils.cache import get_placeholder_rest_cache, set_placeholder_rest_cache
 
 
 base_exclude = {
@@ -49,7 +53,7 @@ def get_auto_model_serializer(model_class: type[ModelType]) -> type:
     )
 
 
-def render_cms_plugin(
+def serialize_cms_plugin(
     instance: Optional[Any], context: Dict[str, Any]
 ) -> Optional[Dict[str, Any]]:
     if not instance or not hasattr(instance, "get_plugin_instance"):
@@ -168,7 +172,7 @@ def highlight_list(json_data: list) -> dict[str, str]:
 
 class RESTRenderer(ContentRenderer):
     """
-    A custom renderer that uses the render_cms_plugin function to render
+    A custom renderer that uses the serialize_cms_plugin function to render
     CMS plugins in a RESTful way.
     """
     placeholder_edit_template = "{content}{plugin_js}{placeholder_js}"
@@ -177,9 +181,9 @@ class RESTRenderer(ContentRenderer):
         self, instance, context, placeholder=None, editable: bool = False
     ):
         """
-        Render a CMS plugin instance using the render_cms_plugin function.
+        Render a CMS plugin instance using the serialize_cms_plugin function.
         """
-        data = render_cms_plugin(instance, context) or {}
+        data = serialize_cms_plugin(instance, context) or {}
         children = [
             self.render_plugin(
                 child, context, placeholder=placeholder, editable=editable
@@ -234,3 +238,68 @@ class RESTRenderer(ContentRenderer):
             placeholder, language, context, editable=editable, template=template
         )
         yield f'<div class="cms-placeholder cms-placeholder-{placeholder.pk}"></div>'
+
+    def serialize_placeholder(self, placeholder, context, language, use_cache=True):
+        context.update({"request": self.request})
+        if use_cache and placeholder.cache_placeholder:
+            use_cache = self.placeholder_cache_is_enabled()
+        else:
+            use_cache = False
+
+        if use_cache:
+            cached_value = get_placeholder_rest_cache(
+                placeholder,
+                lang=language,
+                site_id=get_current_site(self.request).pk,
+                request=self.request,
+            )
+        else:
+            cached_value = None
+
+        if cached_value is not None:
+            # User has opted to use the cache
+            # and there is something in the cache
+            return cached_value["content"]
+
+        plugin_content = self.serialize_plugins(
+            placeholder,
+            language=language,
+            context=context,
+        )
+
+        if use_cache:
+            set_placeholder_rest_cache(
+                placeholder,
+                lang=language,
+                site_id=get_current_site(self.request).pk,
+                content=plugin_content,
+                request=self.request,
+            )
+
+        if placeholder.pk not in self._rendered_placeholders:
+            # First time this placeholder is rendered
+            self._rendered_placeholders[placeholder.pk] = plugin_content
+
+        return plugin_content
+
+    def serialize_plugins(
+        self, placeholder: Placeholder, language: str, context: dict
+    ) -> list:
+        plugins = get_plugins(
+            self.request,
+            placeholder=placeholder,
+            lang=language,
+            template=None,
+        )
+
+        def serialize_children(child_plugins):
+            for plugin in child_plugins:
+                plugin_content = serialize_cms_plugin(plugin, context)
+                if getattr(plugin, "child_plugin_instances", None):
+                    plugin_content["children"] = serialize_children(
+                        plugin.child_plugin_instances
+                    )
+                if plugin_content:
+                    yield plugin_content
+
+        return list(serialize_children(plugins))
