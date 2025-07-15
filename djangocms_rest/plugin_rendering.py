@@ -92,7 +92,12 @@ def escapestr(s: str) -> str:
     """
     Escape a string for safe HTML rendering.
     """
-    return escape(s).replace("&quot;", "&bsol;&quot;").replace("\n", "&bsol;n")
+    return (
+        escape(s)
+        .replace("\\", "&bsol;&bsol;")
+        .replace("&quot;", "&bsol;&quot;")
+        .replace("\n", "&bsol;n")
+    )
 
 
 def highlight_data(json_data: Any, drop_frame: bool = False) -> str:
@@ -103,10 +108,10 @@ def highlight_data(json_data: Any, drop_frame: bool = False) -> str:
         if len(json_data) > 60:
             return f'<span class="str">"<span class="ellipsis">{escapestr(json_data)}</span>"</span>'
         return f'<span class="str">"{escapestr(json_data)}"</span>'
-    if isinstance(json_data, (int, float)):
-        return f'<span class="num">{json_data}</span>'
     if isinstance(json_data, bool):
         return f'<span class="bool">{str(json_data).lower()}</span>'
+    if isinstance(json_data, (int, float)):
+        return f'<span class="num">{json_data}</span>'
     if json_data is None:
         return '<span class="null">null</span>'
     if isinstance(json_data, dict):
