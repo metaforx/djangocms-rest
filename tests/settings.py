@@ -16,7 +16,7 @@ class DisableMigrations(dict):
 
 MIGRATION_MODULES = DisableMigrations()
 
-SECRET_KEY = 'djangocms-text-test-suite'
+SECRET_KEY = "djangocms-text-test-suite"
 
 INSTALLED_APPS = [
     "django.contrib.contenttypes",
@@ -25,14 +25,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.admin",
     "django.contrib.messages",
-
-    'cms',
-    'menus',
-    'treebeard',
-    'sekizai',
-
-    'djangocms_text',
-    'tests.test_app',
+    "cms",
+    "menus",
+    "treebeard",
+    "sekizai",
+    "djangocms_text",
+    "djangocms_rest",
+    "tests.test_app",
+    "filer",
+    "easy_thumbnails",
 ]
 
 MIDDLEWARE = [
@@ -88,40 +89,40 @@ CMS_LANGUAGES = {
 }
 
 LANGUAGES = (
-    ('en', gettext('English')),
-    ('fr', gettext('French')),
-    ('it', gettext('Italiano')),
+    ("en", gettext("English")),
+    ("fr", gettext("French")),
+    ("it", gettext("Italiano")),
 )
 
-LANGUAGE_CODE = 'en'
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+LANGUAGE_CODE = "en"
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 CMS_PERMISSION = False
 CMS_PLACEHOLDER_CONF = {
-    'content': {
-        'plugins': ['TextPlugin', 'PicturePlugin'],
-        'text_only_plugins': ['LinkPlugin'],
-        'extra_context': {'width': 640},
-        'name': gettext('Content'),
-        'language_fallback': True,
-        'default_plugins': [
+    "content": {
+        "plugins": ["TextPlugin", "PicturePlugin"],
+        "text_only_plugins": ["LinkPlugin"],
+        "extra_context": {"width": 640},
+        "name": gettext("Content"),
+        "language_fallback": True,
+        "default_plugins": [
             {
-                'plugin_type': 'TextPlugin',
-                'values': {
-                    'body': '<p>Lorem ipsum dolor sit amet...</p>',
+                "plugin_type": "TextPlugin",
+                "values": {
+                    "body": "<p>Lorem ipsum dolor sit amet...</p>",
                 },
             },
         ],
-        'child_classes': {
-            'TextPlugin': ['PicturePlugin', 'LinkPlugin'],
+        "child_classes": {
+            "TextPlugin": ["PicturePlugin", "LinkPlugin"],
         },
-        'parent_classes': {
-            'LinkPlugin': ['TextPlugin'],
+        "parent_classes": {
+            "LinkPlugin": ["TextPlugin"],
         },
-        'plugin_modules': {
-            'LinkPlugin': 'Extra',
+        "plugin_modules": {
+            "LinkPlugin": "Extra",
         },
-        'plugin_labels': {
-            'LinkPlugin': 'Add a link',
+        "plugin_labels": {
+            "LinkPlugin": "Add a link",
         },
     },
 }
@@ -129,20 +130,20 @@ CMS_PLACEHOLDER_CONF = {
 FILE_UPLOAD_TEMP_DIR = mkdtemp()
 SITE_ID = 1
 THUMBNAIL_PROCESSORS = (
-    'easy_thumbnails.processors.colorspace',
-    'easy_thumbnails.processors.autocrop',
-    'filer.thumbnail_processors.scale_and_crop_with_subject_location',
-    'easy_thumbnails.processors.filters',
+    "easy_thumbnails.processors.colorspace",
+    "easy_thumbnails.processors.autocrop",
+    "filer.thumbnail_processors.scale_and_crop_with_subject_location",
+    "easy_thumbnails.processors.filters",
 )
 
 CMS_TEMPLATES = (
-    ('page.html', 'Normal page'),
-    ('plugin_with_sekizai.html', 'Plugin with sekizai'),
+    ("page.html", "Normal page"),
+    ("plugin_with_sekizai.html", "Plugin with sekizai"),
 )
 
 DJANGOCMS_TRANSLATIONS_CONF = {
-    'Bootstrap3ButtonCMSPlugin': {'text_field_child_label': 'label'},
-    'DummyLinkPlugin': {'text_field_child_label': 'label'},
+    "Bootstrap3ButtonCMSPlugin": {"text_field_child_label": "label"},
+    "DummyLinkPlugin": {"text_field_child_label": "label"},
 }
 
 TEXT_INLINE_EDITING = True
@@ -159,26 +160,25 @@ DATABASES = {
 
 CONTENT_CACHE_DURATION = 60
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
-        'TIMEOUT': CONTENT_CACHE_DURATION,
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-snowflake",
+        "TIMEOUT": CONTENT_CACHE_DURATION,
     }
 }
 
-ROOT_URLCONF = 'tests.urls'
+ROOT_URLCONF = "tests.urls"
 
-STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
+STATIC_URL = "/static/"
+MEDIA_URL = "/media/"
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
 }
 
 USE_TZ = True
-

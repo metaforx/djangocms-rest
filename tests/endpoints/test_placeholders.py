@@ -15,6 +15,7 @@ class PlaceholdersAPITestCase(BaseCMSRestTestCase):
         Add placeholder and plugin to a test page.
         """
         super().setUpClass()
+
         cls.page = create_page(
             title="Test Page",
             template="INHERIT",
@@ -34,20 +35,12 @@ class PlaceholdersAPITestCase(BaseCMSRestTestCase):
                 "content": [
                     {
                         "type": "paragraph",
-                        "attrs": {
-                            "textAlign": "left"
-                        },
-                        "content": [
-                            {
-                                "text": "Test content",
-                                "type": "text"
-                            }
-                        ]
+                        "attrs": {"textAlign": "left"},
+                        "content": [{"text": "Test content", "type": "text"}],
                     }
-                ]
-            }
+                ],
+            },
         )
-
 
     def test_get(self):
         """
@@ -73,12 +66,15 @@ class PlaceholdersAPITestCase(BaseCMSRestTestCase):
 
         # GET request
         response = self.client.get(
-            reverse("placeholder-detail", kwargs={
-                "language": "en",
-                "content_type_id": self.page_content_type.id,
-                "object_id": self.page_content.id,
-                "slot": "content"
-            })
+            reverse(
+                "placeholder-detail",
+                kwargs={
+                    "language": "en",
+                    "content_type_id": self.page_content_type.id,
+                    "object_id": self.page_content.id,
+                    "slot": "content",
+                },
+            )
         )
         self.assertEqual(response.status_code, 200)
         placeholder = response.json()
@@ -118,70 +114,111 @@ class PlaceholdersAPITestCase(BaseCMSRestTestCase):
 
         # Error case - Invalid language
         response = self.client.get(
-            reverse("placeholder-detail", kwargs={
-                "language": "xx",
-                "content_type_id": self.page_content_type.id,
-                "object_id": self.page_content.id,
-                "slot": "content"
-            })
+            reverse(
+                "placeholder-detail",
+                kwargs={
+                    "language": "xx",
+                    "content_type_id": self.page_content_type.id,
+                    "object_id": self.page_content.id,
+                    "slot": "content",
+                },
+            )
         )
         self.assertEqual(response.status_code, 404)
 
         # Error case - Invalid content type
         response = self.client.get(
-            reverse("placeholder-detail", kwargs={
-                "language": "en",
-                "content_type_id": 99999,
-                "object_id": self.page_content.id,
-                "slot": "content"
-            })
+            reverse(
+                "placeholder-detail",
+                kwargs={
+                    "language": "en",
+                    "content_type_id": 99999,
+                    "object_id": self.page_content.id,
+                    "slot": "content",
+                },
+            )
         )
         self.assertEqual(response.status_code, 404)
 
         # Error case - Invalid object ID
         response = self.client.get(
-            reverse("placeholder-detail", kwargs={
-                "language": "en",
-                "content_type_id": self.page_content_type.id,
-                "object_id": 99999,
-                "slot": "content"
-            })
+            reverse(
+                "placeholder-detail",
+                kwargs={
+                    "language": "en",
+                    "content_type_id": self.page_content_type.id,
+                    "object_id": 99999,
+                    "slot": "content",
+                },
+            )
         )
         self.assertEqual(response.status_code, 404)
 
         # Error case - Invalid slot
         response = self.client.get(
-            reverse("placeholder-detail", kwargs={
-                "language": "en",
-                "content_type_id": self.page_content_type.id,
-                "object_id": self.page_content.id,
-                "slot": "nonexistent"
-            })
+            reverse(
+                "placeholder-detail",
+                kwargs={
+                    "language": "en",
+                    "content_type_id": self.page_content_type.id,
+                    "object_id": self.page_content.id,
+                    "slot": "nonexistent",
+                },
+            )
         )
         self.assertEqual(response.status_code, 404)
 
-
         # GET PREVIEW
         response = self.client.get(
-            reverse("preview-placeholder-detail", kwargs={
-                "language": "en",
-                "content_type_id": self.page_content_type.id,
-                "object_id": self.page_content.id,
-                "slot": "content"
-            })
+            reverse(
+                "preview-placeholder-detail",
+                kwargs={
+                    "language": "en",
+                    "content_type_id": self.page_content_type.id,
+                    "object_id": self.page_content.id,
+                    "slot": "content",
+                },
+            )
         )
         self.assertEqual(response.status_code, 403)
-
 
     # GET PREVIEW - Protected
     def test_get_protected(self):
         self.client.force_login(self.user)
         response = self.client.get(
-            reverse("preview-placeholder-detail", kwargs={
-                "language": "en",
-                "content_type_id": self.page_content_type.id,
-                "object_id": self.page_content.id,
-                "slot": "content"
-            })
+            reverse(
+                "preview-placeholder-detail",
+                kwargs={
+                    "language": "en",
+                    "content_type_id": self.page_content_type.id,
+                    "object_id": self.page_content.id,
+                    "slot": "content",
+                },
+            )
         )
         self.assertEqual(response.status_code, 200)
+
+    def test_serialize_page_fk(self):
+        add_plugin(
+            placeholder=self.placeholder,
+            plugin_type="DummyLinkPlugin",
+            language="en",
+            page=self.page,
+            label="Test Link",
+        )
+
+        response = self.client.get(
+            reverse(
+                "placeholder-detail",
+                kwargs={
+                    "language": "en",
+                    "content_type_id": self.page_content_type.id,
+                    "object_id": self.page_content.id,
+                    "slot": "content",
+                },
+            )
+        )
+        rendered_plugin = response.json()["content"][-1]
+        self.assertIn("page", rendered_plugin)
+        self.assertIsInstance(rendered_plugin["page"], str)
+        self.assertEqual(rendered_plugin["page"], self.page.get_api_endpoint("en"))

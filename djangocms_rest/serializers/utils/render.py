@@ -1,35 +1,7 @@
-from typing import Any, Optional
-
-from cms.models import CMSPlugin
 from cms.plugin_rendering import ContentRenderer
 
-from rest_framework import serializers
 from sekizai.context import SekizaiContext
 from sekizai.helpers import get_varname
-
-
-def render_plugin(
-    instance: CMSPlugin, context: dict[str, Any]
-) -> Optional[dict[str, Any]]:
-    instance, plugin = instance.get_plugin_instance()
-    if not instance:
-        return None
-
-    class PluginSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = instance.__class__
-            exclude = (
-                "id",
-                "placeholder",
-                "language",
-                "position",
-                "creation_date",
-                "changed_date",
-                "parent",
-            )
-
-    json = PluginSerializer(instance, context=context).data
-    return json
 
 
 def render_html(request, placeholder, language):

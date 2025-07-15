@@ -1,6 +1,7 @@
 # requirements from setup.py
 djangorestframework
 djangocms-text
+django-filer
 setuptools
 
 # other requirements

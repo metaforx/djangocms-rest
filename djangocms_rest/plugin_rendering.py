@@ -8,9 +8,8 @@ from cms.models import Placeholder
 from cms.plugin_rendering import ContentRenderer
 from cms.utils.plugins import get_plugins
 
-from rest_framework import serializers
-
 from djangocms_rest.serializers.placeholders import PlaceholderSerializer
+from djangocms_rest.serializers.plugins import GenericPluginSerializer
 from djangocms_rest.serializers.utils.cache import (
     get_placeholder_rest_cache,
     set_placeholder_rest_cache,
@@ -50,7 +49,7 @@ def get_auto_model_serializer(model_class: type[ModelType]) -> type:
     )
     return type(
         f"{model_class.__name__}AutoSerializer",
-        (serializers.ModelSerializer,),
+        (GenericPluginSerializer,),
         {
             "Meta": meta_class,
         },
