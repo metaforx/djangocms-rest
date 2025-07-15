@@ -1,15 +1,16 @@
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from cms.models import CMSPlugin
 from cms.plugin_rendering import ContentRenderer
+
 from rest_framework import serializers
 from sekizai.context import SekizaiContext
 from sekizai.helpers import get_varname
 
 
 def render_plugin(
-    instance: CMSPlugin, context: Dict[str, Any]
-) -> Optional[Dict[str, Any]]:
+    instance: CMSPlugin, context: dict[str, Any]
+) -> Optional[dict[str, Any]]:
     instance, plugin = instance.get_plugin_instance()
     if not instance:
         return None

@@ -1,9 +1,11 @@
-from cms.models import Page, PageUrl
 from django.contrib.sites.models import Site
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import FieldError
 from django.db.models import QuerySet
 from django.http import Http404
+
+from cms.models import Page, PageUrl
+
 from rest_framework.request import Request
 
 

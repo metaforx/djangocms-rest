@@ -1,8 +1,26 @@
-from rest_framework import serializers
-from cms.plugin_pool import plugin_pool
+from typing import Any, Optional
+
 from django.core.exceptions import FieldDoesNotExist
-from typing import Dict, Any, Optional
 from django.db.models import Field
+
+from cms.models import CMSPlugin
+from cms.plugin_pool import plugin_pool
+
+from rest_framework import serializers
+
+
+class GenericPluginSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance: CMSPlugin):
+        ret = super().to_representation(instance)
+        for field in self.Meta.model._meta.get_fields():
+            if field.is_relation and not field.many_to_many and not field.one_to_many:
+                field_name = field.name
+                if field_name in ret and getattr(instance, field_name, None):
+                    ret[field_name] = self.serialize_fk(field)
+        return ret
+
+    def serialize_fk(self, related_obj):
+        pass
 
 
 class PluginDefinitionSerializer(serializers.Serializer):
@@ -70,7 +88,7 @@ def get_field_format(field: Field) -> Optional[str]:
     return format_mapping.get(field.__class__.__name__)
 
 
-def generate_plugin_definitions() -> Dict[str, Any]:
+def generate_plugin_definitions() -> dict[str, Any]:
     """
     Generate plugin definitions from registered plugins.
 

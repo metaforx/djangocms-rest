@@ -1,19 +1,17 @@
+from django.contrib.sites.shortcuts import get_current_site
+
 from cms.models import PageContent, Placeholder
 from cms.utils.conf import get_languages
 from cms.utils.page_permissions import user_can_view_page
-from django.contrib.sites.shortcuts import get_current_site
+
 from rest_framework.exceptions import NotFound
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from djangocms_rest.permissions import (
-    CanViewPage,
-    IsAllowedPublicLanguage,
-)
+from djangocms_rest.permissions import CanViewPage, IsAllowedPublicLanguage
 from djangocms_rest.serializers.languages import LanguageSerializer
-
 from djangocms_rest.serializers.pages import (
     PageContentSerializer,
     PageListSerializer,
@@ -27,6 +25,7 @@ from djangocms_rest.serializers.plugins import (
 )
 from djangocms_rest.utils import get_object, get_site_filtered_queryset
 from djangocms_rest.views_base import BaseAPIView, BaseListAPIView
+
 
 try:
     from drf_spectacular.types import OpenApiTypes  # noqa: F401

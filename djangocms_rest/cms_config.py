@@ -1,4 +1,5 @@
 from functools import cached_property
+
 from cms.app_base import CMSAppConfig
 
 

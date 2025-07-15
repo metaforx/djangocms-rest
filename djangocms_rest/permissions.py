@@ -1,6 +1,7 @@
 from cms.models import Page, PageContent
 from cms.utils.i18n import get_language_tuple, get_languages
 from cms.utils.page_permissions import user_can_view_page
+
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
