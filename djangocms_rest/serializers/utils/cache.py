@@ -59,6 +59,23 @@ def set_placeholder_rest_cache(placeholder, lang, site_id, content, request):
         get_cms_setting("CACHE_DURATIONS")["content"],
         placeholder.get_cache_expiration(request, datetime.now()),
     )
+
+    # Recursively convert any generators to lists throughout the content structure
+    def convert_generators(obj):
+        if hasattr(obj, '__iter__') and callable(obj.__iter__) and not isinstance(obj, (dict, list, tuple, str)):
+            return list(obj)
+        elif isinstance(obj, dict):
+            return {k: convert_generators(v) for k, v in obj.items()}
+        elif isinstance(obj, list):
+            return [convert_generators(item) for item in obj]
+        elif isinstance(obj, tuple):
+            return tuple(convert_generators(item) for item in obj)
+        else:
+            return obj
+
+    # Convert any generator objects in the content structure
+    content = convert_generators(content)
+
     cache.set(key, {"content": content}, duration)
 
     # "touch" the cache-version, so that it stays as fresh as this content.
@@ -66,7 +83,6 @@ def set_placeholder_rest_cache(placeholder, lang, site_id, content, request):
     _set_placeholder_cache_version(
         placeholder, lang, site_id, version, vary_on_list, duration=duration
     )
-
 
 def get_placeholder_rest_cache(placeholder, lang, site_id, request):
     """
