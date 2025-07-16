@@ -15,5 +15,5 @@ class DjangocmsRestConfig(AppConfig):
             from djangocms_text import settings
 
             settings.TEXT_INLINE_EDITING = False
-        except (ImportError, ModuleNotFoundError):
+        except ImportError:
             pass
