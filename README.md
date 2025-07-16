@@ -66,8 +66,8 @@ projects, this is often not the case.
 
 **Limitations and considerations in headless mode:**
 
-- Inline editing and content preview are currently only available in a structured view. (Solutions
-  are currently being evaluated).
+- Inline editing and content preview are available as JSON views on both edit and preview mode. Turn
+  JSON rendering on and of using the `REST_JSON_RENDERING` setting.
 - Not all features of a standard Django CMS are available through the API (eg. templates and tags).
 - The API focuses on fetching plugin content and page structure as JSON data.
 - Website rendering is entirely decoupled and must be implemented in the frontend framework.
@@ -140,12 +140,15 @@ class CustomHeadingPluginModel(CMSPlugin):
 Yes, djangocms-rest provides out of the box support for any and all django CMS plugins whose content
 can be serialized.
 
+Custom DRF serializers can be declared for custom plugins by setting its `serializer_class` property.
 
 ## Does the TextPlugin (Rich Text Editor, RTE) provide a json representation of the rich text?
 
 Yes, djangocms-text has both HTML blob and structured JSON support for rich text.
 
-URLs to other CMS objects are dynamic, in the form of `<app-name>.<object-name>:<uid>`, for example
+URLs to other Django model objects are dynamic and resolved to API endpoints if possible. If the referenced model
+provides a `get_api_endpoint()` method, it is used for resolution. If not, djangocms-rest tries to reverse `<model-name>-detail`.
+If resolution fails dynamic objects are returned in the form of `<app-name>.<object-name>:<uid>`, for example
 `cms.page:2`. The frontend can then use this to resolve the object and create the appropriate URLs
 to the object's frontend representation.
 

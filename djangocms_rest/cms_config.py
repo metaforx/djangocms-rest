@@ -1,5 +1,6 @@
 from functools import cached_property
 
+from django.conf import settings
 from django.urls import NoReverseMatch, reverse
 
 from cms.app_base import CMSAppConfig
@@ -49,11 +50,15 @@ class RESTToolbarMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    @cached_property
-    def content_renderer(self):
-        from .plugin_rendering import RESTRenderer
+    if getattr(
+        settings, "REST_JSON_RENDERING", not getattr(settings, "CMS_TEMPLATES", False)
+    ):
 
-        return RESTRenderer(request=self.request)
+        @cached_property
+        def content_renderer(self):
+            from .plugin_rendering import RESTRenderer
+
+            return RESTRenderer(request=self.request)
 
 
 class RESTCMSConfig(CMSAppConfig):
