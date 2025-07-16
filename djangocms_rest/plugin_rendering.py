@@ -52,18 +52,12 @@ def serialize_cms_plugin(
 ) -> Optional[dict[str, Any]]:
     if not instance or not hasattr(instance, "get_plugin_instance"):
         return None
-
-    try:
-        plugin_instance, plugin = instance.get_plugin_instance()
-    except (AttributeError, TypeError):
-        return None
-
-    if not plugin_instance:
-        return None
+    plugin_instance, plugin = instance.get_plugin_instance()
 
     model_cls = plugin_instance.__class__
     serializer_cls = getattr(plugin, "serializer_class", None)
     serializer_cls = serializer_cls or get_auto_model_serializer(model_cls)
+    plugin.__class__.serializer_class = serializer_cls
 
     return serializer_cls(plugin_instance, context=context).data
 
@@ -71,22 +65,20 @@ def serialize_cms_plugin(
 # Template for a collapsable key-value pair
 DETAILS_TEMPLATE = (
     '<details open><summary><span class="key">"{key}"</span>: {open}</summary>'
-    '<div class="indent">{value}</div></details>{close}<span class="sep">,</span>'
+    '<div class="indent">{value}</div></details>{close}'
 )
 
 # Template for a collapsable object/list
 OBJ_TEMPLATE = (
     "<details open><summary>{open}</summary>"
-    '<div class="indent">{value}</div></details>{close}<span class="sep">,</span>'
+    '<div class="indent">{value}</div></details>{close}'
 )
 
 # Tempalte for a non-collasable object/list
-FIXED_TEMPLATE = (
-    '{open}<div class="indent">{value}</div>{close}<span class="sep">,</span>'
-)
+FIXED_TEMPLATE = '{open}<div class="indent">{value}</div>{close}'
 
 # Tempalte for a single line key-value pair
-SIMPLE_TEMPLATE = '<span class="key">"{key}"</span>: {value}<span class="sep">,</span>'
+SIMPLE_TEMPLATE = '<span class="key">"{key}"</span>: {value}'
 
 
 def escapestr(s: str) -> str:
@@ -147,7 +139,7 @@ def highlight_json(
         items.append(
             DETAILS_TEMPLATE.format(
                 key=escape(field),
-                value="".join(children),
+                value=",".join(children),
                 open="[",
                 close="]",
             )
@@ -155,7 +147,7 @@ def highlight_json(
     return {
         "open": "{",
         "close": "}",
-        "value": "<br>".join(items),
+        "value": ",<br>".join(items),
     }
 
 
@@ -164,7 +156,7 @@ def highlight_list(json_data: list) -> dict[str, str]:
     return {
         "open": "[",
         "close": "]",
-        "value": "<br>".join(items),
+        "value": ",<br>".join(items),
     }
 
 

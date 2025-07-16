@@ -8,10 +8,23 @@ from django.core.files import File
 
 from cms import api
 from cms.models import PageContent
-from cms.toolbar.utils import get_object_edit_url
+from cms.toolbar.utils import get_object_edit_url, get_object_preview_url
 
 from filer.models.imagemodels import Image
 from bs4 import BeautifulSoup
+
+
+def get_text_from_html(html, selector):
+    soup = BeautifulSoup(html, "html.parser")
+    element = soup.select_one(selector)
+    if element:
+        return (
+            element.get_text(strip=True)
+            .replace(",]", "]")
+            .replace(",}", "}")
+            .rstrip(",")
+        )
+    return None
 
 
 class PlaceholdersAPITestCase(BaseCMSRestTestCase):
@@ -64,7 +77,6 @@ class PlaceholdersAPITestCase(BaseCMSRestTestCase):
             plugin_type="DummyNumberPlugin",
             language="en",
         )
-        self.endpoint = get_object_edit_url(self.page.get_admin_content("en"))
 
     def create_image(self, filename=None, folder=None):
         filename = filename or "test_image.jpg"
@@ -80,23 +92,40 @@ class PlaceholdersAPITestCase(BaseCMSRestTestCase):
             image_obj.save()
         return image_obj
 
-    def test_in_sync_with_api_endpoint(self):
+    def test_edit_in_sync_with_api_endpoint(self):
         # Edit endpoint and api endpoint should return the same content
 
-        def get_text_from_html(html, selector):
-            soup = BeautifulSoup(html, "html.parser")
-            element = soup.select_one(selector)
-            if element:
-                return (
-                    element.get_text(strip=True)
-                    .replace(",]", "]")
-                    .replace(",}", "}")
-                    .rstrip(",")
-                )
-            return None
+        self.client.force_login(self.user)
+        response = self.client.get(
+            get_object_edit_url(self.page.get_admin_content("en"))
+        )
+        api_response = self.client.get(
+            reverse(
+                "placeholder-detail",
+                kwargs={
+                    "language": "en",
+                    "content_type_id": ContentType.objects.get_for_model(
+                        PageContent
+                    ).id,
+                    "object_id": self.page.get_admin_content("en").id,
+                    "slot": "content",
+                },
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(api_response.status_code, 200)
+        content = response.content.decode("utf-8")
+        json_content = json.loads(get_text_from_html(content, "div.rest-placeholder"))
+        api_content = api_response.json()
+        self.assertEqual(json_content, api_content)
+
+    def test_preview_in_sync_with_api_endpoint(self):
+        # Edit endpoint and api endpoint should return the same content
 
         self.client.force_login(self.user)
-        response = self.client.get(self.endpoint)
+        response = self.client.get(
+            get_object_preview_url(self.page.get_admin_content("en"))
+        )
         api_response = self.client.get(
             reverse(
                 "placeholder-detail",
@@ -116,12 +145,15 @@ class PlaceholdersAPITestCase(BaseCMSRestTestCase):
 
         json_content = json.loads(get_text_from_html(content, "div.rest-placeholder"))
         api_content = api_response.json()
+        self.maxDiff = None  # Allow large diffs for detailed comparison
         self.assertEqual(json_content, api_content)
 
     def test_edit_endpoint(self):
         self.client.force_login(self.user)
 
-        response = self.client.get(self.endpoint)
+        response = self.client.get(
+            get_object_edit_url(self.page.get_admin_content("en"))
+        )
         self.assertEqual(response.status_code, 200)
 
         # Test for plugin markers

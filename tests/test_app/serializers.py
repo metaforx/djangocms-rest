@@ -7,4 +7,12 @@ class CustomSerializer(serializers.Serializer):
             "id": instance.id,
             "integer": 42,
             "float": 3.14,
+            "json": [
+                {"key": "value"},
+                {"another_key": "another_value"},
+                [1, 2, 3, 4, 5],
+                True,
+                False,
+                None,
+            ],
         }

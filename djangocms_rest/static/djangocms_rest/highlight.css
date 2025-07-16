@@ -62,7 +62,4 @@
         width: fit-content;
         cursor: pointer;
     }
-    & > .sep:last-child {
-        display: none;
-    }
 }
