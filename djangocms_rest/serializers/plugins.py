@@ -9,8 +9,9 @@ from django.urls import NoReverseMatch, reverse
 from cms.models import CMSPlugin
 from cms.plugin_pool import plugin_pool
 
-from djangocms_rest.utils import get_absolute_frontend_url
 from rest_framework import serializers
+
+from djangocms_rest.utils import get_absolute_frontend_url
 
 
 def serialize_fk(
@@ -39,13 +40,14 @@ def serialize_fk(
     if hasattr(related_model, "get_api_endpoint"):
         if obj is None:
             obj = related_model.objects.filter(pk=pk).first()
-        return get_absolute_frontend_url(request, obj.get_api_endpoint())
+        if obj:
+            return get_absolute_frontend_url(request, obj.get_api_endpoint())
 
     # Second choice: Use DRF naming conventions to build the default API URL for the related model
     model_name = related_model._meta.model_name
     try:
         return get_absolute_frontend_url(
-            request, reverse(f"{model_name}_details", args=(pk,))
+            request, reverse(f"{model_name}-detail", args=(pk,))
         )
     except NoReverseMatch:
         pass

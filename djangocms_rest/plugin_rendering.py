@@ -10,7 +10,7 @@ from cms.plugin_rendering import ContentRenderer
 from cms.utils.plugins import get_plugins
 
 from djangocms_rest.serializers.placeholders import PlaceholderSerializer
-from djangocms_rest.serializers.plugins import base_exclude, GenericPluginSerializer
+from djangocms_rest.serializers.plugins import GenericPluginSerializer, base_exclude
 from djangocms_rest.serializers.utils.cache import (
     get_placeholder_rest_cache,
     set_placeholder_rest_cache,

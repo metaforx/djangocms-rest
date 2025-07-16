@@ -20,8 +20,8 @@ from djangocms_rest.serializers.pages import (
 )
 from djangocms_rest.serializers.placeholders import PlaceholderSerializer
 from djangocms_rest.serializers.plugins import (
-    generate_plugin_definitions,
     PluginDefinitionSerializer,
+    generate_plugin_definitions,
 )
 from djangocms_rest.utils import get_object, get_site_filtered_queryset
 from djangocms_rest.views_base import BaseAPIView, BaseListAPIView
