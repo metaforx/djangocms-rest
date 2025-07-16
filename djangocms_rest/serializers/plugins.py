@@ -130,10 +130,12 @@ class GenericPluginSerializer(serializers.ModelSerializer):
                     ret[field.name] = serialize_fk(
                         request,
                         field.related_model,
-                        getattr(instance, field.name + "_id"),
-                        obj=getattr(instance, field.name)
-                        if field.is_cached(instance)
-                        else None,
+                        getattr(instance, f"{field.name}_id"),
+                        obj=(
+                            getattr(instance, field.name)
+                            if field.is_cached(instance)
+                            else None
+                        ),
                     )
             elif isinstance(field, JSON_FIELDS) and ret.get(field.name):
                 # If the field is a subclass of JSONField, serialize its value directly
