@@ -1,9 +1,9 @@
+import json
 from django.urls import reverse
 from tests.base import BaseCMSRestTestCase
 
 from django.contrib.contenttypes.models import ContentType
 from django.core.files import File
-from django.utils.html import escape
 
 
 from cms import api
@@ -11,6 +11,7 @@ from cms.models import PageContent
 from cms.toolbar.utils import get_object_edit_url
 
 from filer.models.imagemodels import Image
+from bs4 import BeautifulSoup
 
 
 class PlaceholdersAPITestCase(BaseCMSRestTestCase):
@@ -80,7 +81,20 @@ class PlaceholdersAPITestCase(BaseCMSRestTestCase):
         return image_obj
 
     def test_in_sync_with_api_endpoint(self):
-        # Needs to return the same content as the edit endpoint
+        # Edit endpoint and api endpoint should return the same content
+
+        def get_text_from_html(html, selector):
+            soup = BeautifulSoup(html, "html.parser")
+            element = soup.select_one(selector)
+            if element:
+                return (
+                    element.get_text(strip=True)
+                    .replace(",]", "]")
+                    .replace(",}", "}")
+                    .rstrip(",")
+                )
+            return None
+
         self.client.force_login(self.user)
         response = self.client.get(self.endpoint)
         api_response = self.client.get(
@@ -99,26 +113,10 @@ class PlaceholdersAPITestCase(BaseCMSRestTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(api_response.status_code, 200)
         content = response.content.decode("utf-8")
-        api_content = api_response.json()["content"]
 
-        def test_object(obj):
-            for key, value in obj.items():
-                self.assertIn(f'<span class="key">"{key}"</span>:', content)
-                if value is None:
-                    self.assertIn('<span class="null">null</span>', content)
-                elif isinstance(value, dict):
-                    test_object(value)
-                elif isinstance(value, list):
-                    for item in value:
-                        if isinstance(item, dict):
-                            test_object(item)
-                        else:
-                            self.assertIn(escape(str(item)), content)
-                else:
-                    self.assertIn(escape(str(value)), content)
-
-        for plugin in api_content:
-            test_object(plugin)
+        json_content = json.loads(get_text_from_html(content, "div.rest-placeholder"))
+        api_content = api_response.json()
+        self.assertEqual(json_content, api_content)
 
     def test_edit_endpoint(self):
         self.client.force_login(self.user)

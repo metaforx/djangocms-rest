@@ -1,6 +1,6 @@
 from django.contrib.sites.shortcuts import get_current_site
 
-from cms.models import PageContent, Placeholder
+from cms.models import Page, PageContent, Placeholder
 from cms.utils.conf import get_languages
 from cms.utils.page_permissions import user_can_view_page
 
@@ -54,6 +54,7 @@ PLUGIN_DEFINITIONS = generate_plugin_definitions()
 
 class LanguageListView(BaseAPIView):
     serializer_class = LanguageSerializer
+    queryset = Page.objects.none()  # Dummy queryset to satisfy DRF
 
     def get(self, request: Request | None) -> Response:
         """List of languages available for the site."""
