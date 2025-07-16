@@ -153,13 +153,13 @@ class PlaceholdersAPITestCase(BaseCMSRestTestCase):
         # Test link plugin resolves link to page API endpoint
         self.assertContains(
             response,
-            '<span class="key">"page"</span>: <span class="str">"/api/en/pages-root/"</span>',
+            '<span class="key">"page"</span>: <span class="str">"http://testserver/api/en/pages-root/"</span>',
         )
 
         # Test image plugin resolves image URL
         self.assertContains(
             response,
-            f'"filer_image"</span>: <span class="str">"<span class="ellipsis">{self.image_plugin.filer_image.url}</span>"</span>',
+            f'"filer_image"</span>: <span class="str">"<span class="ellipsis">http://testserver{self.image_plugin.filer_image.url}</span>"</span>',
         )
 
         # Test for rendering of numbers

@@ -133,7 +133,7 @@ class GenericPluginSerializer(serializers.ModelSerializer):
                         if field.is_cached(instance)
                         else None,
                     )
-            elif isinstance(field, JSON_FIELDS):
+            elif isinstance(field, JSON_FIELDS) and ret.get(field.name):
                 # If the field is a subclass of JSONField, serialize its value directly
                 ret[field.name] = serialize_soft_refs(request, ret[field.name])
         return ret
