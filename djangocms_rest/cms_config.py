@@ -38,9 +38,7 @@ def get_file_api_endpoint(file):
     """For a file reference, return the URL of the file if it is public."""
     if not file:
         return None
-    if file.is_public:
-        return file.url
-    return None
+    return file.url if file.is_public else None
 
 
 class RESTToolbarMixin:
