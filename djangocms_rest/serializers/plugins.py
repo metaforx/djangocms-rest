@@ -65,6 +65,8 @@ def serialize_soft_refs(request: HttpRequest, data: Any) -> Any:
     any soft references (dictionaries with 'model' and 'pk' keys) into a more
     usable format.
 
+    Attention: This function modifies the input data in place.
+
     Args:
         data (Any): The input data structure, which can be a dict, list, or other types.
 
