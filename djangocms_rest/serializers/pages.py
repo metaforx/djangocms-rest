@@ -16,7 +16,7 @@ class BasePageSerializer(serializers.Serializer):
     redirect = serializers.CharField(max_length=2048, allow_null=True)
     absolute_url = serializers.URLField(max_length=200, allow_blank=True)
     path = serializers.CharField(max_length=200)
-    details = serializers.CharField(max_length=200, allow_blank=True)
+    details = serializers.CharField(max_length=2048, allow_blank=True)
     is_home = serializers.BooleanField()
     login_required = serializers.BooleanField()
     in_navigation = serializers.BooleanField()
