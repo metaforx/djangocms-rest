@@ -1,3 +1,4 @@
+import json
 from typing import Any, Iterable, Optional, TypeVar
 
 from django.contrib.sites.shortcuts import get_current_site
@@ -92,12 +93,7 @@ def escapestr(s: str) -> str:
     """
     Escape a string for safe HTML rendering.
     """
-    return (
-        escape(s)
-        .replace("\\", "&bsol;&bsol;")
-        .replace("&quot;", "&bsol;&quot;")
-        .replace("\n", "&bsol;n")
-    )
+    return escape(json.dumps(s)[1:-1])  # Remove quotes added by json.dumps
 
 
 def highlight_data(json_data: Any, drop_frame: bool = False) -> str:

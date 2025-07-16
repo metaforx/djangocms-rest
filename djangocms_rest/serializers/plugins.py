@@ -1,17 +1,23 @@
 from typing import Any, Optional
 
+from django.apps import apps
 from django.core.exceptions import FieldDoesNotExist
 from django.db.models import Field, Model
+from django.http import HttpRequest
 from django.urls import NoReverseMatch, reverse
 
 from cms.models import CMSPlugin
 from cms.plugin_pool import plugin_pool
 
+from djangocms_rest.utils import get_absolute_frontend_url
 from rest_framework import serializers
 
 
 def serialize_fk(
-    related_model: type[CMSPlugin], pk: Any, obj: Optional[Model] = None
+    request: HttpRequest,
+    related_model: type[CMSPlugin],
+    pk: Any,
+    obj: Optional[Model] = None,
 ) -> dict[str, Any]:
     """
     Serializes a foreign key reference to a related model as a URL or identifier.
@@ -33,18 +39,60 @@ def serialize_fk(
     if hasattr(related_model, "get_api_endpoint"):
         if obj is None:
             obj = related_model.objects.filter(pk=pk).first()
-        return obj.get_api_endpoint()
+        return get_absolute_frontend_url(request, obj.get_api_endpoint())
 
     # Second choice: Use DRF naming conventions to build the default API URL for the related model
     model_name = related_model._meta.model_name
     try:
-        return reverse(f"{model_name}_details", args=(pk,))
+        return get_absolute_frontend_url(
+            request, reverse(f"{model_name}_details", args=(pk,))
+        )
     except NoReverseMatch:
         pass
 
     # Fallback:
     app_name = related_model._meta.app_label
     return f"{app_name}.{model_name}:{pk}"
+
+
+def serialize_soft_refs(request: HttpRequest, data: Any) -> Any:
+    """
+    Serialize soft references in a dictionary or list.
+
+    This function recursively traverses the input data structure and serializes
+    any soft references (dictionaries with 'model' and 'pk' keys) into a more
+    usable format.
+
+    Args:
+        data (Any): The input data structure, which can be a dict, list, or other types.
+
+    Returns:
+        Any: The serialized data structure with soft references replaced.
+    """
+    if isinstance(data, list):
+        return [serialize_soft_refs(request, item) for item in data]
+    for key, value in data.items():
+        if isinstance(value, dict) and set(value.keys()) == {"model", "pk"}:
+            app_name, model_name = value["model"].split(".", 1)
+            model_class = apps.get_model(app_name, model_name)
+            pk = value["pk"]
+            data[key] = serialize_fk(request, model_class, pk)
+        elif key == "attrs" and isinstance(value, dict) and value.get("data-cms-href"):
+            model, pk = value["data-cms-href"].split(":", 1)
+            app_name, model_name = model.split(".", 1)
+            model_class = apps.get_model(app_name, model_name)
+            value["data-cms-href"] = serialize_fk(request, model_class, pk)
+        elif isinstance(value, dict) and "internal_link" in value:
+            model, pk = value["internal_link"].split(":", 1)
+            app_name, model_name = model.split(".", 1)
+            model_class = apps.get_model(app_name, model_name)
+            data[key] = serialize_fk(request, model_class, pk)
+        elif isinstance(value, dict) and "file_link" in value:
+            model_class = apps.get_model("filer", "file")
+            data[key] = serialize_fk(request, model_class, value["file_link"])
+        elif isinstance(value, (dict, list)):
+            data[key] = serialize_soft_refs(request, value)
+    return data
 
 
 base_exclude = {
@@ -58,20 +106,36 @@ base_exclude = {
 }
 #: Excluded fields for plugin serialization
 
+JSON_FIELDS = tuple(
+    field
+    for field, value in serializers.ModelSerializer.serializer_field_mapping.items()
+    if value is serializers.JSONField
+)
+
 
 class GenericPluginSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.request = self.context.get("request", None)
+
     def to_representation(self, instance: CMSPlugin):
+        request = getattr(self, "request", None)
+
         ret = super().to_representation(instance)
         for field in self.Meta.model._meta.get_fields():
             if field.is_relation and not field.many_to_many and not field.one_to_many:
                 if field.name in ret and getattr(instance, field.name, None):
                     ret[field.name] = serialize_fk(
+                        request,
                         field.related_model,
                         getattr(instance, field.name + "_id"),
                         obj=getattr(instance, field.name)
                         if field.is_cached(instance)
                         else None,
                     )
+            elif isinstance(field, JSON_FIELDS):
+                # If the field is a subclass of JSONField, serialize its value directly
+                ret[field.name] = serialize_soft_refs(request, ret[field.name])
         return ret
 
 

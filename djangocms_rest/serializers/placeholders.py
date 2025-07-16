@@ -20,6 +20,8 @@ class PlaceholderSerializer(serializers.Serializer):
         language = kwargs.pop("language", None)
         render_plugins = kwargs.pop("render_plugins", True)
         super().__init__(*args, **kwargs)
+        if request is None:
+            request = self.context.get("request")
 
         if placeholder and request and language:
             if render_plugins:
