@@ -9,7 +9,7 @@ from cms.utils.i18n import force_language, get_current_language
 
 try:
     from filer.models import File
-except (ImportError, ModuleNotFoundError):
+except ImportError:
     File = None
 
 
