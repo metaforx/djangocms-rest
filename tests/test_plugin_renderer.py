@@ -18,12 +18,7 @@ def get_text_from_html(html, selector):
     soup = BeautifulSoup(html, "html.parser")
     element = soup.select_one(selector)
     if element:
-        return (
-            element.get_text(strip=True)
-            .replace(",]", "]")
-            .replace(",}", "}")
-            .rstrip(",")
-        )
+        return element.get_text(strip=True)
     return None
 
 

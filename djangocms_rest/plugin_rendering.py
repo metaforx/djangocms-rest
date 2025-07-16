@@ -90,7 +90,7 @@ def escapestr(s: str) -> str:
 
 def highlight_data(json_data: Any, drop_frame: bool = False) -> str:
     """
-    Highlight JSON data using Pygments.
+    Highlight single JSON data element.
     """
     if isinstance(json_data, str):
         if len(json_data) > 60:
@@ -114,9 +114,41 @@ def highlight_data(json_data: Any, drop_frame: bool = False) -> str:
     return f'<span class="obj">{json_data}</span>'
 
 
+def highlight_list(json_data: list) -> dict[str, str]:
+    """
+    Transforms a list of JSON data items into a dictionary containing HTML-formatted string representations.
+    Args:
+        json_data (list): A list of JSON-compatible data items to be highlighted.
+    Returns:
+        dict[str, str]: A dictionary with keys 'open', 'close', and 'value', where 'value' is a string of highlighted items separated by ',<br>'.
+    """
+
+    items = [highlight_data(item) for item in json_data]
+    return {
+        "open": "[",
+        "close": "]",
+        "value": ",<br>".join(items),
+    }
+
+
 def highlight_json(
-    json_data: dict[str, Any], children: Iterable | None = None, field: str = "children"
+    json_data: dict[str, Any],
+    children: Iterable | None = None,
+    marker: str = "",
+    field: str = "children",
 ) -> dict[str, str]:
+    """
+    Highlights and formats a JSON-like dictionary for display, optionally including child elements.
+
+    Args:
+        json_data (dict[str, Any]): The JSON data to be highlighted and formatted.
+        children (Iterable | None, optional): An iterable of child elements to include under the specified field. Defaults to None.
+        marker (str, optional): A string marker to append after the children. Defaults to "".
+        field (str, optional): The key under which children are added. Defaults to "children".
+
+    Returns:
+        dict[str, str]: A dictionary containing the formatted representation with keys 'open', 'close', and 'value'.
+    """
     has_children = children is not None
     if field in json_data:
         del json_data[field]
@@ -139,7 +171,7 @@ def highlight_json(
         items.append(
             DETAILS_TEMPLATE.format(
                 key=escape(field),
-                value=",".join(children),
+                value=",".join(children) + marker,
                 open="[",
                 close="]",
             )
@@ -147,15 +179,6 @@ def highlight_json(
     return {
         "open": "{",
         "close": "}",
-        "value": ",<br>".join(items),
-    }
-
-
-def highlight_list(json_data: list) -> dict[str, str]:
-    items = [highlight_data(item) for item in json_data]
-    return {
-        "open": "[",
-        "close": "]",
         "value": ",<br>".join(items),
     }
 
@@ -217,6 +240,7 @@ class RESTRenderer(ContentRenderer):
                 children=self.get_plugins_and_placeholder_lot(
                     placeholder, language, context, editable=editable, template=template
                 ),
+                marker=f'<div class="cms-placeholder cms-placeholder-{placeholder.pk}"></div>',
                 field="content",
             ),
         )
@@ -228,7 +252,6 @@ class RESTRenderer(ContentRenderer):
         yield from super().render_plugins(
             placeholder, language, context, editable=editable, template=template
         )
-        yield f'<div class="cms-placeholder cms-placeholder-{placeholder.pk}"></div>'
 
     def serialize_placeholder(self, placeholder, context, language, use_cache=True):
         context.update({"request": self.request})
