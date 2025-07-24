@@ -220,9 +220,8 @@ class PluginDefinitionSerializer(serializers.Serializer):
                     "properties": properties,
                 }
 
-            except Exception as e:
+            except Exception:
                 # Skip plugins that fail to process
-                input(e)
                 continue
 
         return definitions
