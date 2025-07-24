@@ -11,6 +11,13 @@ class CustomSerializer(serializers.Serializer):
     )
     json = serializers.JSONField()
 
+    class KeyValuePairSerializer(serializers.Serializer):
+        prop1 = serializers.CharField()
+        prop2 = serializers.CharField()
+        prop3 = serializers.CharField()
+
+    kvp = KeyValuePairSerializer()
+
     def to_representation(self, instance):
         return {
             "id": instance.id,
@@ -25,4 +32,9 @@ class CustomSerializer(serializers.Serializer):
                 False,
                 None,
             ],
+            "kvp": {
+                "prop1": "value1",
+                "prop2": "value2",
+                "prop3": "value3",
+            },
         }

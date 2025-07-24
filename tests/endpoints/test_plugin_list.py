@@ -6,6 +6,8 @@ from tests.utils import assert_field_types
 
 
 class PluginListTestCase(BaseCMSRestTestCase):
+    maxDiff = None
+
     def test_get(self):
         from cms.plugin_pool import plugin_pool
 
@@ -22,8 +24,17 @@ class PluginListTestCase(BaseCMSRestTestCase):
                 "json": {"type": "object"},
                 "float": {"type": "number"},
                 "title": {"enum": ["title", "subtitle", "header"], "type": "string"},
+                "kvp": {
+                    "properties": {
+                        "prop1": {"type": "string"},
+                        "prop2": {"type": "string"},
+                        "prop3": {"type": "string"},
+                    },
+                    "type": "object",
+                },
             },
         }
+
         # GET
         response = self.client.get(reverse("plugin-list"))
         self.assertEqual(response.status_code, 200)
