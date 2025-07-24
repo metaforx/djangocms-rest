@@ -157,36 +157,6 @@ class PluginDefinitionSerializer(serializers.Serializer):
     properties = serializers.DictField(help_text="Property definitions")
 
     @staticmethod
-    def get_field_type(field: Field) -> str:
-        """
-        Convert Django field types to JSON Schema types.
-
-        Args:
-            field (Field): Django model field instance
-
-        Returns:
-            str: JSON Schema type corresponding to the Django field type
-        """
-        field_mapping = {
-            "CharField": "string",
-            "TextField": "string",
-            "URLField": "string",
-            "EmailField": "string",
-            "IntegerField": "integer",
-            "FloatField": "number",
-            "DecimalField": "number",
-            "BooleanField": "boolean",
-            "DateField": "string",
-            "DateTimeField": "string",
-            "TimeField": "string",
-            "FileField": "string",
-            "ImageField": "string",
-            "JSONField": "object",
-            "ForeignKey": "integer",
-        }
-        return field_mapping.get(field.__class__.__name__, "string")
-
-    @staticmethod
     def get_field_format(field: Field) -> Optional[str]:
         """
         Get the format for specific field types.
