@@ -223,5 +223,5 @@ class PlaceholdersAPITestCase(BaseCMSRestTestCase):
         self.assertIsInstance(rendered_plugin["page"], str)
         self.assertEqual(
             rendered_plugin["page"],
-            f'http://testserver{self.page.get_api_endpoint("en")}',
+            f"http://testserver{self.page.get_api_endpoint('en')}",
         )

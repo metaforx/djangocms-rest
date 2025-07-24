@@ -21,6 +21,7 @@ class PluginListTestCase(BaseCMSRestTestCase):
                 "integer": {"type": "integer"},
                 "json": {"type": "object"},
                 "float": {"type": "number"},
+                "title": {"enum": ["title", "subtitle", "header"], "type": "string"},
             },
         }
         # GET

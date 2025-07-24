@@ -11,7 +11,6 @@ from djangocms_rest.serializers.utils.cache import get_placeholder_rest_cache
 from tests.base import BaseCMSRestTestCase
 
 
-
 class CachingAPITestCase(BaseCMSRestTestCase):
     @classmethod
     def setUpClass(cls):
@@ -126,11 +125,13 @@ class CachingAPITestCase(BaseCMSRestTestCase):
         placeholder2 = response2.json()
 
         # Staff request #2 - Update content
-        self.assertIn("Staff should see this content", placeholder2["content"][0]["body"])
+        self.assertIn(
+            "Staff should see this content", placeholder2["content"][0]["body"]
+        )
         self.assertNotEqual(
             placeholder1["content"],
             placeholder2["content"],
-            "Staff user should bypass cache and see updated content"
+            "Staff user should bypass cache and see updated content",
         )
 
         # Anonymous request #3 - fetch content from request #1
@@ -139,15 +140,12 @@ class CachingAPITestCase(BaseCMSRestTestCase):
         self.assertEqual(response3.status_code, 200)
         placeholder3 = response3.json()
         self.assertEqual(
-            placeholder1,
-            placeholder3,
-            "Anonymous user should still get cached content"
+            placeholder1, placeholder3, "Anonymous user should still get cached content"
         )
 
         # Restore content
         self.plugin.body = original_content
         self.plugin.save()
-
 
     def test_cache_version_edge_cases(self):
         """
@@ -198,4 +196,4 @@ class CachingAPITestCase(BaseCMSRestTestCase):
             self.placeholder, "en", get_current_site(None).pk
         )
         self.assertEqual(version4, 12345)
-        self.assertEqual(vary_list4, []) 
+        self.assertEqual(vary_list4, [])

@@ -33,11 +33,20 @@ class LanguagesAPITestCase(BaseCMSRestTestCase):
             # Data & Type Validation
             for field, expected_type in type_checks.items():
                 self.assertEqual(lang_config[field], data[lang][field])
-                self.assertIsInstance(data[lang][field], type_checks[field],f"Field '{field}' should be of type {type_checks[field].__name__}")
+                self.assertIsInstance(
+                    data[lang][field],
+                    type_checks[field],
+                    f"Field '{field}' should be of type {type_checks[field].__name__}",
+                )
 
                 # Nested Data & Type Validation
                 if field == "fallbacks":
                     for fallback in data[lang][field]:
-                        self.assertIsInstance(fallback, str,"Fallback language codes should be strings")
-                        self.assertLessEqual(len(fallback), 4,"Fallback language code should not exceed 4 characters")
-
+                        self.assertIsInstance(
+                            fallback, str, "Fallback language codes should be strings"
+                        )
+                        self.assertLessEqual(
+                            len(fallback),
+                            4,
+                            "Fallback language code should not exceed 4 characters",
+                        )
