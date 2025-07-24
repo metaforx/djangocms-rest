@@ -19,12 +19,10 @@ from djangocms_rest.serializers.pages import (
     PreviewPageContentSerializer,
 )
 from djangocms_rest.serializers.placeholders import PlaceholderSerializer
-from djangocms_rest.serializers.plugins import (
-    PluginDefinitionSerializer,
-    generate_plugin_definitions,
-)
+from djangocms_rest.serializers.plugins import PluginDefinitionSerializer
 from djangocms_rest.utils import get_object, get_site_filtered_queryset
 from djangocms_rest.views_base import BaseAPIView, BaseListAPIView
+from django.utils.functional import lazy
 
 
 try:
@@ -49,7 +47,15 @@ except ImportError:
         return func
 
 
-PLUGIN_DEFINITIONS = generate_plugin_definitions()
+# Generate the plugin definitions once at module load time
+# This avoids the need to import the plugin definitions in every view
+# and keeps the code cleaner.
+# Attn: Dynamic changes to the plugin pool will not be reflected in the
+# plugin definitions.
+# If you need to update the plugin definitions, you need reassign the variable.
+PLUGIN_DEFINITIONS = lazy(
+    PluginDefinitionSerializer.generate_plugin_definitions, dict
+)()
 
 
 class LanguageListView(BaseAPIView):
