@@ -184,7 +184,7 @@ class PlaceholdersAPITestCase(BaseCMSRestTestCase):
         # Test image plugin resolves image URL
         self.assertContains(
             response,
-            f'"filer_image"</span>: <span class="str">"<span class="ellipsis">http://testserver{self.image_plugin.filer_image.url}</span>"</span>',
+            f'"filer_image"</span>: <span class="str ellipsis">"http://testserver{self.image_plugin.filer_image.url}"</span>',
         )
 
         # Test for rendering of numbers

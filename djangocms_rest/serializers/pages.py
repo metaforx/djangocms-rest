@@ -166,7 +166,9 @@ class PageContentSerializer(BasePageSerializer, BasePageContentMixin):
         data = self.get_base_representation(page_content)
         data["placeholders"] = PlaceholderRelationSerializer(
             placeholders_data,
+            language=page_content.language,
             many=True,
+            context={"request": self.request},
         ).data
         return data
 
@@ -193,6 +195,8 @@ class PreviewPageContentSerializer(PageContentSerializer, PreviewMixin):
         data = self.get_base_representation(page_content)
         data["placeholders"] = PlaceholderRelationSerializer(
             placeholders_data,
+            language=page_content.language,
+            context={"request": self.request},
             many=True,
         ).data
         return data

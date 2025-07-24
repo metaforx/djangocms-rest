@@ -2,6 +2,8 @@ import json
 from typing import Any, Iterable, Optional, TypeVar
 
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import ValidationError
+from django.core.validators import URLValidator
 from django.db import models
 from django.utils.html import escape, mark_safe
 
@@ -88,14 +90,27 @@ def escapestr(s: str) -> str:
     return escape(json.dumps(s)[1:-1])  # Remove quotes added by json.dumps
 
 
+def is_valid_url(url):
+    validator = URLValidator()
+    try:
+        validator(url)
+        return True
+    except ValidationError:
+        return False
+
+
 def highlight_data(json_data: Any, drop_frame: bool = False) -> str:
     """
     Highlight single JSON data element.
     """
     if isinstance(json_data, str):
+        classes = "str"
         if len(json_data) > 60:
-            return f'<span class="str">"<span class="ellipsis">{escapestr(json_data)}</span>"</span>'
-        return f'<span class="str">"{escapestr(json_data)}"</span>'
+            classes = "str ellipsis"
+
+        if is_valid_url(json_data):
+            return f'<span class="{ classes }">"<a href="{ json_data }">{escapestr(json_data)}</a>"</span>'
+        return f'<span class="{ classes }">"{escapestr(json_data)}"</span>'
     if isinstance(json_data, bool):
         return f'<span class="bool">{str(json_data).lower()}</span>'
     if isinstance(json_data, (int, float)):

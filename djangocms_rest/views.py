@@ -1,4 +1,5 @@
 from django.contrib.sites.shortcuts import get_current_site
+from django.utils.functional import lazy
 
 from cms.models import Page, PageContent, Placeholder
 from cms.utils.conf import get_languages
@@ -22,7 +23,6 @@ from djangocms_rest.serializers.placeholders import PlaceholderSerializer
 from djangocms_rest.serializers.plugins import PluginDefinitionSerializer
 from djangocms_rest.utils import get_object, get_site_filtered_queryset
 from djangocms_rest.views_base import BaseAPIView, BaseListAPIView
-from django.utils.functional import lazy
 
 
 try:
@@ -225,6 +225,7 @@ class PluginDefinitionView(BaseAPIView):
     """
 
     serializer_class = PluginDefinitionSerializer
+    queryset = Page.objects.none()  # Dummy queryset to satisfy DRF
 
     def get(self, request: Request) -> Response:
         """Get all plugin definitions"""

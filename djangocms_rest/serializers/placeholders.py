@@ -1,8 +1,10 @@
 from django.template import Context
+from django.urls import reverse
 
 from rest_framework import serializers
 
 from djangocms_rest.serializers.utils.render import render_html
+from djangocms_rest.utils import get_absolute_frontend_url
 
 
 class PlaceholderSerializer(serializers.Serializer):
@@ -49,7 +51,28 @@ class PlaceholderRelationSerializer(serializers.Serializer):
     content_type_id = serializers.IntegerField()
     object_id = serializers.IntegerField()
     slot = serializers.CharField()
+    details = serializers.URLField()
 
     def __init__(self, *args, **kwargs):
+        language = kwargs.pop("language", None)
         super().__init__(*args, **kwargs)
         self.request = self.context.get("request")
+        self.language = language
+
+    def to_representation(self, instance):
+        instance["details"] = self.get_details(instance)
+        return super().to_representation(instance)
+
+    def get_details(self, instance):
+        return get_absolute_frontend_url(
+            self.request,
+            reverse(
+                "placeholder-detail",
+                args=[
+                    self.language,
+                    instance.get("content_type_id"),
+                    instance.get("object_id"),
+                    instance.get("slot"),
+                ],
+            ),
+        )
