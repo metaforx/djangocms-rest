@@ -53,6 +53,12 @@ class RESTToolbarMixin:
     if getattr(
         settings, "REST_JSON_RENDERING", not getattr(settings, "CMS_TEMPLATES", False)
     ):
+        try:
+            from djangocms_text import settings
+
+            settings.TEXT_INLINE_EDITING = False
+        except ImportError:
+            pass
 
         @cached_property
         def content_renderer(self):

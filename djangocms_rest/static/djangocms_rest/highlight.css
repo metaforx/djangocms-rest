@@ -62,4 +62,9 @@
         width: fit-content;
         cursor: pointer;
     }
+    details:not([open]) summary::after {
+        margin-inline: 1em;
+        content: '...';
+        color: var(--dca-gray-dark, #666);
+    }
 }
