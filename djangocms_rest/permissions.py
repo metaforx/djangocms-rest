@@ -1,4 +1,5 @@
 from cms.models import Page, PageContent
+from cms.utils import get_current_site
 from cms.utils.i18n import get_language_tuple, get_languages
 from cms.utils.page_permissions import user_can_view_page
 
@@ -31,7 +32,7 @@ class IsAllowedPublicLanguage(IsAllowedLanguage):
     def has_permission(self, request: Request, view: BaseAPIView) -> bool:
         super().has_permission(request, view)
         language = view.kwargs.get("language")
-        languages = get_languages()
+        languages = get_languages(get_current_site(request).pk)
         public_languages = [
             lang["code"] for lang in languages if lang.get("public", True)
         ]
