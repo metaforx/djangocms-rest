@@ -1,5 +1,6 @@
+from django.contrib.sites.shortcuts import get_current_site
+
 from cms.models import Page, PageContent
-from cms.utils import get_current_site
 from cms.utils.i18n import get_language_tuple, get_languages
 from cms.utils.page_permissions import user_can_view_page
 
