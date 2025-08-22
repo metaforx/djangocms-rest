@@ -1,6 +1,9 @@
+from django.contrib.sites.shortcuts import get_current_site
+
 from cms.models import Page, PageContent
 from cms.utils.i18n import get_language_tuple, get_languages
 from cms.utils.page_permissions import user_can_view_page
+
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
@@ -30,7 +33,7 @@ class IsAllowedPublicLanguage(IsAllowedLanguage):
     def has_permission(self, request: Request, view: BaseAPIView) -> bool:
         super().has_permission(request, view)
         language = view.kwargs.get("language")
-        languages = get_languages()
+        languages = get_languages(get_current_site(request).pk)
         public_languages = [
             lang["code"] for lang in languages if lang.get("public", True)
         ]

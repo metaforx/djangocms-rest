@@ -1,7 +1,7 @@
-from typing import Dict
+from django.db import models
 
 from cms.models import PageContent
-from django.db import models
+
 from rest_framework import serializers
 
 from djangocms_rest.serializers.placeholders import PlaceholderRelationSerializer
@@ -16,6 +16,7 @@ class BasePageSerializer(serializers.Serializer):
     redirect = serializers.CharField(max_length=2048, allow_null=True)
     absolute_url = serializers.URLField(max_length=200, allow_blank=True)
     path = serializers.CharField(max_length=200)
+    details = serializers.CharField(max_length=2048, allow_blank=True)
     is_home = serializers.BooleanField()
     login_required = serializers.BooleanField()
     in_navigation = serializers.BooleanField()
@@ -40,10 +41,13 @@ class PreviewMixin:
 
 
 class BasePageContentMixin:
-    def get_base_representation(self, page_content: PageContent) -> Dict:
+    def get_base_representation(self, page_content: PageContent) -> dict:
         request = getattr(self, "request", None)
         path = page_content.page.get_path(page_content.language)
         absolute_url = get_absolute_frontend_url(request, path)
+        api_endpoint = get_absolute_frontend_url(
+            request, page_content.page.get_api_endpoint(page_content.language)
+        )
         redirect = str(page_content.redirect or "")
         xframe_options = str(page_content.xframe_options or "")
         application_namespace = str(page_content.page.application_namespace or "")
@@ -70,17 +74,18 @@ class BasePageContentMixin:
             "application_namespace": application_namespace,
             "creation_date": page_content.creation_date,
             "changed_date": page_content.changed_date,
+            "details": api_endpoint,
         }
 
 
 class PageTreeSerializer(serializers.ListSerializer):
-    def __init__(self, tree: Dict, *args, **kwargs):
+    def __init__(self, tree: dict, *args, **kwargs):
         if not isinstance(tree, dict):
             raise TypeError(f"Expected tree to be a dict, got {type(tree).__name__}")
         self.tree = tree
         super().__init__(tree.get(None, []), *args, **kwargs)
 
-    def tree_to_representation(self, item: PageContent) -> Dict:
+    def tree_to_representation(self, item: PageContent) -> dict:
         serialized_data = self.child.to_representation(item)
         serialized_data["children"] = []
         if item.page in self.tree:
@@ -89,7 +94,7 @@ class PageTreeSerializer(serializers.ListSerializer):
             ]
         return serialized_data
 
-    def to_representation(self, data: Dict) -> list[Dict]:
+    def to_representation(self, data: dict) -> list[dict]:
         nodes = data.all() if isinstance(data, models.manager.BaseManager) else data
         return [self.tree_to_representation(node) for node in nodes]
 
@@ -118,14 +123,16 @@ class PageMetaSerializer(BasePageSerializer, BasePageContentMixin):
             try:
                 parent = instance.page.parent
             except AttributeError:
-                parent = instance.page.parent_page  # TODO: Remove when django CMS 4.1 is no longer supported
+                parent = (
+                    instance.page.parent_page
+                )  # TODO: Remove when django CMS 4.1 is no longer supported
             tree.setdefault(parent, []).append(instance)
 
         # Prepare the child serializer with the proper context.
         kwargs["child"] = cls(context=context)
         return PageTreeSerializer(tree, *args[1:], **kwargs)
 
-    def to_representation(self, page_content: PageContent) -> Dict:
+    def to_representation(self, page_content: PageContent) -> dict:
         return self.get_base_representation(page_content)
 
 
@@ -136,7 +143,7 @@ class PageContentSerializer(BasePageSerializer, BasePageContentMixin):
         super().__init__(*args, **kwargs)
         self.request = self.context.get("request")
 
-    def to_representation(self, page_content: PageContent) -> Dict:
+    def to_representation(self, page_content: PageContent) -> dict:
         declared_slots = [
             placeholder.slot
             for placeholder in page_content.page.get_declared_placeholders()
@@ -159,7 +166,9 @@ class PageContentSerializer(BasePageSerializer, BasePageContentMixin):
         data = self.get_base_representation(page_content)
         data["placeholders"] = PlaceholderRelationSerializer(
             placeholders_data,
+            language=page_content.language,
             many=True,
+            context={"request": self.request},
         ).data
         return data
 
@@ -169,7 +178,7 @@ class PreviewPageContentSerializer(PageContentSerializer, PreviewMixin):
 
     placeholders = PlaceholderRelationSerializer(many=True, required=False)
 
-    def to_representation(self, page_content: PageContent) -> Dict:
+    def to_representation(self, page_content: PageContent) -> dict:
         # Get placeholders directly from the page_content
         # This avoids the extra query to get_declared_placeholders
         placeholders = page_content.placeholders.all()
@@ -186,6 +195,8 @@ class PreviewPageContentSerializer(PageContentSerializer, PreviewMixin):
         data = self.get_base_representation(page_content)
         data["placeholders"] = PlaceholderRelationSerializer(
             placeholders_data,
+            language=page_content.language,
+            context={"request": self.request},
             many=True,
         ).data
         return data
@@ -196,5 +207,5 @@ class PageListSerializer(BasePageSerializer, BasePageContentMixin):
         super().__init__(*args, **kwargs)
         self.request = self.context.get("request")
 
-    def to_representation(self, page_content: PageContent) -> Dict:
+    def to_representation(self, page_content: PageContent) -> dict:
         return self.get_base_representation(page_content)

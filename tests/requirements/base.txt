@@ -1,6 +1,8 @@
 # requirements from setup.py
 djangorestframework
 djangocms-text
+django-filer
+beautifulsoup4
 setuptools
 
 # other requirements

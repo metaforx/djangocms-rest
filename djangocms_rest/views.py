@@ -1,19 +1,18 @@
-from cms.models import PageContent, Placeholder
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.functional import lazy
+
+from cms.models import Page, PageContent, Placeholder
 from cms.utils.conf import get_languages
 from cms.utils.page_permissions import user_can_view_page
-from django.contrib.sites.shortcuts import get_current_site
+
 from rest_framework.exceptions import NotFound
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from djangocms_rest.permissions import (
-    CanViewPage,
-    IsAllowedPublicLanguage,
-)
+from djangocms_rest.permissions import CanViewPage, IsAllowedPublicLanguage
 from djangocms_rest.serializers.languages import LanguageSerializer
-
 from djangocms_rest.serializers.pages import (
     PageContentSerializer,
     PageListSerializer,
@@ -21,12 +20,10 @@ from djangocms_rest.serializers.pages import (
     PreviewPageContentSerializer,
 )
 from djangocms_rest.serializers.placeholders import PlaceholderSerializer
-from djangocms_rest.serializers.plugins import (
-    PLUGIN_DEFINITIONS,
-    PluginDefinitionSerializer,
-)
+from djangocms_rest.serializers.plugins import PluginDefinitionSerializer
 from djangocms_rest.utils import get_object, get_site_filtered_queryset
 from djangocms_rest.views_base import BaseAPIView, BaseListAPIView
+
 
 try:
     from drf_spectacular.types import OpenApiTypes  # noqa: F401
@@ -50,8 +47,20 @@ except ImportError:
         return func
 
 
+# Generate the plugin definitions once at module load time
+# This avoids the need to import the plugin definitions in every view
+# and keeps the code cleaner.
+# Attn: Dynamic changes to the plugin pool will not be reflected in the
+# plugin definitions.
+# If you need to update the plugin definitions, you need reassign the variable.
+PLUGIN_DEFINITIONS = lazy(
+    PluginDefinitionSerializer.generate_plugin_definitions, dict
+)()
+
+
 class LanguageListView(BaseAPIView):
     serializer_class = LanguageSerializer
+    queryset = Page.objects.none()  # Dummy queryset to satisfy DRF
 
     def get(self, request: Request | None) -> Response:
         """List of languages available for the site."""
@@ -181,7 +190,11 @@ class PlaceholderDetailView(BaseAPIView):
             raise NotFound()
 
         source_model = placeholder.content_type.model_class()
-        source = getattr(source_model, self.content_manager, source_model.objects).filter(pk=placeholder.object_id).first()
+        source = (
+            getattr(source_model, self.content_manager, source_model.objects)
+            .filter(pk=placeholder.object_id)
+            .first()
+        )
 
         if source is None:
             raise NotFound()
@@ -212,6 +225,7 @@ class PluginDefinitionView(BaseAPIView):
     """
 
     serializer_class = PluginDefinitionSerializer
+    queryset = Page.objects.none()  # Dummy queryset to satisfy DRF
 
     def get(self, request: Request) -> Response:
         """Get all plugin definitions"""

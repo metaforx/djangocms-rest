@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple, Union
+from typing import Optional, Union
 
 from cms.api import create_page
 from cms.models import Page
@@ -7,16 +7,18 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
 class RESTTestCase(CMSTestCase):
     prefix = "http://testserver"
+
 
 class BaseCMSRestTestCase(RESTTestCase):
     @classmethod
     def _create_pages(
         cls,
-        page_list: Union[int, List[Union[int, Tuple[int, int]]]],
-        parent: Optional['Page'] = None,
-        is_first: bool = True
+        page_list: Union[int, list[Union[int, tuple[int, int]]]],
+        parent: Optional["Page"] = None,
+        is_first: bool = True,
     ):
         new_pages = [
             create_page(f"page {i}", language="en", template="INHERIT", parent=parent)
@@ -43,7 +45,7 @@ class BaseCMSRestTestCase(RESTTestCase):
             email="admin@example.com",
             password="testpass",
             is_staff=True,
-            is_superuser=True
+            is_superuser=True,
         )
 
         cls._create_pages([2, (3, 1), 2], is_first=True)
@@ -52,4 +54,3 @@ class BaseCMSRestTestCase(RESTTestCase):
     def tearDownClass(cls):
         Page.objects.all().delete()
         super().tearDownClass()
-
