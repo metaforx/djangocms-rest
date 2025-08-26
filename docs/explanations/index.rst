@@ -1,7 +1,7 @@
 Explanations
 ============
 
-Detailed explanations and examples of django CMS REST concepts and usage patterns.
+Detailed explanations and examples of djangocms-rest concepts and usage patterns.
 
 .. toctree::
    :maxdepth: 2

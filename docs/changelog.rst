@@ -1,7 +1,7 @@
 Changelog
 =========
 
-All notable changes to django CMS REST will be documented in this file.
+All notable changes to djangocms-rest will be documented in this file.
 
 The format is based on `Keep a Changelog <https://keepachangelog.com/en/1.0.0/>`_,
 and this project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0.html>`_.
@@ -24,7 +24,7 @@ and this project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0
 --------------------
 
 **Added:**
-* Initial release of django CMS REST
+* Initial release of djangocms-rest
 * Pages API with full CRUD operations
 * Placeholders API for managing page content areas
 * Plugins API for managing CMS plugins

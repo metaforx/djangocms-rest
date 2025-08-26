@@ -1,6 +1,6 @@
-# django CMS REST Documentation
+# djangocms-rest Documentation
 
-This directory contains the documentation for django CMS REST, built with Sphinx.
+This directory contains the documentation for djangocms-rest, built with Sphinx.
 
 ## Setup
 

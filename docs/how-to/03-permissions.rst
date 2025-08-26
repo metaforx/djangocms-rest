@@ -1,12 +1,12 @@
 Permissions
 ===========
 
-django CMS REST uses Django's permission system to control access to API endpoints. This guide explains how permissions work and how to customize them.
+djangocms-rest uses Django's permission system to control access to API endpoints. This guide explains how permissions work and how to customize them.
 
 Overview
 --------
 
-Permissions in django CMS REST are based on Django's built-in permission system. Each API endpoint checks for specific permissions before allowing access.
+Permissions in djangocms-rest are based on Django's built-in permission system. Each API endpoint checks for specific permissions before allowing access.
 
 Default Permissions
 ------------------
@@ -34,7 +34,7 @@ The following permissions are required by default:
 Permission Classes
 -----------------
 
-django CMS REST provides custom permission classes that extend Django REST Framework's permission system:
+djangocms-rest provides custom permission classes that extend Django REST Framework's permission system:
 
 .. code-block:: python
 

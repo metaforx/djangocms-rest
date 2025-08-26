@@ -1,7 +1,7 @@
 Contributing
 ============
 
-Thank you for your interest in contributing to django CMS REST! This guide will help you get started with contributing to the project.
+Thank you for your interest in contributing to djangocms-rest! This guide will help you get started with contributing to the project.
 
 Getting Started
 --------------
@@ -239,7 +239,7 @@ When creating an issue, please include:
     - Python: 3.11
     - Django: 4.2
     - django CMS: 5.0
-    - django CMS REST: 0.1.0
+    - djangocms-rest: 0.1.0
     
     ## Additional context
     
@@ -433,4 +433,4 @@ Contributors are recognized in:
 * Release notes
 * The project's contributors page
 
-Thank you for contributing to django CMS REST! 
+Thank you for contributing to djangocms-rest! 

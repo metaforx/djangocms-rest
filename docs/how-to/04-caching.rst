@@ -1,12 +1,12 @@
 Caching
 =======
 
-django CMS REST provides built-in caching support to improve API performance. This guide explains how to configure and use caching effectively.
+djangocms-rest provides built-in caching support to improve API performance. This guide explains how to configure and use caching effectively.
 
 Overview
 --------
 
-Caching in django CMS REST helps reduce database queries and improve response times by storing frequently accessed data in memory or other fast storage systems.
+Caching in djangocms-rest helps reduce database queries and improve response times by storing frequently accessed data in memory or other fast storage systems.
 
 Cache Configuration
 ------------------
@@ -92,7 +92,7 @@ Cache Settings
 Cache Keys
 ----------
 
-django CMS REST uses structured cache keys to organize cached data:
+djangocms-rest uses structured cache keys to organize cached data:
 
 **Page Cache Keys:**
 
@@ -115,7 +115,7 @@ Cache Invalidation
 
 **Automatic Invalidation:**
 
-django CMS REST automatically invalidates cache when content changes:
+djangocms-rest automatically invalidates cache when content changes:
 
 .. code-block:: python
 

@@ -1,4 +1,4 @@
-django CMS REST Documentation
+djangocms-rest
 ============================
 
 .. image:: https://img.shields.io/badge/python-3.9+-blue.svg
@@ -17,7 +17,7 @@ django CMS REST Documentation
    :target: https://opensource.org/licenses/BSD-3-Clause
    :alt: License
 
-django CMS REST provides comprehensive API endpoints for django CMS, enabling you to build headless CMS applications, mobile apps, or integrate django CMS content with other systems through RESTful APIs.
+djangocms-rest provides comprehensive API endpoints for django CMS, enabling you to build headless CMS applications, mobile apps, or integrate django CMS content with other systems through RESTful APIs.
 
 Key Features
 ------------
@@ -35,7 +35,7 @@ Quick Start
 
 .. code-block:: python
 
-    # Install django CMS REST
+    # Install djangocms-rest
     pip install djangocms-rest
 
     # Add to INSTALLED_APPS

@@ -1,7 +1,7 @@
 Quick Start Guide
 ================
 
-This guide will help you get started with django CMS REST quickly. We'll create a simple example that demonstrates the basic functionality.
+This guide will help you get started with djangocms-rest quickly. We'll create a simple example that demonstrates the basic functionality.
 
 Prerequisites
 ------------
@@ -52,7 +52,7 @@ Basic Setup
         'djangocms_link',
         'djangocms_text',
         
-        # django CMS REST
+        # djangocms-rest
         'djangocms_rest',
         
         # Django REST Framework
