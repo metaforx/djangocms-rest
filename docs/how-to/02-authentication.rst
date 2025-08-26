@@ -1,12 +1,12 @@
 Authentication
 ==============
 
-django CMS REST uses **Session Authentication** as the only authentication method. This means that users must be logged into the Django CMS admin interface to access protected API endpoints.
+djangocms-rest uses **Session Authentication** as the only authentication method. This means that users must be logged into the Django CMS admin interface to access protected API endpoints.
 
 Overview
 --------
 
-django CMS REST is designed to work seamlessly with the existing Django CMS admin interface. The API respects the same authentication and permissions as the admin interface, ensuring a consistent user experience.
+djangocms-rest is designed to work seamlessly with the existing Django CMS admin interface. The API respects the same authentication and permissions as the admin interface, ensuring a consistent user experience.
 
 **Key Points:**
 
@@ -18,7 +18,7 @@ django CMS REST is designed to work seamlessly with the existing Django CMS admi
 Session Authentication
 ---------------------
 
-Session authentication is the default and only authentication method for django CMS REST.
+Session authentication is the default and only authentication method for djangocms-rest.
 
 **Configuration:**
 
@@ -98,7 +98,7 @@ Session authentication is the default and only authentication method for django 
 Permission System
 ----------------
 
-django CMS REST uses Django's built-in permission system. The same permissions that control access in the Django CMS admin interface also control access to the API endpoints.
+djangocms-rest uses Django's built-in permission system. The same permissions that control access in the Django CMS admin interface also control access to the API endpoints.
 
 **Default Permissions:**
 
@@ -130,7 +130,7 @@ django CMS REST uses Django's built-in permission system. The same permissions t
 Anonymous Access
 ---------------
 
-By default, django CMS REST requires authentication for all endpoints. However, you can configure it to allow anonymous access for read operations:
+By default, djangocms-rest requires authentication for all endpoints. However, you can configure it to allow anonymous access for read operations:
 
 .. code-block:: python
 

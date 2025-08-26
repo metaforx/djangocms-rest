@@ -1,7 +1,7 @@
 Permissions API
 ==============
 
-The Permissions API provides endpoints for managing and checking permissions in django CMS REST.
+The Permissions API provides endpoints for managing and checking permissions in djangocms-rest.
 
 Endpoints
 ---------

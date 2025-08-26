@@ -1,7 +1,7 @@
 API Reference
 =============
 
-Complete API documentation for all django CMS REST endpoints.
+Complete API documentation for all djangocms-rest endpoints.
 
 .. toctree::
    :maxdepth: 2

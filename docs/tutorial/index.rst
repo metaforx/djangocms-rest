@@ -1,7 +1,7 @@
 Tutorial
 ========
 
-Welcome to the django CMS REST tutorial section. Here you'll find step-by-step guides to get you started.
+Welcome to the djangocms-rest tutorial section. Here you'll find step-by-step guides to get you started.
 
 .. toctree::
    :maxdepth: 2

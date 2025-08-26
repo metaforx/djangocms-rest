@@ -1,7 +1,7 @@
 Examples
 ========
 
-This section provides practical examples of using django CMS REST in various scenarios.
+This section provides practical examples of using djangocms-rest in various scenarios.
 
 Basic Examples
 -------------
@@ -305,7 +305,7 @@ Client Libraries
 .. code-block:: python
 
     class DjangoCMSRESTClient:
-        """A client library for django CMS REST API"""
+        """A client library for djangocms-rest API"""
         
         def __init__(self, base_url: str, token: str = None, username: str = None, password: str = None):
             self.base_url = base_url.rstrip('/')

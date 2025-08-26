@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'django CMS REST'
+project = 'djangocms-rest'
 copyright = '2024, Django CMS Association and contributors'
 author = 'Django CMS Association and contributors'
 
@@ -68,7 +68,7 @@ language = 'en'
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'github-light'
+pygments_style = 'default'
 pygments_dark_style = 'dracula' 
 
 # -- Options for HTML output -------------------------------------------------
@@ -120,10 +120,10 @@ html_css_files = [
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = "django CMS REST Documentation"
+html_title = "djangocms-rest"
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
-html_short_title = "django CMS REST"
+html_short_title = "djangocms-rest"
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
@@ -173,7 +173,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'djangocmsrest.tex', 'django CMS REST Documentation',
+    (master_doc, 'djangocmsrest.tex', 'djangocms-rest Documentation',
      'Django CMS Association and contributors', 'manual'),
 ]
 
@@ -182,7 +182,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'djangocmsrest', 'django CMS REST Documentation',
+    (master_doc, 'djangocmsrest', 'djangocms-rest Documentation',
      [author], 1)
 ]
 
@@ -192,7 +192,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'djangocmsrest', 'django CMS REST Documentation',
+    (master_doc, 'djangocmsrest', 'djangocms-rest Documentation',
      author, 'djangocmsrest', 'API endpoints for django CMS',
      'Miscellaneous'),
 ]

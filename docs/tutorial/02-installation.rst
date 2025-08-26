@@ -4,7 +4,7 @@ Installation
 Requirements
 ------------
 
-django CMS REST requires:
+djangocms-rest requires:
 
 * Python 3.9 or higher
 * Django 4.2 or higher
@@ -63,14 +63,14 @@ Configuration
         'djangocms_link',
         'djangocms_text',
         
-        # django CMS REST
+        # djangocms-rest
         'djangocms_rest',
         
         # Django REST Framework
         'rest_framework',
     ]
 
-2. Include the django CMS REST URLs in your main URL configuration:
+2. Include the djangocms-rest URLs in your main URL configuration:
 
 .. code-block:: python
 
@@ -99,7 +99,7 @@ Configuration
         ],
     }
 
-**Note:** django CMS REST uses Session Authentication as the only authentication method. Users must be logged into the Django CMS admin interface to access protected API endpoints.
+**Note:** djangocms-rest uses Session Authentication as the only authentication method. Users must be logged into the Django CMS admin interface to access protected API endpoints.
 
 4. Run migrations:
 
@@ -152,7 +152,7 @@ For development, clone the repository and install in development mode:
 Verification
 -----------
 
-After installation, you can verify that django CMS REST is working correctly:
+After installation, you can verify that djangocms-rest is working correctly:
 
 1. Start your Django development server:
 
@@ -181,7 +181,7 @@ Make sure you've added ``djangocms_rest`` to your ``INSTALLED_APPS`` and that th
 
 **404 errors on API endpoints**
 
-Check that you've included the django CMS REST URLs in your main URL configuration.
+Check that you've included the djangocms-rest URLs in your main URL configuration.
 
 **Permission denied errors**
 

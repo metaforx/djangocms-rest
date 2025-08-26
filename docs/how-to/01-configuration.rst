@@ -1,7 +1,7 @@
 Configuration
 =============
 
-django CMS REST provides various configuration options to customize its behavior. This guide covers all available settings.
+djangocms-rest provides various configuration options to customize its behavior. This guide covers all available settings.
 
 Django REST Framework Settings
 -----------------------------
@@ -43,14 +43,14 @@ Configure Django REST Framework settings in your Django settings file:
         ],
     }
 
-django CMS REST Settings
+djangocms-rest Settings
 -----------------------
 
-Add these settings to your Django settings file to customize django CMS REST behavior:
+Add these settings to your Django settings file to customize djangocms-rest behavior:
 
 .. code-block:: python
 
-    # django CMS REST specific settings
+    # djangocms-rest specific settings
     DJANGOCMS_REST = {
         # Cache settings
         'CACHE_ENABLED': True,
@@ -179,7 +179,7 @@ Setting Reference
 Cache Configuration
 ------------------
 
-django CMS REST supports various cache backends. Configure caching in your Django settings:
+djangocms-rest supports various cache backends. Configure caching in your Django settings:
 
 .. code-block:: python
 
@@ -213,7 +213,7 @@ django CMS REST supports various cache backends. Configure caching in your Djang
 Authentication Configuration
 ---------------------------
 
-django CMS REST uses Session Authentication as the only authentication method. Configure it in your Django settings:
+djangocms-rest uses Session Authentication as the only authentication method. Configure it in your Django settings:
 
 .. code-block:: python
 

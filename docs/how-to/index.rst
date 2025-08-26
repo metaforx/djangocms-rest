@@ -1,7 +1,7 @@
 How-to Guides
 =============
 
-Practical guides for configuring and using django CMS REST in your projects.
+Practical guides for configuring and using djangocms-rest in your projects.
 
 .. toctree::
    :maxdepth: 2
