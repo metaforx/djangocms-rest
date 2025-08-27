@@ -21,6 +21,7 @@ sphinx-autobuild = "^2021.3.14"
 sphinx-issues = "^3.0.1"
 sphinx-removed-in = "^0.2.1"
 sphinx-notfound-page = "^0.8.3"
+rstfmt = "^0.0.14"
 
 [build-system]
 requires = ["poetry-core"]
