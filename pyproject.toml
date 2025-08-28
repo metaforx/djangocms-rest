@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "djangocms-rest"
-version = "0.1.0"  # Will be read from djangocms_rest/__init__.py
 description = "API endpoints for django CMS"
+dynamic = [ "version" ]
 authors = ["Fabian Braun <fsbraun@gmx.de>"]
 maintainers = ["Django CMS Association and contributors <info@django-cms.org>"]
 license = "BSD-3-Clause"
@@ -34,6 +34,8 @@ classifiers = [
     "Topic :: Software Development",
     "Topic :: Software Development :: Libraries",
 ]
+[tool.setuptools.dynamic]
+version = { attr = "djangocms_rest.__version__" }
 
 [tool.poetry.dependencies]
 python = ">=3.9,<4"
