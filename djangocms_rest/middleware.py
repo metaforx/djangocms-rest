@@ -46,7 +46,7 @@ class SiteContextMiddleware(MiddlewareMixin):
             except (Site.DoesNotExist, ValueError):
                 return HttpResponseServerError("Oops! Something went wrong.")
         else:
-            request.site = get_current_site()
+            request.site = get_current_site(request)
         return None
 
 
