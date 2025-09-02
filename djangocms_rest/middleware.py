@@ -1,6 +1,6 @@
 from typing import Optional
 
-from cms.utils import get_current_site
+from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.sites.models import Site
 from django.core.cache import cache
 from django.db.models.signals import post_delete, post_save
