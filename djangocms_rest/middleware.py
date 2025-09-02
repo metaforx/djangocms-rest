@@ -35,12 +35,7 @@ class SiteContextMiddleware(MiddlewareMixin):
         if site_id:
             try:
                 site_id = int(site_id)
-                cache_key = get_site_cache_key(site_id)
-                site = cache.get(cache_key)
-
-                if site is None:
-                    site = Site.objects.get(pk=site_id)
-                    cache.set(cache_key, site, settings.CONTENT_CACHE_DURATION)
+                site = Site.objects._get_site_by_id(site_id)
 
                 request.site = site
             except (Site.DoesNotExist, ValueError):
