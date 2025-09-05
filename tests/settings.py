@@ -19,9 +19,9 @@ MIGRATION_MODULES = DisableMigrations()
 SECRET_KEY = "djangocms-text-test-suite"
 
 INSTALLED_APPS = [
+    "django.contrib.sites",
     "django.contrib.contenttypes",
     "django.contrib.auth",
-    "django.contrib.sites",
     "django.contrib.sessions",
     "django.contrib.admin",
     "django.contrib.messages",
