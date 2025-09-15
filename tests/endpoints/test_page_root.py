@@ -8,7 +8,7 @@ from tests.utils import assert_field_types
 class PageRootAPITestCase(BaseCMSRestTestCase):
     def test_get(self):
         """
-        Test the page root endpoint ('/api/{language}/pages-root/').
+        Test the page root endpoint ('/api/{language}/pages/').
 
         Verifies:
         - Endpoint returns correct HTTP status code
@@ -26,6 +26,15 @@ class PageRootAPITestCase(BaseCMSRestTestCase):
         response = self.client.get(reverse("page-root", kwargs={"language": "en"}))
         self.assertEqual(response.status_code, 200)
         page = response.json()
+        self.assertFalse(response.json().get("is_preview"))
+
+        # GET with ?preview=false
+        response = self.client.get(
+            reverse("page-root", kwargs={"language": "en"}) + "?preview=false"
+        )
+        self.assertEqual(response.status_code, 200)
+        page = response.json()
+        self.assertFalse(response.json().get("is_preview"))
 
         # Data & Type Validation
         for field, expected_type in type_checks.items():
@@ -45,12 +54,12 @@ class PageRootAPITestCase(BaseCMSRestTestCase):
 
         # GET PREVIEW
         response = self.client.get(
-            reverse("preview-page-root", kwargs={"language": "en"})
+            reverse("page-root", kwargs={"language": "en"}) + "?preview"
         )
         self.assertEqual(response.status_code, 403)
 
         response = self.client.get(
-            reverse("preview-page-root", kwargs={"language": "xx"})
+            reverse("page-root", kwargs={"language": "xx"}) + "?preview"
         )
         self.assertEqual(response.status_code, 403)
 
@@ -58,6 +67,7 @@ class PageRootAPITestCase(BaseCMSRestTestCase):
     def test_get_protected(self):
         self.client.force_login(self.user)
         response = self.client.get(
-            reverse("preview-page-root", kwargs={"language": "en"})
+            reverse("page-root", kwargs={"language": "en"}) + "?preview"
         )
         self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json().get("is_preview"))
