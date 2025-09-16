@@ -1,4 +1,4 @@
-from typing import Callable, ParamSpec, TypeVar
+from typing import ParamSpec, TypeVar
 
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.functional import cached_property
