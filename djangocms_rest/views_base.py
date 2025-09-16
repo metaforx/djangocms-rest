@@ -5,6 +5,29 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.views import APIView
 
 
+try:
+    from drf_spectacular.types import OpenApiTypes
+    from drf_spectacular.utils import OpenApiParameter, extend_schema   # noqa: F401
+
+    preview_schema = extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="preview",
+                type=OpenApiTypes.BOOL,
+                location="query",
+                description="Set to true to preview unpublished content (admin access required)",
+                required=False,
+            )
+        ]
+    )
+except ImportError:
+    class OpenApiTypes:
+        BOOL = "boolean"
+
+    def preview_schema(cls):
+        return cls
+
+@preview_schema
 class BaseAPIMixin:
     """
     This mixin provides common functionality for all API views.

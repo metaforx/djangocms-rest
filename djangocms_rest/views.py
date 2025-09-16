@@ -34,7 +34,7 @@ from djangocms_rest.views_base import BaseAPIView, BaseListAPIView
 
 
 try:
-    from drf_spectacular.types import OpenApiTypes  # noqa: F401
+    from drf_spectacular.types import OpenApiTypes
     from drf_spectacular.utils import OpenApiParameter, extend_schema  # noqa: F401
 
     extend_placeholder_schema = extend_schema(
@@ -42,14 +42,24 @@ try:
             OpenApiParameter(
                 name="html",
                 type=OpenApiTypes.INT,
-                location=OpenApiParameter.QUERY,
+                location="query",
                 description="Set to 1 to include HTML rendering in response",
                 required=False,
                 enum=[1],
+            ),
+            OpenApiParameter(
+                name="preview",
+                type=OpenApiTypes.BOOL,
+                location="query",
+                description="Set to true to preview unpublished content (admin access required)",
+                required=False,
             )
         ]
     )
 except ImportError:
+    class OpenApiTypes:
+        BOOL = "boolean"
+        INT = "integer"
 
     def extend_placeholder_schema(func):
         return func
@@ -60,7 +70,7 @@ except ImportError:
 # and keeps the code cleaner.
 # Attn: Dynamic changes to the plugin pool will not be reflected in the
 # plugin definitions.
-# If you need to update the plugin definitions, you need reassign the variable.
+# If you need to update the plugin definitions, you need to reassign the variable.
 PLUGIN_DEFINITIONS = lazy(
     PluginDefinitionSerializer.generate_plugin_definitions, dict
 )()
