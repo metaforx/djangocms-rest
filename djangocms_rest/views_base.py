@@ -1,13 +1,17 @@
+from typing import Callable, ParamSpec, TypeVar
+
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.functional import cached_property
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAdminUser
 from rest_framework.views import APIView
 
+P = ParamSpec("P")
+T = TypeVar("T")
 
 try:
     from drf_spectacular.types import OpenApiTypes
-    from drf_spectacular.utils import OpenApiParameter, extend_schema   # noqa: F401
+    from drf_spectacular.utils import OpenApiParameter, extend_schema
 
     preview_schema = extend_schema(
         parameters=[
@@ -20,12 +24,26 @@ try:
             )
         ]
     )
-except ImportError:
+except ImportError: # pragma: no cover
     class OpenApiTypes:
         BOOL = "boolean"
 
-    def preview_schema(cls):
-        return cls
+    class OpenApiParameter:  # pragma: no cover
+        QUERY = "query"
+        PATH = "path"
+        HEADER = "header"
+        COOKIE = "cookie"
+
+        def __init__(self, *args, **kwargs):
+            pass
+
+    def extend_schema(*_args, **_kwargs):  # pragma: no cover
+        def _decorator(obj: T) -> T:
+            return obj
+        return _decorator
+
+    def preview_schema(obj: T) -> T: # pragma: no cover
+        return obj
 
 @preview_schema
 class BaseAPIMixin:

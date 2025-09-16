@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Callable, ParamSpec, TypeVar
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django.utils.functional import lazy
@@ -32,10 +32,12 @@ from djangocms_rest.utils import (
 )
 from djangocms_rest.views_base import BaseAPIView, BaseListAPIView
 
+P = ParamSpec("P")
+T = TypeVar("T")
 
 try:
     from drf_spectacular.types import OpenApiTypes
-    from drf_spectacular.utils import OpenApiParameter, extend_schema  # noqa: F401
+    from drf_spectacular.utils import OpenApiParameter, extend_schema
 
     extend_placeholder_schema = extend_schema(
         parameters=[
@@ -56,12 +58,27 @@ try:
             )
         ]
     )
-except ImportError:
+
+except ImportError: # pragma: no cover
     class OpenApiTypes:
         BOOL = "boolean"
         INT = "integer"
 
-    def extend_placeholder_schema(func):
+    class OpenApiParameter:  # pragma: no cover
+        QUERY = "query"
+        PATH = "path"
+        HEADER = "header"
+        COOKIE = "cookie"
+
+        def __init__(self, *args, **kwargs):
+            pass
+
+    def extend_schema(*_args, **_kwargs):  # pragma: no cover
+        def _decorator(obj: T) -> T:
+            return obj
+        return _decorator
+
+    def extend_placeholder_schema(func: Callable[P, T]) -> Callable[P, T]:
         return func
 
 
