@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "tests.test_app",
     "filer",
     "easy_thumbnails",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [

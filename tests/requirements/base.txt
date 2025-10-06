@@ -4,6 +4,7 @@ djangocms-text
 django-filer
 beautifulsoup4
 setuptools
+drf-spectacular
 
 # other requirements
 coverage
