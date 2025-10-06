@@ -1,7 +1,7 @@
 Languages API
 =============
 
-The Languages API provides endpoints for managing and retrieving language information in django CMS.
+The Languages API provides endpoints for retrieving language information in django CMS.
 
 Endpoints
 ---------
@@ -9,76 +9,15 @@ Endpoints
 List Languages
 ~~~~~~~~~~~~~
 
-**GET** ``/api/cms/languages/``
+**GET** ``/api/languages/``
 
-Retrieve a list of all available languages.
-
-**Query Parameters:**
-
-* ``page`` (integer, optional): Page number for pagination (default: 1)
-* ``page_size`` (integer, optional): Number of items per page (default: 20, max: 100)
+List of languages available for the site.
 
 **Example Request:**
 
 .. code-block:: bash
 
-    GET /api/cms/languages/
-
-**Example Response:**
-
-.. code-block:: json
-
-    {
-        "count": 3,
-        "next": null,
-        "previous": null,
-        "results": [
-            {
-                "code": "en",
-                "name": "English",
-                "public": true,
-                "fallbacks": ["en"],
-                "hide_untranslated": true,
-                "redirect_on_fallback": true,
-                "prefix_default_language": false
-            },
-            {
-                "code": "de",
-                "name": "German",
-                "public": true,
-                "fallbacks": ["en"],
-                "hide_untranslated": true,
-                "redirect_on_fallback": true,
-                "prefix_default_language": false
-            },
-            {
-                "code": "fr",
-                "name": "French",
-                "public": true,
-                "fallbacks": ["en"],
-                "hide_untranslated": true,
-                "redirect_on_fallback": true,
-                "prefix_default_language": false
-            }
-        ]
-    }
-
-Retrieve Language
-~~~~~~~~~~~~~~~~
-
-**GET** ``/api/cms/languages/{code}/``
-
-Retrieve a specific language by its code.
-
-**Path Parameters:**
-
-* ``code`` (string, required): The language code (e.g., "en", "de")
-
-**Example Request:**
-
-.. code-block:: bash
-
-    GET /api/cms/languages/en/
+    GET /api/languages/
 
 **Example Response:**
 
@@ -89,9 +28,8 @@ Retrieve a specific language by its code.
         "name": "English",
         "public": true,
         "fallbacks": ["en"],
-        "hide_untranslated": true,
         "redirect_on_fallback": true,
-        "prefix_default_language": false
+        "hide_untranslated": true
     }
 
 Field Reference
@@ -103,16 +41,16 @@ Field Reference
 
    * - Field
      - Type
-     - Required
+     - Nullable
      - Description
    * - code
      - string
-     - Yes
-     - Language code (e.g., "en", "de", "fr")
+     - No
+     - Language code (max 10 characters)
    * - name
      - string
-     - Yes
-     - Human-readable language name
+     - No
+     - Human-readable language name (max 100 characters)
    * - public
      - boolean
      - No
@@ -120,19 +58,15 @@ Field Reference
    * - fallbacks
      - array
      - No
-     - List of fallback language codes
-   * - hide_untranslated
-     - boolean
-     - No
-     - Whether to hide untranslated content
+     - List of fallback language codes (max 10 characters each)
    * - redirect_on_fallback
      - boolean
      - No
      - Whether to redirect on fallback
-   * - prefix_default_language
+   * - hide_untranslated
      - boolean
      - No
-     - Whether to prefix URLs for default language
+     - Whether to hide untranslated content
 
 Error Handling
 --------------
@@ -142,40 +76,47 @@ Error Handling
 .. code-block:: json
 
     {
-        "detail": "Language not found."
+        "detail": "Not found."
+    }
+
+**403 Forbidden:** Insufficient permissions
+
+.. code-block:: json
+
+    {
+        "detail": "You do not have permission to perform this action."
     }
 
 Examples
 --------
 
-**Get all languages:**
+**Get languages:**
 
 .. code-block:: python
 
     import requests
 
-    response = requests.get('http://localhost:8000/api/cms/languages/')
-    languages = response.json()
+    # Get languages (no authentication required)
+    response = requests.get('http://localhost:8080/api/languages/')
     
-    for language in languages['results']:
-        print(f"{language['name']} ({language['code']})")
+    if response.status_code == 200:
+        language = response.json()
+        print(f"Language: {language['name']} ({language['code']})")
+        print(f"Fallbacks: {language['fallbacks']}")
+        print(f"Public: {language['public']}")
 
-**Get specific language:**
+**Get languages with authentication:**
 
 .. code-block:: python
 
-    response = requests.get('http://localhost:8000/api/cms/languages/en/')
-    english = response.json()
-    print(f"English fallbacks: {english['fallbacks']}")
-
-**Filter pages by language:**
-
-.. code-block:: python
-
-    # Get pages in English
-    response = requests.get('http://localhost:8000/api/cms/pages/', params={'language': 'en'})
-    english_pages = response.json()
+    # Get languages with session authentication
+    response = requests.get(
+        'http://localhost:8080/api/languages/',
+        headers={"Cookie": "sessionid=your-session-id"}
+    )
     
-    # Get pages in German
-    response = requests.get('http://localhost:8000/api/cms/pages/', params={'language': 'de'})
-    german_pages = response.json() 
+    if response.status_code == 200:
+        language = response.json()
+        print(f"Language: {language['name']} ({language['code']})")
+        print(f"Hide untranslated: {language['hide_untranslated']}")
+        print(f"Redirect on fallback: {language['redirect_on_fallback']}") 

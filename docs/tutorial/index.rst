@@ -8,4 +8,4 @@ Welcome to the djangocms-rest tutorial section. Here you'll find step-by-step gu
    :hidden:
 
    01-quickstart
-   02-installation 
+   02-installation
