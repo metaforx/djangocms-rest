@@ -261,7 +261,7 @@ class MenuView(BaseAPIView):
         serializer = self.serializer_class(
             menu, many=True, context={"request": request}
         )
-        return Response(serializer.data)
+        return Response({self.return_key: serializer.data})
 
     def populate_defaults(self, kwargs: dict[str, Any]) -> None:
         """Set default values for menu view parameters."""
