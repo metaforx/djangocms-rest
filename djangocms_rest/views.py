@@ -241,6 +241,21 @@ class PluginDefinitionView(BaseAPIView):
         return Response(definitions)
 
 
+try:
+    from drf_spectacular.utils import extend_schema, OpenApiResponse
+
+    def method_schema_decorator(method):
+        """
+        Decorator for adding OpenAPI schema to a method.
+        Needed to force the schema to use many=True for NavigationNodeSerializer.
+        """
+        return extend_schema(
+            responses=OpenApiResponse(response=NavigationNodeSerializer(many=True))
+        )(method)
+except ImportError:
+    def method_schema_decorator(method):
+        return method
+
 class MenuView(BaseAPIView):
     permission_classes = [IsAllowedPublicLanguage]
     serializer_class = NavigationNodeSerializer
@@ -248,6 +263,7 @@ class MenuView(BaseAPIView):
     tag = ShowMenu
     return_key = "children"
 
+    @method_schema_decorator
     def get(
         self,
         request: Request,
@@ -261,7 +277,7 @@ class MenuView(BaseAPIView):
         serializer = self.serializer_class(
             menu, many=True, context={"request": request}
         )
-        return Response({self.return_key: serializer.data})
+        return Response(serializer.data)
 
     def populate_defaults(self, kwargs: dict[str, Any]) -> None:
         """Set default values for menu view parameters."""
