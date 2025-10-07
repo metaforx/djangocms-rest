@@ -46,4 +46,4 @@ class NavigationNodeSerializer(serializers.Serializer):
 
 
 class NavigationNodeListSerializer(serializers.ListSerializer):
-    child = NavigationNodeSerializer()
+    child = NavigationNodeSerializer(many=True)
