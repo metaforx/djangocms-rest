@@ -1,10 +1,51 @@
+from typing import ParamSpec, TypeVar
+
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.functional import cached_property
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAdminUser
 from rest_framework.views import APIView
 
+P = ParamSpec("P")
+T = TypeVar("T")
 
+try:
+    from drf_spectacular.types import OpenApiTypes
+    from drf_spectacular.utils import OpenApiParameter, extend_schema
+
+    preview_schema = extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="preview",
+                type=OpenApiTypes.BOOL,
+                location="query",
+                description="Set to true to preview unpublished content (admin access required)",
+                required=False,
+            )
+        ]
+    )
+except ImportError: # pragma: no cover
+    class OpenApiTypes:
+        BOOL = "boolean"
+
+    class OpenApiParameter:  # pragma: no cover
+        QUERY = "query"
+        PATH = "path"
+        HEADER = "header"
+        COOKIE = "cookie"
+
+        def __init__(self, *args, **kwargs):
+            pass
+
+    def extend_schema(*_args, **_kwargs):  # pragma: no cover
+        def _decorator(obj: T) -> T:
+            return obj
+        return _decorator
+
+    def preview_schema(obj: T) -> T: # pragma: no cover
+        return obj
+
+@preview_schema
 class BaseAPIMixin:
     """
     This mixin provides common functionality for all API views.
