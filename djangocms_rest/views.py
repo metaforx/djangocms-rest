@@ -281,10 +281,11 @@ try:
         return extend_schema(
             responses=OpenApiResponse(response=NavigationNodeSerializer(many=True))
         )(method)
-except ImportError:
+
+except ImportError:  # pragma: no cover
 
     def method_schema_decorator(method):  # pragma: no cover
-        return method
+        return method  # pragma: no cover
 
 
 class MenuView(BaseAPIView):
