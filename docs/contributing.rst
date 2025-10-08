@@ -4,7 +4,7 @@ Contributing
 Thank you for your interest in contributing to djangocms-rest! This guide will help you get started with contributing to the project.
 
 Getting Started
---------------
+---------------
 
 **Prerequisites:**
 
@@ -52,7 +52,7 @@ Getting Started
     pytest tests/test_pages.py
 
 Development Guidelines
---------------------
+----------------------
 
 **Code Style:**
 
@@ -96,7 +96,7 @@ The project uses pre-commit hooks to ensure code quality:
 * Aim for high test coverage
 
 Making Changes
--------------
+--------------
 
 **Create a Feature Branch:**
 
@@ -144,7 +144,7 @@ Use conventional commits format:
 5. Submit the PR
 
 Pull Request Guidelines
-----------------------
+-----------------------
 
 **PR Template:**
 
@@ -193,7 +193,7 @@ When creating a pull request, please include:
 4. PR must be up to date with the main branch
 
 Issue Guidelines
----------------
+----------------
 
 **Before Creating an Issue:**
 
@@ -246,7 +246,7 @@ When creating an issue, please include:
     The custom template exists and works in the Django admin.
 
 Development Setup
-----------------
+-----------------
 
 **Local Development Server:**
 
@@ -298,7 +298,7 @@ The project uses tox for testing multiple environments:
     make watch
 
 Code Organization
-----------------
+-----------------
 
 **Project Structure:**
 
@@ -364,7 +364,7 @@ Code Organization
             self.assertEqual(response.status_code, 200)
 
 Release Process
---------------
+---------------
 
 **Version Management:**
 
@@ -402,7 +402,7 @@ Release Process
     git push origin v1.0.0
 
 Community Guidelines
--------------------
+--------------------
 
 **Code of Conduct:**
 

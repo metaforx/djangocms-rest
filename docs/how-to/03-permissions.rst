@@ -9,7 +9,7 @@ Overview
 Permissions in djangocms-rest are based on Django's built-in permission system. Each API endpoint checks for specific permissions before allowing access.
 
 Default Permissions
-------------------
+-------------------
 
 The following permissions are required by default:
 
@@ -32,7 +32,7 @@ The following permissions are required by default:
   * `cms.view_cmsplugin` - View plugins
 
 Permission Classes
------------------
+------------------
 
 djangocms-rest provides custom permission classes that extend Django REST Framework's permission system:
 
@@ -77,7 +77,7 @@ djangocms-rest provides custom permission classes that extend Django REST Framew
             return False
 
 Customizing Permissions
-----------------------
+-----------------------
 
 **Custom Permission Class:**
 
@@ -132,7 +132,7 @@ Customizing Permissions
     ]
 
 Role-Based Permissions
----------------------
+----------------------
 
 You can implement role-based permissions using Django groups:
 
@@ -188,7 +188,7 @@ You can implement role-based permissions using Django groups:
     user.groups.add(editors_group)
 
 Object-Level Permissions
------------------------
+------------------------
 
 For more granular control, you can implement object-level permissions:
 
@@ -234,7 +234,7 @@ For more granular control, you can implement object-level permissions:
         )
 
 Anonymous Access
----------------
+----------------
 
 To allow anonymous users to read content, configure your settings:
 
@@ -270,7 +270,7 @@ To allow anonymous users to read content, configure your settings:
             return request.user.is_authenticated
 
 API-Level Permissions
---------------------
+---------------------
 
 You can also control permissions at the API level:
 
@@ -292,7 +292,7 @@ You can also control permissions at the API level:
         return Response({'message': 'Public access allowed'})
 
 Testing Permissions
-------------------
+-------------------
 
 **Test Permission Classes:**
 
@@ -367,7 +367,7 @@ Testing Permissions
             self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 Best Practices
--------------
+--------------
 
 1. **Principle of Least Privilege:**
    * Only grant the minimum permissions necessary
@@ -394,7 +394,7 @@ Best Practices
    * Set up alerts for suspicious access patterns
 
 Example Configuration
---------------------
+---------------------
 
 **Complete Permission Setup:**
 

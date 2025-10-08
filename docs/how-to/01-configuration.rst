@@ -4,7 +4,7 @@ Configuration
 djangocms-rest provides various configuration options to customize its behavior. This guide covers all available settings.
 
 Django REST Framework Settings
------------------------------
+------------------------------
 
 Configure Django REST Framework settings in your Django settings file:
 
@@ -93,7 +93,7 @@ Add these settings to your Django settings file to customize djangocms-rest beha
     }
 
 Setting Reference
-----------------
+-----------------
 
 .. list-table:: DJANGOCMS_REST Settings
    :header-rows: 1
@@ -177,7 +177,7 @@ Setting Reference
      - Enable query optimization
 
 Cache Configuration
-------------------
+-------------------
 
 djangocms-rest supports various cache backends. Configure caching in your Django settings:
 
@@ -211,7 +211,7 @@ djangocms-rest supports various cache backends. Configure caching in your Django
     }
 
 Authentication Configuration
----------------------------
+----------------------------
 
 djangocms-rest uses Session Authentication as the only authentication method. Configure it in your Django settings:
 
@@ -230,7 +230,7 @@ djangocms-rest uses Session Authentication as the only authentication method. Co
 **Note:** Users must be logged into the Django CMS admin interface to access protected API endpoints. The API uses the same session-based authentication as the admin interface.
 
 Permission Configuration
------------------------
+------------------------
 
 Customize permissions for different user groups:
 

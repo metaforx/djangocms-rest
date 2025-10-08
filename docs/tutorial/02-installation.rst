@@ -12,7 +12,7 @@ djangocms-rest requires:
 * Django REST Framework 3.14 or higher
 
 Installation
------------
+------------
 
 Using pip
 ~~~~~~~~~
@@ -22,14 +22,14 @@ Using pip
     pip install djangocms-rest
 
 Using Poetry
-~~~~~~~~~~~
+~~~~~~~~~~~~
 
 .. code-block:: bash
 
     poetry add djangocms-rest
 
 From source
-~~~~~~~~~~
+~~~~~~~~~~~
 
 .. code-block:: bash
 
@@ -114,7 +114,7 @@ Configuration
     python manage.py createsuperuser
 
 Optional Dependencies
---------------------
+---------------------
 
 For enhanced functionality, you can install additional packages:
 
@@ -130,7 +130,7 @@ For enhanced functionality, you can install additional packages:
     pip install django-cors-headers
 
 Development Setup
-----------------
+-----------------
 
 For development, clone the repository and install in development mode:
 
@@ -150,7 +150,7 @@ For development, clone the repository and install in development mode:
     make html
 
 Verification
------------
+------------
 
 After installation, you can verify that djangocms-rest is working correctly:
 
@@ -170,10 +170,10 @@ After installation, you can verify that djangocms-rest is working correctly:
 If you see JSON responses, the installation was successful! **Note:** You must be logged into the Django CMS admin interface to access these endpoints.
 
 Troubleshooting
---------------
+---------------
 
 Common Issues
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 **ImportError: No module named 'djangocms_rest'**
 
@@ -192,7 +192,7 @@ Ensure that you're authenticated and have the necessary permissions to access th
 Make sure django CMS is properly installed and configured in your Django project.
 
 Getting Help
------------
+------------
 
 If you encounter any issues during installation:
 

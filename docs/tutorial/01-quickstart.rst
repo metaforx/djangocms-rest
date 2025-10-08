@@ -1,15 +1,15 @@
 Quick Start Guide
-================
+=================
 
 This guide will help you get started with djangocms-rest quickly. We'll create a simple example that demonstrates the basic functionality.
 
 Prerequisites
-------------
+-------------
 
 Make sure you have completed the :doc:`../tutorial/02-installation` guide before proceeding.
 
 Basic Setup
-----------
+-----------
 
 1. **Create a new Django project** (if you don't have one):
 
@@ -174,7 +174,7 @@ Basic Setup
     python manage.py runserver
 
 Testing the API
---------------
+---------------
 
 Now let's test the API endpoints. **Important:** You must be logged into the Django CMS admin interface to access protected endpoints.
 
@@ -204,7 +204,7 @@ Now let's test the API endpoints. **Important:** You must be logged into the Dja
     curl -b cookies.txt http://localhost:8000/api/cms/placeholders/
 
 Creating Content via API
------------------------
+------------------------
 
 Let's create a page using the API. **Remember:** You must be logged into Django admin first.
 
@@ -236,7 +236,7 @@ Let's create a page using the API. **Remember:** You must be logged into Django 
          }'
 
 Python Client Example
---------------------
+---------------------
 
 Here's a Python example using the requests library with session authentication:
 
@@ -278,7 +278,7 @@ Here's a Python example using the requests library with session authentication:
         print(f"Found {placeholders['count']} placeholders")
 
 JavaScript Client Example
-------------------------
+-------------------------
 
 Here's a JavaScript example using fetch:
 

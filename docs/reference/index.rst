@@ -6,9 +6,11 @@ Complete API documentation for all djangocms-rest endpoints.
 .. toctree::
    :maxdepth: 2
    :hidden:
-
-   pages
+   
    languages
+   pages
    placeholders
+   menu
+   submenu
+   breadcrumbs
    plugins
-   permissions 

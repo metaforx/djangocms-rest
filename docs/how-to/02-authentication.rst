@@ -16,7 +16,7 @@ djangocms-rest is designed to work seamlessly with the existing Django CMS admin
 * No additional authentication setup is required beyond the standard Django CMS installation
 
 Session Authentication
----------------------
+----------------------
 
 Session authentication is the default and only authentication method for djangocms-rest.
 
@@ -96,7 +96,7 @@ Session authentication is the default and only authentication method for djangoc
     curl -b cookies.txt http://localhost:8000/api/cms/pages/
 
 Permission System
-----------------
+-----------------
 
 djangocms-rest uses Django's built-in permission system. The same permissions that control access in the Django CMS admin interface also control access to the API endpoints.
 
@@ -128,7 +128,7 @@ djangocms-rest uses Django's built-in permission system. The same permissions th
 * ``IsAuthenticatedOrReadOnly``: Require authentication for write operations
 
 Anonymous Access
----------------
+----------------
 
 By default, djangocms-rest requires authentication for all endpoints. However, you can configure it to allow anonymous access for read operations:
 
@@ -141,7 +141,7 @@ By default, djangocms-rest requires authentication for all endpoints. However, y
     }
 
 Security Best Practices
-----------------------
+-----------------------
 
 1. **Use HTTPS in Production:**
 
@@ -184,7 +184,7 @@ Security Best Practices
     ]
 
 Testing Authentication
----------------------
+----------------------
 
 **Test Session Authentication:**
 

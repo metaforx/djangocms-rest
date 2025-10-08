@@ -4,7 +4,7 @@ Examples
 This section provides practical examples of using djangocms-rest in various scenarios.
 
 Basic Examples
--------------
+--------------
 
 **Creating a Page with Content:**
 
@@ -128,7 +128,7 @@ Basic Examples
         print("Page tree created successfully!")
 
 Advanced Examples
-----------------
+-----------------
 
 **Multi-language Content Management:**
 
@@ -298,7 +298,7 @@ Advanced Examples
                 print(f"Updated page: {slug}")
 
 Client Libraries
----------------
+----------------
 
 **Python Client Library:**
 
@@ -484,7 +484,7 @@ Client Libraries
         .catch(error => console.error('Error:', error));
 
 Integration Examples
--------------------
+--------------------
 
 **Django Management Command:**
 

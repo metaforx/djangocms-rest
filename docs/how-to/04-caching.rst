@@ -9,7 +9,7 @@ Overview
 Caching in djangocms-rest helps reduce database queries and improve response times by storing frequently accessed data in memory or other fast storage systems.
 
 Cache Configuration
-------------------
+-------------------
 
 **Basic Configuration:**
 
@@ -111,7 +111,7 @@ djangocms-rest uses structured cache keys to organize cached data:
 * `djangocms_rest:plugins:placeholder:{placeholder_id}:{language}` - Placeholder plugins
 
 Cache Invalidation
------------------
+------------------
 
 **Automatic Invalidation:**
 
@@ -171,7 +171,7 @@ djangocms-rest automatically invalidates cache when content changes:
     cache.set('djangocms_rest:version', 2)
 
 Conditional Caching
-------------------
+-------------------
 
 **Cache Based on User:**
 
