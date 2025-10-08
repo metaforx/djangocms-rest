@@ -13,11 +13,15 @@ List Languages
 
 List of languages available for the site.
 
+**Query Parameters:**
+
+* ``preview`` (boolean, optional): Set to true to preview unpublished content (admin access required)
+
 **Example Request:**
 
 .. code-block:: bash
 
-    GET /api/languages/
+    GET /api/languages/?preview=true
 
 **Example Response:**
 
@@ -119,4 +123,19 @@ Examples
         language = response.json()
         print(f"Language: {language['name']} ({language['code']})")
         print(f"Hide untranslated: {language['hide_untranslated']}")
-        print(f"Redirect on fallback: {language['redirect_on_fallback']}") 
+        print(f"Redirect on fallback: {language['redirect_on_fallback']}")
+
+**Get languages with preview (admin access required):**
+
+.. code-block:: python
+
+    # Get languages with preview to see unpublished content
+    response = requests.get(
+        'http://localhost:8080/api/languages/?preview=true',
+        headers={"Cookie": "sessionid=your-session-id"}
+    )
+    
+    if response.status_code == 200:
+        language = response.json()
+        print(f"Language: {language['name']} ({language['code']})")
+        print(f"Preview mode enabled") 

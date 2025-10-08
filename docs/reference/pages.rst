@@ -17,11 +17,15 @@ Retrieve a page instance. The page instance includes the placeholders and their 
 
 * ``language`` (string, required): Language code (e.g., "en", "de")
 
+**Query Parameters:**
+
+* ``preview`` (boolean, optional): Set to true to preview unpublished content (admin access required)
+
 **Example Request:**
 
 .. code-block:: bash
 
-    GET /api/en/pages/
+    GET /api/en/pages/?preview=true
 
 **Example Response:**
 
@@ -71,11 +75,15 @@ Retrieve a page instance by path. The page instance includes the placeholders an
 * ``language`` (string, required): Language code (e.g., "en", "de")
 * ``path`` (string, required): Page path (e.g., "about", "contact")
 
+**Query Parameters:**
+
+* ``preview`` (boolean, optional): Set to true to preview unpublished content (admin access required)
+
 **Example Request:**
 
 .. code-block:: bash
 
-    GET /api/en/pages/about/
+    GET /api/en/pages/about/?preview=true
 
 **Example Response:**
 
@@ -128,12 +136,13 @@ This is a base class for all list API views. It supports default pagination and 
 
 * ``limit`` (integer, optional): Number of results to return per page
 * ``offset`` (integer, optional): The initial index from which to return the results
+* ``preview`` (boolean, optional): Set to true to preview unpublished content (admin access required)
 
 **Example Request:**
 
 .. code-block:: bash
 
-    GET /api/en/pages-list/?limit=10&offset=0
+    GET /api/en/pages-list/?limit=10&offset=0&preview=true
 
 **Example Response:**
 
@@ -204,11 +213,15 @@ List of all pages on this site for a given language.
 
 * ``language`` (string, required): Language code (e.g., "en", "de")
 
+**Query Parameters:**
+
+* ``preview`` (boolean, optional): Set to true to preview unpublished content (admin access required)
+
 **Example Request:**
 
 .. code-block:: bash
 
-    GET /api/en/pages-tree/
+    GET /api/en/pages-tree/?preview=true
 
 **Example Response:**
 
@@ -263,191 +276,3 @@ List of all pages on this site for a given language.
             }
         ]
     }
-
-Field Reference
----------------
-
-.. list-table:: Page Fields
-   :header-rows: 1
-   :widths: 20 20 20 40
-
-   * - Field
-     - Type
-     - Nullable
-     - Description
-   * - title
-     - string
-     - No
-     - Page title (max 255 characters)
-   * - page_title
-     - string
-     - No
-     - Page title for browser (max 255 characters)
-   * - menu_title
-     - string
-     - No
-     - Title displayed in navigation (max 255 characters)
-   * - meta_description
-     - string
-     - No
-     - Meta description for SEO
-   * - redirect
-     - string
-     - Yes
-     - Redirect URL (max 2048 characters)
-   * - absolute_url
-     - string
-     - No
-     - Full URL path (max 200 characters)
-   * - path
-     - string
-     - No
-     - Page path (max 200 characters)
-   * - details
-     - string
-     - No
-     - Page details/description (max 2048 characters)
-   * - is_home
-     - boolean
-     - No
-     - Whether this is the home page
-   * - login_required
-     - boolean
-     - No
-     - Whether login is required to view page
-   * - in_navigation
-     - boolean
-     - No
-     - Whether page appears in navigation
-   * - soft_root
-     - boolean
-     - No
-     - Whether this is a soft root page
-   * - template
-     - string
-     - No
-     - Template name (max 100 characters)
-   * - xframe_options
-     - string
-     - No
-     - X-Frame-Options header value (max 50 characters)
-   * - limit_visibility_in_menu
-     - boolean
-     - Yes
-     - Limit visibility in menu (default: false)
-   * - language
-     - string
-     - No
-     - Language code (max 10 characters)
-   * - languages
-     - array
-     - No
-     - Available languages for this page
-   * - is_preview
-     - boolean
-     - No
-     - Whether this is a preview (default: false)
-   * - application_namespace
-     - string
-     - Yes
-     - Application namespace (max 200 characters)
-   * - creation_date
-     - string (date-time)
-     - No
-     - Creation timestamp
-   * - changed_date
-     - string (date-time)
-     - No
-     - Last modification timestamp
-   * - placeholders
-     - array
-     - No
-     - Page placeholders (only in page detail endpoints)
-   * - children
-     - array
-     - No
-     - Child pages (only in tree endpoint, default: [])
-
-Error Handling
---------------
-
-**404 Not Found:** Page not found
-
-.. code-block:: json
-
-    {
-        "detail": "Not found."
-    }
-
-**403 Forbidden:** Insufficient permissions
-
-.. code-block:: json
-
-    {
-        "detail": "You do not have permission to perform this action."
-    }
-
-Examples
---------
-
-**Get page by language:**
-
-.. code-block:: python
-
-    import requests
-
-    # Get page for English language
-    response = requests.get(
-        "http://localhost:8080/api/en/pages/",
-        headers={"Cookie": "sessionid=your-session-id"}
-    )
-
-    if response.status_code == 200:
-        page = response.json()
-        print(f"Page: {page['title']} - {page['absolute_url']}")
-
-**Get page by path:**
-
-.. code-block:: python
-
-    # Get specific page by path
-    response = requests.get(
-        "http://localhost:8080/api/en/pages/about/",
-        headers={"Cookie": "sessionid=your-session-id"}
-    )
-
-    if response.status_code == 200:
-        page = response.json()
-        print(f"Page: {page['title']} - {page['absolute_url']}")
-
-**Get paginated list of pages:**
-
-.. code-block:: python
-
-    # Get paginated list of pages
-    response = requests.get(
-        "http://localhost:8080/api/en/pages-list/?limit=10&offset=0",
-        headers={"Cookie": "sessionid=your-session-id"}
-    )
-
-    if response.status_code == 200:
-        pages = response.json()
-        print(f"Found {pages['count']} pages")
-        for page in pages['results']:
-            print(f"Page: {page['title']} - {page['absolute_url']}")
-
-**Get pages tree structure:**
-
-.. code-block:: python
-
-    # Get pages in tree structure
-    response = requests.get(
-        "http://localhost:8080/api/en/pages-tree/",
-        headers={"Cookie": "sessionid=your-session-id"}
-    )
-
-    if response.status_code == 200:
-        page_tree = response.json()
-        print(f"Root page: {page_tree['title']}")
-        for child in page_tree['children']:
-            print(f"Child page: {child['title']}") 
