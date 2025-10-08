@@ -102,7 +102,7 @@ Examples
 
     # Get languages (no authentication required)
     response = requests.get('http://localhost:8080/api/languages/')
-    
+
     if response.status_code == 200:
         language = response.json()
         print(f"Language: {language['name']} ({language['code']})")
@@ -118,7 +118,7 @@ Examples
         'http://localhost:8080/api/languages/',
         headers={"Cookie": "sessionid=your-session-id"}
     )
-    
+
     if response.status_code == 200:
         language = response.json()
         print(f"Language: {language['name']} ({language['code']})")
@@ -134,8 +134,8 @@ Examples
         'http://localhost:8080/api/languages/?preview=true',
         headers={"Cookie": "sessionid=your-session-id"}
     )
-    
+
     if response.status_code == 200:
         language = response.json()
         print(f"Language: {language['name']} ({language['code']})")
-        print(f"Preview mode enabled") 
+        print(f"Preview mode enabled")
