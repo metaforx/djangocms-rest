@@ -55,11 +55,12 @@ try:
                 location="query",
                 description="Set to true to preview unpublished content (admin access required)",
                 required=False,
-            )
+            ),
         ]
     )
 
-except ImportError: # pragma: no cover
+except ImportError:  # pragma: no cover
+
     class OpenApiTypes:
         BOOL = "boolean"
         INT = "integer"
@@ -76,6 +77,7 @@ except ImportError: # pragma: no cover
     def extend_schema(*_args, **_kwargs):  # pragma: no cover
         def _decorator(obj: T) -> T:
             return obj
+
         return _decorator
 
     def extend_placeholder_schema(func: Callable[P, T]) -> Callable[P, T]:
@@ -280,8 +282,10 @@ try:
             responses=OpenApiResponse(response=NavigationNodeSerializer(many=True))
         )(method)
 except ImportError:
-    def method_schema_decorator(method):
+
+    def method_schema_decorator(method):  # pragma: no cover
         return method
+
 
 class MenuView(BaseAPIView):
     permission_classes = [IsAllowedPublicLanguage]
