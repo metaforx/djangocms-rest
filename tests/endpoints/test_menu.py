@@ -109,6 +109,21 @@ class PageListAPITestCase(BaseCMSRestTestCase):
         self.assertNotEqual(url1, url2)
         self.assertEqual(results1, results2)
 
+    def test_non_existing_root_id(self):
+        url = reverse(
+            "menu",
+            kwargs={
+                "language": "en",
+                "from_level": 0,
+                "to_level": 100,
+                "extra_inactive": 0,
+                "extra_active": 100,
+                "root_id": "I_DO_NOT_EXIST",
+            },
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
     def test_submenu(self):
         # GET
         url = reverse(
