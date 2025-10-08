@@ -8,6 +8,7 @@ from django.utils.functional import lazy
 from cms.models import Page, PageContent, Placeholder
 from cms.utils.conf import get_languages
 from cms.utils.page_permissions import user_can_view_page
+from menus.menu_pool import menu_pool
 from menus.templatetags.menu_tags import ShowBreadcrumb, ShowMenu, ShowSubMenu
 
 
@@ -329,7 +330,9 @@ class MenuView(BaseAPIView):
         request.LANGUAGE_CODE = language
         request.current_page = get_object(self.site, path)
         self.check_object_permissions(request, request.current_page)
-        context = {"request": request}
+        menu_renderer = menu_pool.get_renderer(request)
+        menu_renderer.site = self.site
+        context = {"request": request, "cms_menu_renderer": menu_renderer}
 
         context = tag_instance.get_context(
             context=context,
@@ -340,9 +343,6 @@ class MenuView(BaseAPIView):
         if not result and kwargs.get("root_id"):
             # Edge case: No menu nodes found but a root_id was specified.
             # This might be due to a non-existing root_id.
-            from menus.menu_pool import menu_pool
-
-            menu_renderer = menu_pool.get_renderer(request)
             nodes = menu_renderer.get_nodes(kwargs.get("namespace"), kwargs["root_id"])
             id_nodes = menu_pool.get_nodes_by_attribute(nodes, "reverse_id", kwargs["root_id"])
             if not id_nodes:
