@@ -142,6 +142,8 @@ class PageSearchView(PageListView):
         return super().get(request)
 
     def get_queryset(self):
+        if not self.search_term:
+            return PageContent.objects.none()
         qs = Page.objects.search(self.search_term, language=self.language, current_site_only=False).on_site(self.site)
         return PageContent.objects.filter(page__in=qs).distinct()
 
