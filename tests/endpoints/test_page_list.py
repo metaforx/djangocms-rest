@@ -91,3 +91,23 @@ class PageListAPITestCase(BaseCMSRestTestCase):
         self.assertIn("results", data)
         self.assertIsInstance(results, list)
         self.assertEqual(data["count"], 4)
+
+    def test_empty_page_search(self):
+        for page in self.pages:
+            page_content = page.get_admin_content("en")
+            if hasattr(page_content, "versions"):
+                page_content.versions.first().publish(self.get_superuser())
+
+        # GET
+        response = self.client.get(reverse("page-search", kwargs={"language": "en"}))
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        results = data["results"]
+
+        # Validate REST Pagination Attributes
+        self.assertIn("count", data)
+        self.assertIn("next", data)
+        self.assertIn("previous", data)
+        self.assertIn("results", data)
+        self.assertIsInstance(results, list)
+        self.assertEqual(data["count"], 0)
