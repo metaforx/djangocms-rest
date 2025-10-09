@@ -31,7 +31,7 @@ urlpatterns = [
         name="page-detail",
     ),
     path(
-        "<slug:language>/search_pages/",
+        "<slug:language>/page_search/",
         views.PageSearchView.as_view(),
         name="page-search",
     ),
