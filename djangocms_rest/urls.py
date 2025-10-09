@@ -31,6 +31,11 @@ urlpatterns = [
         name="page-detail",
     ),
     path(
+        "<slug:language>/search_pages/",
+        views.PageSearchView.as_view(),
+        name="page-search",
+    ),
+    path(
         "<slug:language>/placeholders/<int:content_type_id>/<int:object_id>/<str:slot>/",
         views.PlaceholderDetailView.as_view(),
         name="placeholder-detail",
