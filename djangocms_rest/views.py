@@ -8,6 +8,7 @@ from django.utils.functional import lazy
 from cms.models import Page, PageContent, Placeholder
 from cms.utils.conf import get_languages
 from cms.utils.page_permissions import user_can_view_page
+from menus.menu_pool import menu_pool
 from menus.templatetags.menu_tags import ShowBreadcrumb, ShowMenu, ShowSubMenu
 
 
@@ -90,9 +91,7 @@ except ImportError:  # pragma: no cover
 # Attn: Dynamic changes to the plugin pool will not be reflected in the
 # plugin definitions.
 # If you need to update the plugin definitions, you need to reassign the variable.
-PLUGIN_DEFINITIONS = lazy(
-    PluginDefinitionSerializer.generate_plugin_definitions, dict
-)()
+PLUGIN_DEFINITIONS = lazy(PluginDefinitionSerializer.generate_plugin_definitions, dict)()
 
 
 class LanguageListView(BaseAPIView):
@@ -161,9 +160,7 @@ class PageTreeListView(BaseAPIView):
         except PageContent.DoesNotExist:
             raise NotFound()
 
-        serializer = self.serializer_class(
-            pages, many=True, read_only=True, context={"request": request}
-        )
+        serializer = self.serializer_class(pages, many=True, read_only=True, context={"request": request})
         return Response(serializer.data)
 
 
@@ -182,9 +179,7 @@ class PageDetailView(BaseAPIView):
             page_content = getattr(page, self.content_getter)(language, fallback=True)
             if page_content is None:
                 raise PageContent.DoesNotExist()
-            serializer = self.serializer_class(
-                page_content, read_only=True, context={"request": request}
-            )
+            serializer = self.serializer_class(page_content, read_only=True, context={"request": request})
             return Response(serializer.data)
         except PageContent.DoesNotExist:
             raise NotFound()
@@ -216,19 +211,13 @@ class PlaceholderDetailView(BaseAPIView):
         - "html": The content rendered as html. Sekizai blocks such as "js" or "css" will be added
           as separate attributes"""
         try:
-            placeholder = Placeholder.objects.get(
-                content_type_id=content_type_id, object_id=object_id, slot=slot
-            )
+            placeholder = Placeholder.objects.get(content_type_id=content_type_id, object_id=object_id, slot=slot)
         except Placeholder.DoesNotExist:
             raise NotFound()
 
         source_model = placeholder.content_type.model_class()
         content_manager = "admin_manager" if self._preview_requested() else "content"
-        source = (
-            getattr(source_model, content_manager, source_model.objects)
-            .filter(pk=placeholder.object_id)
-            .first()
-        )
+        source = getattr(source_model, content_manager, source_model.objects).filter(pk=placeholder.object_id).first()
 
         if source is None:
             raise NotFound()
@@ -242,9 +231,7 @@ class PlaceholderDetailView(BaseAPIView):
 
         self.check_object_permissions(request, placeholder)
 
-        serializer = self.serializer_class(
-            instance=placeholder, request=request, language=language, read_only=True
-        )
+        serializer = self.serializer_class(instance=placeholder, request=request, language=language, read_only=True)
         return Response(serializer.data)
 
 
@@ -278,9 +265,7 @@ try:
         Decorator for adding OpenAPI schema to a method.
         Needed to force the schema to use many=True for NavigationNodeSerializer.
         """
-        return extend_schema(
-            responses=OpenApiResponse(response=NavigationNodeSerializer(many=True))
-        )(method)
+        return extend_schema(responses=OpenApiResponse(response=NavigationNodeSerializer(many=True)))(method)
 
 except ImportError:  # pragma: no cover
 
@@ -306,9 +291,7 @@ class MenuView(BaseAPIView):
         """Get the menu structure for a specific language and path."""
         self.populate_defaults(kwargs)
         menu = self.get_menu_structure(request, language, path, **kwargs)
-        serializer = self.serializer_class(
-            menu, many=True, context={"request": request}
-        )
+        serializer = self.serializer_class(menu, many=True, context={"request": request})
         return Response(serializer.data)
 
     def populate_defaults(self, kwargs: dict[str, Any]) -> None:
@@ -341,22 +324,31 @@ class MenuView(BaseAPIView):
         if path == "":
             api_endpoint = reverse("page-root", kwargs={"language": language})
         else:
-            api_endpoint = reverse(
-                "page-detail", kwargs={"language": language, "path": path}
-            )
+            api_endpoint = reverse("page-detail", kwargs={"language": language, "path": path})
 
         request.api_endpoint = api_endpoint
         request.LANGUAGE_CODE = language
         request.current_page = get_object(self.site, path)
         self.check_object_permissions(request, request.current_page)
-        context = {"request": request}
+        menu_renderer = menu_pool.get_renderer(request)
+        menu_renderer.site = self.site
+        context = {"request": request, "cms_menu_renderer": menu_renderer}
 
         context = tag_instance.get_context(
             context=context,
             **kwargs,
             template=None,
         )
-        return context.get(self.return_key, [])
+        result = context.get(self.return_key, [])
+        if not result and kwargs.get("root_id"):
+            # Edge case: No menu nodes found but a root_id was specified.
+            # This might be due to a non-existing root_id.
+            nodes = menu_renderer.get_nodes(kwargs.get("namespace"), kwargs["root_id"])
+            id_nodes = menu_pool.get_nodes_by_attribute(nodes, "reverse_id", kwargs["root_id"])
+            if not id_nodes:
+                raise NotFound()
+
+        return result
 
 
 class SubMenuView(MenuView):

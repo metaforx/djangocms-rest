@@ -49,6 +49,11 @@ urlpatterns = [
         name="menu",
     ),
     path(
+        "<slug:language>/menu/<slug:root_id>/<int:from_level>/<int:to_level>/<int:extra_inactive>/<int:extra_active>/",
+        views.MenuView.as_view(),
+        name="menu",
+    ),
+    path(
         "<slug:language>/menu/<slug:root_id>/<int:from_level>/<int:to_level>/<int:extra_inactive>/<int:extra_active>/<path:path>/",
         views.MenuView.as_view(),
         name="menu",
