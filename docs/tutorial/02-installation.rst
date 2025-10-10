@@ -56,25 +56,14 @@ Basic Configuration
 
     INSTALLED_APPS = [
         # ... other Django apps
-        'django.contrib.admin',
-        'django.contrib.auth',
-        'django.contrib.contenttypes',
-        'django.contrib.sessions',
-        'django.contrib.messages',
-        'django.contrib.staticfiles',
+        ...,
         
         # django CMS
         'cms',
-        'menus',
-        'treebeard',
-        'sekizai',
-        
-        # django CMS plugins (optional but recommended)
-        'djangocms_link',
-        'djangocms_text',
-        
+
         # djangocms-rest
         'djangocms_rest',
+        ...,
     ]
 
 2. Include the djangocms-rest URLs in your project's main URL configuration:
