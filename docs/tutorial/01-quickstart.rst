@@ -355,4 +355,4 @@ Now that you have a basic setup working, you can:
 3. Configure :doc:`../how-to/04-caching` for better performance
 4. Check out the :doc:`../explanations/01-examples` for more advanced usage patterns
 
-If you encounter any issues, check the :doc:`../tutorial/02-installation` troubleshooting section or visit the `GitHub repository <https://github.com/fsbraun/djangocms-rest>`_ for support. 
+If you encounter any issues, check the :doc:`../tutorial/02-installation` troubleshooting section or visit the `GitHub repository <https://github.com/django-cms/djangocms-rest>`_ for support. 

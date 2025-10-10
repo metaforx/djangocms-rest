@@ -5,51 +5,53 @@ djangocms-rest
    :target: https://www.python.org/downloads/
    :alt: Python version
 
-.. image:: https://img.shields.io/badge/django-4.2+-green.svg
-   :target: https://www.djangoproject.com/
+.. image:: https://img.shields.io/badge/Django-4.2+-green.svg
+   :target: https://www.Djangoproject.com/
    :alt: Django version
 
-.. image:: https://img.shields.io/badge/django--cms-5.0+-orange.svg
-   :target: https://www.django-cms.org/
-   :alt: django CMS version
+.. image:: https://img.shields.io/badge/Django--cms-5.0+-orange.svg
+   :target: https://www.Django-cms.org/
+   :alt: Django CMS version
 
 .. image:: https://img.shields.io/badge/license-BSD%203--Clause-blue.svg
    :target: https://opensource.org/licenses/BSD-3-Clause
    :alt: License
 
-*Headless content delivery with django CMS for modern, typed frontend apps.*
+*Headless content delivery with Django CMS for modern, typed frontend apps.*
 
-djangocms-rest lets you use `django CMS <https://www.django-cms.org/>`_ as a headless backend for modern, typed frontend applications, while preserving the intuitive django CMS editing interface. This makes it possible to build Django apps that combine CMS-driven content with decoupled frontend frameworks.
+djangocms-rest lets you use `Django CMS <https://www.Django-cms.org/>`_ as a headless backend for modern, typed frontend applications, while preserving the intuitive Django CMS editing interface. This makes it possible to build Django apps that combine CMS-driven content with decoupled frontend frameworks.
 
-djangocms-rest exposes django CMS content through a read-only REST API. It is based on the `Django REST framework <https://www.django-rest-framework.org/>`_ and provides OpenAPI 3 schema generation and a browsable API via `DRF Spectacular <https://github.com/tfranzel/drf-spectacular>`_.
+djangocms-rest exposes Django CMS content through a read-only REST API. It is based on the `Django REST framework <https://www.Django-rest-framework.org/>`_ and provides OpenAPI 3 schema generation and a browsable API via `DRF Spectacular <https://github.com/tfranzel/drf-spectacular>`_.
 
 
 Motivation
 ----------
-Development has shifted more towards decoupled frontend apps due to easier scalability, the ability to serve multiple digital channels and work in specialized teams.
-**djangocms-rest** provides a solution that serves both Django app content and Django CMS content via DRF, while preserving the intuitive Django CMS editing interface.
+Web development is increasingly adopting decoupled front ends for greater scalability, multi-channel content and team flexibility.
+**djangocms-rest** provides a solution to use Django CMS also as a headless backend. 
 
-👉 **No need for yet another tech stack.**
+
+👉 **You already use Django CMS? No need for yet another tech stack.**
 
 Key Features
 ------------
 
-* **Drop-in Ready** — Integrates seamlessly into existing or new django CMS projects.  
-* **REST API** — DRF-based REST API exposing all django CMS content for SPAs, static sites, or mobile apps.  
+* **Easy integration** — Integrates effortlessly into existing Django CMS projects.  
+* **REST API** — DRF-based API exposing Django CMS content for SPAs, static sites, and mobile apps.  
 * **Typed Endpoints** — Auto-generate OpenAPI schemas for pages, plugins, and custom serializers.  
-* **Plugin Serialization** — Full support for all CMS plugins, easily extendable for custom ones.  
+* **Plugin Serialization** — Basic support for all CMS plugins, easily extendable for custom output.  
 * **Multi-site Support** — Serve multiple websites from a single instance with isolated API responses.  
-* **Multi-language Content** — Native integration with django CMS and django-parler translation systems.  
-* **Preview & Draft Access** — Retrieve unpublished or draft content in your frontend for editor previews.  
-* **Permissions & Authentication** — Built on Django and django CMS permission models for secure access control.  
-* **Menus & Breadcrumbs** — Leverage django CMS’s built-in menu and navigation framework for structured output.  
-* **Caching & Performance** — Optimized for Django’s cache backends, including Redis and Memcached.  
+* **Multi-language Content** — Use the robust i18n integartion of Django CMS in your frontend.   
+* **Preview & Draft Access** — Fetch unpublished or draft content in your frontend for editor previews.  
+* **Permissions & Authentication** — Uses DRF- and Django-permissions for secure access control.  
+* **Menus & Breadcrumbs** — Exposes the built-in navigation handlers from Django CMS.  
+* **Caching & Performance** — Works with Django cache backends like Redis and Memcached.  
+
 
 Quick Start
 -----------
 
 .. note::
-    A running django CMS project is required. Follow the `Installing django CMS by hand <https://docs.django-cms.org/en/latest/introduction/01-install.html#installing-django-cms-by-hand>`_ guide to get started.
+    A running Django CMS project is required. Follow the `Installing Django CMS by hand <https://docs.Django-cms.org/en/latest/introduction/01-install.html#installing-Django-cms-by-hand>`_ guide to get started.
 
 
 .. code-block:: bash
@@ -63,7 +65,7 @@ Quick Start
     # Add to INSTALLED_APPS in your project's settings.py
     INSTALLED_APPS = [
         # ... other apps
-        'djangocms_rest',
+        'Djangocms_rest',
     ]
 
 .. code-block:: python
@@ -72,7 +74,7 @@ Quick Start
     # Include URLs in your project's urls.py
     urlpatterns = [
         # ... other URLs
-        path('api/', include('djangocms_rest.urls')),
+        path('api/', include('Djangocms_rest.urls')),
     ]
 
 
@@ -89,13 +91,39 @@ Test API
 
 .. code-block:: bash
 
-   # Test the API endpoints and
+   # Test the API endpoints
     curl http://localhost:8000/api/languages
 
+If you see a response like this, you're good to go:
 
+.. code-block:: json
+
+    [
+      {
+        "code": "en",
+        "name": "English",
+        "public": true,
+        "fallbacks": [
+          "en"
+        ],
+        "redirect_on_fallback": true,
+        "hide_untranslated": false
+      },
+      {
+        "code": "de",
+        "name": "Deutsch",
+        "public": false,
+        "fallbacks": [
+          "en"
+        ],
+        "redirect_on_fallback": true,
+        "hide_untranslated": true
+      }
+    ]
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
+   :hidden:
 
    tutorial/index
    how-to/index
@@ -104,9 +132,3 @@ Test API
    contributing
    changelog
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

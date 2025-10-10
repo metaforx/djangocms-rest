@@ -83,13 +83,13 @@ html_theme = "furo"
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
-    "source_repository": "https://github.com/fsbraun/djangocms-rest",
+    "source_repository": "https://github.com/django-cms/djangocms-rest",
     "source_branch": "main",
     "source_directory": "/docs/",
     "footer_icons": [
         {
             "name": "GitHub",
-            "url": "https://github.com/fsbraun/djangocms-rest",
+            "url": "https://github.com/django-cms/djangocms-rest",
             "html": "",
             "class": "fa-brands fa-solid fa-github fa-2x",
         },
