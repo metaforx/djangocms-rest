@@ -1,11 +1,13 @@
 Tutorial
 ========
 
-Welcome to the djangocms-rest tutorial section. Here you'll find step-by-step guides to get you started.
+This section provides step-by-step tutorials to get you started with djangocms-rest.
 
 .. toctree::
-   :maxdepth: 2
-   :hidden:
+   :maxdepth: 1
 
-   01-quickstart
-   02-installation
+   01-installation
+   02-quickstart
+
+.. note::
+   Start with the :doc:`Installation Guide <01-installation>` to get up and running quickly.

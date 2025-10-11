@@ -3,11 +3,6 @@ Submenu API
 
 **The Submenu API provides endpoints for retrieving hierarchical submenu structures in django CMS.**
 
-
-.. code-block:: bash
-
-    GET /api/en/submenu/
-
 * This returns hierarchical submenu structures for the specified language
 * Submenu information includes page titles, URLs, visibility settings, and nested relationships
 * This endpoint is essential for building dropdown menus, sidebar navigation, and contextual menus
@@ -144,7 +139,7 @@ Get the submenu structure filtered by number of levels and specific path.
 
 * ``language`` (string, required): Language code (e.g., "en", "de")
 * ``levels`` (integer, required): Number of levels to include in the submenu
-* ``path`` (string, required): Specific path to filter submenu items
+* ``path`` (string, required): Path as starting node for the submenu
 
 **Query Parameters:**
 
@@ -264,7 +259,7 @@ Get the submenu structure filtered by number of levels, root level, nephews, and
 * ``levels`` (integer, required): Number of levels to include in the submenu
 * ``root_level`` (integer, required): Root level to start the submenu from
 * ``nephews`` (integer, required): Number of nephew items to include
-* ``path`` (string, required): Specific path to filter submenu items
+* ``path`` (string, required): Path as starting node for the submenu
 
 **Query Parameters:**
 
@@ -304,7 +299,7 @@ Get the submenu structure filtered by number of levels, root level, and specific
 * ``language`` (string, required): Language code (e.g., "en", "de")
 * ``levels`` (integer, required): Number of levels to include in the submenu
 * ``root_level`` (integer, required): Root level to start the submenu from
-* ``path`` (string, required): Specific path to filter submenu items
+* ``path`` (string, required): Path as starting node for the submenu
 
 **Query Parameters:**
 
@@ -342,7 +337,7 @@ Get the submenu structure filtered by specific path.
 **Path Parameters:**
 
 * ``language`` (string, required): Language code (e.g., "en", "de")
-* ``path`` (string, required): Specific path to filter submenu items
+* ``path`` (string, required): Path as starting node for the submenu
 
 **Query Parameters:**
 

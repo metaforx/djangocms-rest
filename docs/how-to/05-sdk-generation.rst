@@ -7,7 +7,7 @@ guide can easily be adapted to other frontend frameworks.
 
 .. note::
     This guide assumes you have a running Django CMS project with multiple sites.
-    If you haven't set up multi-site yet, please follow the :doc:`../tutorial/02-installation` guide.
+    If you haven't set up multi-site yet, please follow the :doc:`../tutorial/01-installation` guide.
 
 Overview
 --------

@@ -6,7 +6,7 @@ This guide will help you get started with djangocms-rest quickly. We'll create a
 Prerequisites
 -------------
 
-Make sure you have completed the :doc:`../tutorial/02-installation` guide before proceeding.
+Make sure you have completed the :doc:`../tutorial/01-installation` guide before proceeding.
 
 Basic Setup
 -----------
@@ -353,6 +353,5 @@ Now that you have a basic setup working, you can:
 1. Explore the :doc:`../reference/index` to understand all available endpoints
 2. Learn about :doc:`../how-to/02-authentication` and :doc:`../how-to/03-permissions`
 3. Configure :doc:`../how-to/04-caching` for better performance
-4. Check out the :doc:`../explanations/01-examples` for more advanced usage patterns
 
-If you encounter any issues, check the :doc:`../tutorial/02-installation` troubleshooting section or visit the `GitHub repository <https://github.com/django-cms/djangocms-rest>`_ for support. 
+If you encounter any issues, check the :doc:`../tutorial/01-installation` troubleshooting section or visit the `GitHub repository <https://github.com/django-cms/djangocms-rest>`_ for support. 

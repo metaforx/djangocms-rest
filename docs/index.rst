@@ -84,7 +84,7 @@ Quick Start
     python manage.py runserver 8000
 
 Test API
---------
+~~~~~~~~
 
 
 `http://localhost:8080/api/languages/ <hhttp://localhost:8080/api/languages/>`_
@@ -127,8 +127,12 @@ If you see a response like this, you're good to go:
 
    tutorial/index
    how-to/index
-   explanations/index
    reference/index
    contributing
    changelog
 
+Installation Guide
+~~~~~~~~~~~~~~~~~~
+Follow our installation guide to setup additional features like multi-site support, languages support and open api documentation.
+
+- :doc:`tutorial/01-installation`

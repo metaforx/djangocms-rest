@@ -3,18 +3,13 @@ Plugins API
 
 **The Plugins API provides endpoints for retrieving plugin definitions for all available plugins in django CMS.**
 
-
-.. code-block:: bash
-
-    GET /api/plugins/
-
 * This returns all available plugin type definitions with their properties and schemas
 * Plugin definitions include the plugin type identifier, human-readable title, and property definitions
 * This endpoint is useful for understanding what plugins are available and their configuration options
 * It is particularly useful for creating type-safe schemas for your frontend application
 * Schema definitions are based on the ``ModelSerializer`` as a default or a ``CustomSerializer`` defined in your plugin
 
-.. note::
+.. hint::
     You can automatically generate type-safe schemas for your typescript frontend application using tools like `QuickType <https://quicktype.io/typescript>`_.
 
 

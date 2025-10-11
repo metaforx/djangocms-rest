@@ -1,23 +1,34 @@
 Menu API
 ========
 
-**The Menu API provides endpoints for retrieving navigation menu structures in django CMS.**
+**The Menu API provides endpoints for retrieving navigation nodes using the same structure as the django CMS menu system.**
 
+.. note::
 
-.. code-block:: bash
+    The endpoints follow the same structure as the menu in a template. Please refer to the documentation for more details.
+    
+    ``{% show_menu 0 100 100 100 %}``
 
-    GET /api/en/menu/
+    ``GET /api/{language}/menu/0/100/100/100/``
 
-* This returns the complete navigation menu structure for the specified language
-* Menu information includes page titles, URLs, visibility settings, and hierarchical relationships
-* This endpoint is essential for building navigation menus, breadcrumbs, and site structure components
-* Advanced endpoints allow filtering by level ranges, active/inactive states, and specific paths
+    
+
+* Menu API is essential for building navigation menus and sitemaps
+* Menu information includes page meta information, state, URLs, visibility settings, and hierarchical relationships
+* Retrieve menu nodes and filter by:
+* * by level ranges
+* * by root ID
+* * by level range  
+* * active/inactive states, 
+* * specific paths
+
 
 CMS Reference
 -------------
 
-- `Menu configuration <https://docs.django-cms.org/en/latest/reference/configuration.html#cms-menus>`_
-- `Navigation and menus <https://docs.django-cms.org/en/latest/how_to/menus.html>`_
+- `User site navigation <https://docs.django-cms.org/en/stable/reference/navigation.html>`_
+- `Customizing the Menu <https://docs.django-cms.org/en/latest/how_to/14-menus.html#>`_
+- `Menu Developer Reference <https://docs.django-cms.org/en/latest/reference/navigation.html#cms-menus>`_
 
 Endpoints
 ---------
@@ -150,7 +161,7 @@ Get the menu structure filtered by level range, active/inactive states, and spec
 * ``to_level`` (integer, required): Ending level for menu items
 * ``extra_inactive`` (integer, required): Number of extra inactive items to include
 * ``extra_active`` (integer, required): Number of extra active items to include
-* ``path`` (string, required): Specific path to filter menu items
+* ``path`` (string, required): Path as starting node for the menu
 
 **Query Parameters:**
 
@@ -193,7 +204,7 @@ Get the menu structure filtered by root ID, level range, active/inactive states,
 * ``to_level`` (integer, required): Ending level for menu items
 * ``extra_inactive`` (integer, required): Number of extra inactive items to include
 * ``extra_active`` (integer, required): Number of extra active items to include
-* ``path`` (string, required): Specific path to filter menu items
+* ``path`` (string, required): Path as starting node for the menu
 
 **Query Parameters:**
 

@@ -3,11 +3,6 @@ Languages API
 
 **The Languages API provides endpoints for retrieving language information in django CMS.**
 
-
-.. code-block:: bash
-
-    GET /api/languages/
-
 * This returns all available languages configured for the site
 * Language information includes language codes, names, and configuration settings
 * Useful to build a language switcher and handle language fallbacks in decoupled frontend applications

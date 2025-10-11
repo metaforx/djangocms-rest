@@ -93,7 +93,7 @@ Get the breadcrumb structure filtered by specific path.
 **Path Parameters:**
 
 * ``language`` (string, required): Language code (e.g., "en", "de")
-* ``path`` (string, required): Specific path to filter breadcrumb items
+* ``path`` (string, required): Path as starting node for the breadcrumbs
 
 **Query Parameters:**
 
@@ -182,7 +182,7 @@ Get the breadcrumb structure filtered by start level and specific path.
 
 * ``language`` (string, required): Language code (e.g., "en", "de")
 * ``start_level`` (integer, required): Starting level for breadcrumb items
-* ``path`` (string, required): Specific path to filter breadcrumb items
+* ``path`` (string, required): Path as starting node for the breadcrumbs
 
 **Query Parameters:**
 

@@ -3,11 +3,6 @@ Pages API
 
 **The Pages API provides endpoints for retrieving django CMS pages and their content.**
 
-
-.. code-block:: bash
-
-    GET /api/en/pages/
-
 * This returns all pages available for the specified language with their metadata and placeholder information
 * Page information includes titles, URLs, navigation settings, and template configurations
 * This endpoint is essential for page meta information, SEO and building page listings
