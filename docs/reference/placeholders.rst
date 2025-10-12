@@ -3,13 +3,13 @@ Placeholders API
 
 **The Placeholders API provides endpoints for retrieving placeholder content in django CMS.**
 
+* Used to retrieve content from placeholders object linked to a specific page
 * This essentially returns all plugins in a placeholder as a nested JSON tree according to the defined placeholders in `CMS_PLACEHOLDER_CONF`
 * The content is rendered as HTML if the ``?html=1`` parameter is added to the API URL using Django CMS template rendering
-* Serialized content is either using ``ModelSerializer`` as a default or a ``CustomSerializer`` defined in your plugin
+* Serialized content is either using ``ModelSerializer`` as a default or a ``CustomSerializer`` defined in your plugins configuration
 
 CMS Reference
 -------------
-
 
 - `Howto define placeholders in CMS_PLACEHOLDER_CONF <https://docs.django-cms.org/en/latest/reference/configuration.html#cms-placeholders>`_
 - `Howto create plugins <https://docs.django-cms.org/en/latest/introduction/04-plugins.html#plugins>`_

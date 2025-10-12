@@ -87,12 +87,12 @@ Test API
 ~~~~~~~~
 
 
-`http://localhost:8080/api/languages/ <hhttp://localhost:8080/api/languages/>`_
+`http://localhost:8080/api/languages/ <http://localhost:8080/api/languages/>`_
 
 .. code-block:: bash
 
    # Test the API endpoints
-    curl http://localhost:8000/api/languages
+    curl http://localhost:8080/api/languages
 
 If you see a response like this, you're good to go:
 

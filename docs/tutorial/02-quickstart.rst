@@ -180,11 +180,11 @@ Now let's test the API endpoints. **Important:** You must be logged into the Dja
 
 **Method 1: Using your browser (easiest)**
 
-1. **Login to Django admin** at http://localhost:8000/admin/
+1. **Login to Django admin** at http://localhost:8080/admin/
 2. **Visit the API endpoints** in the same browser session:
-   * Pages list: http://localhost:8000/api/cms/pages/
-   * Languages: http://localhost:8000/api/cms/languages/
-   * Placeholders: http://localhost:8000/api/cms/placeholders/
+   * Pages list: http://localhost:8080/api/cms/pages/
+   * Languages: http://localhost:8080/api/cms/languages/
+   * Placeholders: http://localhost:8080/api/cms/placeholders/
 
 **Method 2: Using curl with session cookies**
 
@@ -192,16 +192,16 @@ Now let's test the API endpoints. **Important:** You must be logged into the Dja
 
 .. code-block:: bash
 
-    curl -c cookies.txt -X POST http://localhost:8000/admin/login/ \
+    curl -c cookies.txt -X POST http://localhost:8080/admin/login/ \
          -d "username=admin&password=your-password&csrfmiddlewaretoken=your-csrf-token"
 
 2. **Use cookies for API requests**:
 
 .. code-block:: bash
 
-    curl -b cookies.txt http://localhost:8000/api/cms/pages/
-    curl -b cookies.txt http://localhost:8000/api/cms/languages/
-    curl -b cookies.txt http://localhost:8000/api/cms/placeholders/
+    curl -b cookies.txt http://localhost:8080/api/cms/pages/
+    curl -b cookies.txt http://localhost:8080/api/cms/languages/
+    curl -b cookies.txt http://localhost:8080/api/cms/placeholders/
 
 Creating Content via API
 ------------------------
@@ -212,7 +212,7 @@ Let's create a page using the API. **Remember:** You must be logged into Django 
 
 .. code-block:: bash
 
-    curl -X POST http://localhost:8000/api/cms/pages/ \
+    curl -X POST http://localhost:8080/api/cms/pages/ \
          -b cookies.txt \
          -H "Content-Type: application/json" \
          -d '{
@@ -227,7 +227,7 @@ Let's create a page using the API. **Remember:** You must be logged into Django 
 
 .. code-block:: bash
 
-    curl -X POST http://localhost:8000/api/cms/placeholders/1/plugins/ \
+    curl -X POST http://localhost:8080/api/cms/placeholders/1/plugins/ \
          -b cookies.txt \
          -H "Content-Type: application/json" \
          -d '{
@@ -245,7 +245,7 @@ Here's a Python example using the requests library with session authentication:
     import requests
 
     # Base URL for your API
-    base_url = 'http://localhost:8000/api/cms'
+    base_url = 'http://localhost:8080/api/cms'
 
     # Create a session for authentication
     session = requests.Session()
@@ -256,7 +256,7 @@ Here's a Python example using the requests library with session authentication:
         'password': 'your-password',
         'csrfmiddlewaretoken': 'your-csrf-token'  # Extract from login page
     }
-    session.post('http://localhost:8000/admin/login/', data=login_data)
+    session.post('http://localhost:8080/admin/login/', data=login_data)
 
     # Get all pages using the authenticated session
     response = session.get(f'{base_url}/pages/')
@@ -285,7 +285,7 @@ Here's a JavaScript example using fetch:
 .. code-block:: javascript
 
     // Base URL for your API
-    const baseUrl = 'http://localhost:8000/api/cms';
+    const baseUrl = 'http://localhost:8080/api/cms';
 
     // Function to get all pages
     async function getPages() {

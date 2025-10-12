@@ -305,7 +305,7 @@ Testing
 .. code-block:: bash
 
     # pages endpoint without path will return the home page for the site
-    curl -H "X-Site-ID: 2" http://localhost:8000/api/cms/pages/
+    curl -H "X-Site-ID: 2" http://localhost:8080/api/cms/pages/
 
 .. note::
     The ``X-Site-ID`` header is not required. If not set, the middleware will use the current site defined in the settings.
@@ -387,8 +387,8 @@ Testing
 
  You can check now your:
 
- - API documentation at `http://localhost:8000/api/docs/ <http://localhost:8000/api/docs/>`_
- - OpenAPI specification as JSON at `http://localhost:8000/api/schema-json/ <http://localhost:8000/api/schema-json/>`_
+- API documentation at `http://localhost:8080/api/docs/ <http://localhost:8080/api/docs/>`_
+- OpenAPI specification as JSON at `http://localhost:8080/api/schema-json/ <http://localhost:8080/api/schema-json/>`_
 
 
 Implementation Guide

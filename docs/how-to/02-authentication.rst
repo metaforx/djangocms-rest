@@ -52,14 +52,14 @@ Session authentication is the default and only authentication method for djangoc
     session = requests.Session()
     
     # Login to Django admin
-    login_response = session.post('http://localhost:8000/admin/login/', data={
+    login_response = session.post('http://localhost:8080/admin/login/', data={
         'username': 'admin',
         'password': 'password',
         'csrfmiddlewaretoken': 'your-csrf-token'
     })
     
     # Make API requests using the same session
-    response = session.get('http://localhost:8000/api/cms/pages/')
+    response = session.get('http://localhost:8080/api/cms/pages/')
     print(response.json())
 
 **JavaScript Client:**
@@ -89,11 +89,11 @@ Session authentication is the default and only authentication method for djangoc
 .. code-block:: bash
 
     # First, login and save cookies
-    curl -c cookies.txt -X POST http://localhost:8000/admin/login/ \
+    curl -c cookies.txt -X POST http://localhost:8080/admin/login/ \
          -d "username=admin&password=password&csrfmiddlewaretoken=your-csrf-token"
     
     # Then use the cookies for API requests
-    curl -b cookies.txt http://localhost:8000/api/cms/pages/
+    curl -b cookies.txt http://localhost:8080/api/cms/pages/
 
 Permission System
 -----------------

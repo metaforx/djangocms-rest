@@ -3,7 +3,18 @@ Submenu API
 
 **The Submenu API provides endpoints for retrieving hierarchical submenu structures in django CMS.**
 
-* This returns hierarchical submenu structures for the specified language
+.. note::
+
+    The endpoints follow the same structure as the submenu in a template. Please refer to the documentation for more details.
+    Get root level submenu:
+
+    ``{% show_sub_menu 1 %}``
+
+    ``GET /api/{language}/submenu/``
+
+
+
+* Returns hierarchical submenu structures for the specified language
 * Submenu information includes page titles, URLs, visibility settings, and nested relationships
 * This endpoint is essential for building dropdown menus, sidebar navigation, and contextual menus
 * Advanced endpoints allow filtering by levels, root levels, nephews, and specific paths
