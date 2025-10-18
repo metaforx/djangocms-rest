@@ -21,7 +21,7 @@ All of this features can already be implemented using the API, but we plan to cr
 - Render placeholder content in web frontend applications
 - Page routing in web frontend applications
 - Integrate browsable frontend pages via iFrame into django CMS
-- Preview and Edit functionality for decoupled web frontend applications in django CMS
+- Preview and Edit functionality for authenticated users in django CMS
 - Apphook use in frontend applications
 
 
