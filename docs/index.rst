@@ -37,11 +37,11 @@ Key Features
 
 * **Easy integration** — Integrates effortlessly into existing Django CMS projects.  
 * **REST API** — DRF-based API exposing Django CMS content for SPAs, static sites, and mobile apps.  
-* **Typed Endpoints** — Auto-generate OpenAPI schemas for pages, plugins, and custom serializers.  
-* **Plugin Serialization** — Basic support for all CMS plugins, easily extendable for custom output.  
+* **Typed Endpoints** — Auto-generate OpenAPI schemas for page data and plugin content.  
+* **Plugin Serialization** — Basic support for all CMS plugins, easily extendable for custom needs.  
 * **Multi-site Support** — Serve multiple websites from a single instance with isolated API responses.  
 * **Multi-language Content** — Use the robust i18n integartion of Django CMS in your frontend.   
-* **Preview & Draft Access** — Fetch unpublished or draft content in your frontend for editor previews.  
+* **Preview & Draft Access** — Fetch unpublished or draft content in your frontend for editing previews.  
 * **Permissions & Authentication** — Uses DRF- and Django-permissions for secure access control.  
 * **Menus & Breadcrumbs** — Exposes the built-in navigation handlers from Django CMS.  
 * **Caching & Performance** — Works with Django cache backends like Redis and Memcached.  
@@ -50,12 +50,10 @@ Key Features
 Getting Started
 ----------------
 
-Ready to get started? Follow our step-by-step tutorial to set up djangocms-rest in minutes.
+Follow our step-by-step tutorial to set up djangocms-rest in your project.
 
-.. note::
-   **New to djangocms-rest?** Start with our :doc:`Quick Start tutorial <tutorial/01-quickstart>` to get up and running in minutes.
-
-   **Need advanced features?** Check out our comprehensive :doc:`Installation Guide <tutorial/02-installation>` for multi-site support, languages, and OpenAPI documentation.
+- Use the :doc:`Quick Start tutorial <tutorial/01-quickstart>` to get the basics up and running.
+- Check out our :doc:`Installation Guide <tutorial/02-installation>` for multi-site support, languages, and OpenAPI documentation.
 
 .. toctree::
    :maxdepth: 1
@@ -66,9 +64,3 @@ Ready to get started? Follow our step-by-step tutorial to set up djangocms-rest 
    reference/index
    contributing
    changelog
-
-Installation Guide
-~~~~~~~~~~~~~~~~~~
-Follow our installation guide to setup additional features like multi-site support, languages support and open api documentation.
-
-- :doc:`tutorial/02-installation`
