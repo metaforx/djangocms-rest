@@ -3,11 +3,6 @@ How-to Guides
 
 Practical guides for implementing specific features with djangocms-rest.
 
-.. note::
-   This section will grow in the foreseeable future. If you have a specific feature in mind, please open an issue or a pull request.
-
-   **GitHub Repository**: `djangocms-rest <https://github.com/django-cms/djangocms-rest>`_
-
 
 How-to Guides
 -------------
@@ -21,9 +16,21 @@ How-to Guides
 Planned Guides
 --------------
 
-All of this features can already be implemented using the API, but we plan to create dedicated guides to make the rest api more accessible for frontend developers.
+All of this features can already be implemented using the API, but we plan to create dedicated guides to make the djangocms-rest more accessible for frontend development.
 
-- Render placeholder content efficiently in web frontend applications
+- Render placeholder content in web frontend applications
 - Page routing in web frontend applications
-- Browse frontend page content in django CMS
-- Add edit functionality to web frontend applications using django CMS structure editor
+- Integrate browsable frontend pages via iFrame into django CMS
+- Preview and Edit functionality for decoupled web frontend applications in django CMS
+- Apphook use in frontend applications
+
+
+Contribute
+----------
+
+We are always looking for contributions to improve the documentation. If you are working on an implementation scenario. Plese share your experience and create a small implementation guide for others to follow.
+
+- **GitHub Repository**: `djangocms-rest <https://github.com/django-cms/djangocms-rest>`_
+
+
+
