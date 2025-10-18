@@ -1,5 +1,5 @@
-Submenu
-=======
+Submenu Endpoints
+=================
 
 **The Submenu endpoints provide hierarchical submenu structures in django CMS.**
 

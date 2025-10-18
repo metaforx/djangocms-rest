@@ -1,5 +1,5 @@
-Plugins
-=======
+Plugins Endpoints
+=================
 
 **The Plugins endpoints provide plugin definitions for all available plugins in django CMS.**
 

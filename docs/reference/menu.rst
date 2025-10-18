@@ -1,5 +1,5 @@
-Menu
-=====
+Menu Endpoints
+==============
 
 **The Menu endpoints provide navigation nodes using the same structure as the django CMS menu system.**
 

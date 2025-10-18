@@ -1,5 +1,5 @@
-Breadcrumbs
-===========
+Breadcrumbs Endpoints
+====================
 
 **The Breadcrumbs endpoints provide breadcrumb navigation structures in django CMS.**
 

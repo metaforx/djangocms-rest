@@ -1,5 +1,5 @@
-Pages
-======
+Pages Endpoints
+===============
 
 **The Pages endpoints provide django CMS pages and their content.**
 

@@ -14,10 +14,10 @@ Available Endpoints
 .. toctree::
    :maxdepth: 1
 
-   Languages <languages>
-   Pages <pages>
-   Placeholders <placeholders>
-   Menu <menu>
-   Submenu <submenu>
-   Breadcrumbs <breadcrumbs>
-   Plugins <plugins>
+   Languages Endpoints <languages>
+   Pages Endpoints <pages>
+   Placeholders Endpoints <placeholders>
+   Menu Endpoints <menu>
+   Submenu Endpoints <submenu>
+   Breadcrumbs Endpoints <breadcrumbs>
+   Plugins Endpoints <plugins>

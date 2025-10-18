@@ -1,5 +1,5 @@
-Placeholders
-=============
+Placeholders Endpoints
+======================
 
 **The Placeholders endpoints provide placeholder content in django CMS.**
 

@@ -219,8 +219,8 @@ Multi-Site Support
 
 djangocms-rest supports 2 ways to handle multi-site support:
 
-1. **Multi-Instance Setup:** Usually multiple instances of the CMS running on different domains. See the official CMS documentation for more information. 
-2. **Single Instance Setup:** Run Django CMS in headless mode and serve multiple sites from a single instance. Using the ``SiteContextMiddleware`` to set the site context on the request.
+1. **Multi-Instance Setup:** Usually multiple instances of the CMS running on different domains. This is also valid option for headless mode. See the official `Django CMS - Multi-Site installation <https://docs.django-cms.org/en/stable/how_to/03-multi-site.html#multi-site-installation>`_ documentation for more information. 
+2. **Single Instance Setup:** Run Django CMS in headless mode and serve multiple sites from a single instance. Using the ``SiteContextMiddleware`` from ``djangocms-rest`` to set the site context on the request.
 
 **Option 1:**
 

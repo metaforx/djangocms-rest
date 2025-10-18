@@ -43,7 +43,7 @@ Setup Django CMS for Multi-Site
 
 **Response**
 
-You should get your page tree for each site as a response described in the :doc:`../reference/pages` documentation.
+You should get your page tree for each site as a response described in the :doc:`../reference/pages` reference.
 
 
 .. hint::

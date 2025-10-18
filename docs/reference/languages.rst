@@ -1,5 +1,5 @@
-Languages
-=========
+Languages Endpoints
+===================
 
 **The Languages endpoints provide language information in django CMS.**
 
