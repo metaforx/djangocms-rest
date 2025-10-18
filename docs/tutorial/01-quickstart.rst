@@ -15,7 +15,7 @@ Installation
 .. code-block:: bash
 
     # Install djangocms-rest
-    pip install djangocms-rest
+    poetry add djangocms-rest
 
 Configuration
 ------------
@@ -52,7 +52,9 @@ Visit `http://localhost:8080/api/languages/ <http://localhost:8080/api/languages
 .. code-block:: bash
 
     # Test the API endpoints
-    curl http://localhost:8080/api/languages
+    curl -X 'GET' \
+      'http://localhost:8080/api/languages/' \
+      -H 'accept: application/json'
 
 If you see a response like this, you're good to go:
 
@@ -80,6 +82,8 @@ If you see a response like this, you're good to go:
         "hide_untranslated": true
       }
     ]
+
+See the :doc:`../reference/languages` reference for more information.
 
 Next Steps
 ----------

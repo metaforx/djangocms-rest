@@ -54,7 +54,7 @@ You should get your page tree for each site as a response described in the :doc:
 Enable CORS
 ~~~~~~~~~~~
 
-This works fine from console, but for frontend requests we have to ensure that ``CORS`` is configured correctly.
+This works fine from console, but for frontend requests we have to ensure that ``CORS`` (Cross-Origin Resource Sharing) is configured correctly.
 See the `CORS Support <../tutorial/02-installation.html#cors-support>`_ guide for more information.
 
 
@@ -136,8 +136,6 @@ Run your Vue.js project:
 Visit `http://localhost:5173/ <http://localhost:5173/>`_ in your browser, assuming you are using the default port for Vue.js.
 
 You can now click the ``"Fetch Page Tree"`` button to fetch the page tree for the selected site.
-You should see the page tree for the selected site in the browser or an error message if the request fails.
-
 
 .. admonition:: Success
 
@@ -149,3 +147,12 @@ You should see the page tree for the selected site in the browser or an error me
 
     if you get error you likely forgot to set the ``X-Site-ID`` header as allowed in the CORS settings or the domain or port is not allowed in the CORS settings.
     See the :doc:`../tutorial/02-installation` guide for more information.
+
+Start Building
+~~~~~~~~~~~~~~
+
+When you are able to fetch the page tree for each site you can start building your frontend app.
+
+- Configure Django CMS templates with varous placeholders options
+- Define and customize plugins according to your needs
+- Add authentication to your frontend app, which allows content preview in the frontend app
