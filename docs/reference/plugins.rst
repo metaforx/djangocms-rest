@@ -1,7 +1,7 @@
-Plugins API
-===========
+Plugins
+=======
 
-**The Plugins API provides endpoints for retrieving plugin definitions for all available plugins in django CMS.**
+**The Plugins endpoints provide plugin definitions for all available plugins in django CMS.**
 
 * This returns all available plugin type definitions with their properties and schemas
 * Plugin definitions include the plugin type identifier, human-readable title, and property definitions

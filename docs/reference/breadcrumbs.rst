@@ -1,7 +1,7 @@
-Breadcrumbs API
-==============
+Breadcrumbs
+===========
 
-**The Breadcrumbs API provides endpoints for retrieving breadcrumb navigation structures in django CMS.**
+**The Breadcrumbs endpoints provide breadcrumb navigation structures in django CMS.**
 
 
 .. code-block:: bash

@@ -1,7 +1,7 @@
-Menu API
-========
+Menu
+=====
 
-**The Menu API provides endpoints for retrieving navigation nodes using the same structure as the django CMS menu system.**
+**The Menu endpoints provide navigation nodes using the same structure as the django CMS menu system.**
 
 .. note::
 
@@ -13,7 +13,7 @@ Menu API
 
     
 
-* Menu API is essential for building navigation menus and sitemaps
+* Menu endpoints are essential for building navigation menus and sitemaps
 * Menu information includes page meta information, state, URLs, visibility settings, and hierarchical relationships
 * Retrieve menu nodes and filter by:
 * * by level ranges

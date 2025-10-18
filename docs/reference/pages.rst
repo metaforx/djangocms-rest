@@ -1,7 +1,7 @@
-Pages API
-=========
+Pages
+======
 
-**The Pages API provides endpoints for retrieving django CMS pages and their content.**
+**The Pages endpoints provide django CMS pages and their content.**
 
 * This returns all pages available for the specified language with their metadata and placeholder information
 * Page information includes titles, URLs, navigation settings, and template configurations
@@ -9,7 +9,7 @@ Pages API
 * Pages can be retrieved as a nested tree structure or a list of pages with pagination support
 
 .. note::
-    This does only return page meta informaiton. To retrieve the page content, you need to use the :doc:`Placeholders API <placeholders>`.
+    This does only return page meta informaiton. To retrieve the page content, you need to use the :doc:`Placeholders <placeholders>`.
 
 .. warning::
     Fetching a deeply nested tree of pages can be very slow for large page sets. Use the :ref:`Pages List API <list-pages-paginated>` instead.

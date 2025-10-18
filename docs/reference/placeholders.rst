@@ -1,7 +1,7 @@
-Placeholders API
-================
+Placeholders
+=============
 
-**The Placeholders API provides endpoints for retrieving placeholder content in django CMS.**
+**The Placeholders endpoints provide placeholder content in django CMS.**
 
 * Used to retrieve content from placeholders object linked to a specific page
 * This essentially returns all plugins in a placeholder as a nested JSON tree according to the defined placeholders in `CMS_PLACEHOLDER_CONF`
@@ -23,7 +23,7 @@ Retrieve Placeholder
 **GET** ``/api/{language}/placeholders/{content_type_id}/{object_id}/{slot}/``
 
 Placeholder contain the dynamic content. This view retrieves the content as a structured nested object.
-You can get a direct link to build the query or all attributes from the :doc:`Pages API <pages>`.
+You can get a direct link to build the query or all attributes from the :doc:`Pages <pages>`.
 
 **Response Attributes:**
 

@@ -1,7 +1,7 @@
-Submenu API
-===========
+Submenu
+=======
 
-**The Submenu API provides endpoints for retrieving hierarchical submenu structures in django CMS.**
+**The Submenu endpoints provide hierarchical submenu structures in django CMS.**
 
 .. note::
 

@@ -1,7 +1,7 @@
-Languages API
-=============
+Languages
+=========
 
-**The Languages API provides endpoints for retrieving language information in django CMS.**
+**The Languages endpoints provide language information in django CMS.**
 
 * This returns all available languages configured for the site
 * Language information includes language codes, names, and configuration settings
