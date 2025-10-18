@@ -8,7 +8,7 @@ djangocms-rest requires:
 
 * Python 3.9 or higher
 * Django 4.2 or higher
-* django CMS 4.2 or higher (5.0 preferred)
+* django CMS 4.0 or higher, including latest 5.0+ versions
 * Django REST Framework 3.14 or higher
 
 Installation
