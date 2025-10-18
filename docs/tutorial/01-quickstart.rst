@@ -42,17 +42,17 @@ Start Server
 .. code-block:: bash
 
     # Start the Django development server
-    python manage.py runserver 8000
+    python manage.py runserver 8080
 
 Test API
 --------
 
-Visit `http://localhost:8000/api/languages/ <http://localhost:8000/api/languages/>`_ to test the API endpoints.
+Visit `http://localhost:8080/api/languages/ <http://localhost:8080/api/languages/>`_ to test the API endpoints.
 
 .. code-block:: bash
 
     # Test the API endpoints
-    curl http://localhost:8000/api/languages
+    curl http://localhost:8080/api/languages
 
 If you see a response like this, you're good to go:
 

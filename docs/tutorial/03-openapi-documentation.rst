@@ -90,8 +90,8 @@ Testing
 
 You can now access:
 
-- **Interactive API Documentation**: `http://localhost:8000/api/docs/ <http://localhost:8000/api/docs/>`_
-- **OpenAPI JSON Schema**: `http://localhost:8000/api/schema-json/ <http://localhost:8000/api/schema-json/>`_
+- **Interactive API Documentation**: `http://localhost:8080/api/docs/ <http://localhost:8080/api/docs/>`_
+- **OpenAPI JSON Schema**: `http://localhost:8080/api/schema-json/ <http://localhost:8080/api/schema-json/>`_
 
 Client SDK Generation
 --------------------
