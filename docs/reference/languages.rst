@@ -3,9 +3,10 @@ Languages Endpoints
 
 **The Languages endpoints provide language information in django CMS.**
 
-* This returns all available languages configured for the site
-* Language information includes language codes, names, and configuration settings
-* Useful to build a language switcher and handle language fallbacks in decoupled frontend applications
+* This returns all the languages that are configured for the site.
+* Language information includes language codes, names and configuration settings.
+* This information is useful for building a language switcher and handling language fallbacks in decoupled front-end applications.
+
 
 CMS Reference
 -------------

@@ -4,13 +4,12 @@ OpenAPI Documentation
 Set up automatic API documentation and schema generation for your djangocms-rest API.
 
 .. note::
-    This tutorial is highly recommended for development. It enables interactive API documentation and client SDK generation.
+    Recommended for development. It enables interactive API documentation with typed responses.
 
 Prerequisites
 -------------
 
 - Completed :doc:`02-installation` guide
-- Basic understanding of Django REST Framework
 
 Overview
 --------
@@ -22,9 +21,8 @@ Benefits
 --------
 
 * **Interactive API Documentation** - Browse and test endpoints directly in your browser
-* **Client SDK Generation** - Generate type-safe client libraries for your frontend
-* **Type Safety** - Full TypeScript/JavaScript type definitions
-* **Development Efficiency** - Auto-generated documentation stays in sync with your API
+* **Automatic Schema Generation** - Generate OpenAPI schemas for all endpoints and plugins
+* **Type Safety** - Use schema to generate type-safe client libraries for your frontend
 
 Installation
 -----------
@@ -107,4 +105,3 @@ Next Steps
 
 - Explore the :doc:`../reference/index` for detailed API documentation
 - Check out :doc:`../how-to/index` for implementation guides
-- Learn about :doc:`../how-to/02-plugin-creation` for custom plugin serialization

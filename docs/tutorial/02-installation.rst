@@ -36,7 +36,7 @@ Using pip
 
 Latest from source
 ~~~~~~~~~~~~~~~~~~~~~~~~
-For the latest features, you can install the a version from the GitHub repository at your own risk:
+For the latest features, you can install a version from the GitHub repository at your own risk:
 
 .. code-block:: bash
 

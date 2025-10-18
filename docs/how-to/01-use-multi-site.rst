@@ -10,10 +10,6 @@ guide can easily be adapted to other frontend frameworks.
     This guide assumes you have a running Django CMS project with multiple sites.
     If you haven't configured django CMS for multi-site yet, please follow the `Multi-Site Support <../tutorial/02-installation.html#multi-site-support>`_ guide.
 
-CMS Reference
-~~~~~~~~~~~~~
-
-- `Django CMS User Docs - Pages <https://user-guide.django-cms.org/en/latest/tutorial/05-pagetree.html>`_
 
 
 Setup Django CMS for Multi-Site
@@ -47,14 +43,20 @@ You should get your page tree for each site as a response described in the :doc:
 
 
 .. hint::
-
     Alternatively you can use swagger (see :doc:`../tutorial/02-installation`) to test the API endpoints or a app like `Bruno <https://www.usebruno.com/>`_
+
+
+CMS Reference
+~~~~~~~~~~~~~
+
+- `Django CMS User Docs - Pages <https://user-guide.django-cms.org/en/latest/tutorial/05-pagetree.html>`_
+
 
 
 Enable CORS
 ~~~~~~~~~~~
 
-This works fine from console, but for frontend requests we have to ensure that ``CORS`` (Cross-Origin Resource Sharing) is configured correctly.
+This works fine from console, but for browser requests we have to ensure that ``CORS`` (Cross-Origin Resource Sharing) is configured correctly.
 See the `CORS Support <../tutorial/02-installation.html#cors-support>`_ guide for more information.
 
 
@@ -72,8 +74,10 @@ Before continuing, you should set up a basic Vue.js project.
 
     We use TypeScript for this example. Make sure to enable it in your Vue.js project.
 
+    ✔ Add TypeScript? … **Yes**
 
-Now we will create a simple Vue.js project to fetch the page tree with the X-Site-ID header:
+
+Now we will create a simple Vue.js project to fetch the page tree using the ``X-Site-ID`` request header:
 
 Replace the content of ``App.vue`` with the following code:
 
