@@ -4,48 +4,30 @@ This directory contains the documentation for djangocms-rest, built with Sphinx.
 
 ## Setup
 
-### Option 1: Using Poetry (Recommended)
+### Using Poetry (Recommended)
 
 ```bash
+# From project root, install all dependencies including docs
+poetry install --with dev
+
 # Navigate to the docs directory
 cd docs
-
-# Install documentation dependencies with Poetry
-poetry install
-
-# Activate the virtual environment
-poetry shell
 
 # Build the documentation
 make html
 ```
 
-### Option 2: Using pip with requirements.txt
+### Alternative: Using pip
 
 ```bash
+# From project root, install development dependencies
+pip install -e ".[dev]"
+
 # Navigate to the docs directory
 cd docs
 
-# Create a virtual environment (optional but recommended)
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install documentation dependencies
-pip install -r requirements.txt
-```
-
-### Option 3: Using pip with pyproject.toml
-
-```bash
-# Navigate to the docs directory
-cd docs
-
-# Create a virtual environment (optional but recommended)
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install documentation dependencies
-pip install -e .
+# Build the documentation
+make html
 ```
 
 ## Building Documentation
@@ -75,13 +57,7 @@ make open
 
 ```bash
 # Start live documentation server with auto-reload (recommended)
-make live
-
-# Or use the simple script from project root (basic Furo theme)
-../docs-simple.sh
-
-# Or use the full script from project root (with custom styling)
-../docs-live.sh
+sh live.sh
 
 # Or run sphinx-autobuild directly
 poetry run sphinx-autobuild . _build/html --port 8000 --host 0.0.0.0 --open-browser
@@ -110,24 +86,22 @@ The documentation is organized into logical sections:
 
 ### Tutorial
 - `tutorial/01-quickstart.rst` - Quick start guide
-- `tutorial/02-installation.rst` - Installation guide
+- `tutorial/02-installation.rst` - Installation guide  
+- `tutorial/03-openapi-documentation.rst` - OpenAPI documentation guide
 
-### How-to
-- `how-to/01-configuration.rst` - Configuration guide
-- `how-to/02-authentication.rst` - Authentication guide
-- `how-to/03-permissions.rst` - Permissions guide
-- `how-to/04-caching.rst` - Caching guide
-
-### Explanations
-- `explanations/01-examples.rst` - Usage examples and patterns
+### How-to Guides
+- `how-to/01-use-multi-site.rst` - Multi-site configuration guide
+- `how-to/02-plugin-creation.rst` - Plugin creation guide
 
 ### Reference
 - `reference/index.rst` - API overview
-- `reference/pages.rst` - Pages API
-- `reference/languages.rst` - Languages API
-- `reference/placeholders.rst` - Placeholders API
-- `reference/plugins.rst` - Plugins API
-- `reference/permissions.rst` - Permissions API
+- `reference/pages.rst` - Pages API reference
+- `reference/languages.rst` - Languages API reference
+- `reference/placeholders.rst` - Placeholders API reference
+- `reference/plugins.rst` - Plugins API reference
+- `reference/menu.rst` - Menu API reference
+- `reference/breadcrumbs.rst` - Breadcrumbs API reference
+- `reference/submenu.rst` - Submenu API reference
 
 ### Additional
 - `contributing.rst` - Contributing guide
@@ -138,9 +112,10 @@ The documentation is organized into logical sections:
 The documentation is configured in `conf.py`. Key settings include:
 
 - **Theme**: Furo theme (modern, clean design with sidebar navigation)
-- **Extensions**: autodoc, intersphinx, napoleon, etc.
+- **Extensions**: autodoc, intersphinx, napoleon, sphinx-tabs, sphinx-copybutton, etc.
 - **Intersphinx**: Links to Python, Django, DRF, and django CMS documentation
 - **Mock imports**: Django and django CMS modules are mocked for autodoc
+- **GitHub Integration**: Source repository links and GitHub icon in footer
 
 ## Contributing to Documentation
 
@@ -158,7 +133,7 @@ The documentation is configured in `conf.py`. Key settings include:
 - The `conf.py` file includes mock imports for Django modules
 
 **Sphinx build errors**
-- Check that all dependencies are installed: `poetry install` or `pip install -r requirements.txt`
+- Check that all dependencies are installed: `poetry install --with dev` or `pip install -e ".[dev]"`
 - Ensure you're in the `docs` directory when running commands
 - Check the build output for specific error messages
 
