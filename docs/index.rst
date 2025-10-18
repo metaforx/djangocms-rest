@@ -47,79 +47,15 @@ Key Features
 * **Caching & Performance** — Works with Django cache backends like Redis and Memcached.  
 
 
-Quick Start
------------
+Getting Started
+----------------
+
+Ready to get started? Follow our step-by-step tutorial to set up djangocms-rest in minutes.
 
 .. note::
-    A running Django CMS project is required. Follow the `Installing Django CMS by hand <https://docs.Django-cms.org/en/latest/introduction/01-install.html#installing-Django-cms-by-hand>`_ guide to get started.
+   **New to djangocms-rest?** Start with our :doc:`Quick Start tutorial <tutorial/01-quickstart>` to get up and running in minutes.
 
-
-.. code-block:: bash
-
-    # Install djangocms-rest
-    pip install djangocms-rest
-
-
-.. code-block:: python
-
-    # Add to INSTALLED_APPS in your project's settings.py
-    INSTALLED_APPS = [
-        # ... other apps
-        'Djangocms_rest',
-    ]
-
-.. code-block:: python
-
-
-    # Include URLs in your project's urls.py
-    urlpatterns = [
-        # ... other URLs
-        path('api/', include('Djangocms_rest.urls')),
-    ]
-
-
-.. code-block:: bash
-
-    # Start the Django development server
-    python manage.py runserver 8000
-
-Test API
-~~~~~~~~
-
-
-`http://localhost:8080/api/languages/ <http://localhost:8080/api/languages/>`_
-
-.. code-block:: bash
-
-   # Test the API endpoints
-    curl http://localhost:8080/api/languages
-
-If you see a response like this, you're good to go:
-
-.. code-block:: json
-
-    [
-      {
-        "code": "en",
-        "name": "English",
-        "public": true,
-        "fallbacks": [
-          "en"
-        ],
-        "redirect_on_fallback": true,
-        "hide_untranslated": false
-      },
-      {
-        "code": "de",
-        "name": "Deutsch",
-        "public": false,
-        "fallbacks": [
-          "en"
-        ],
-        "redirect_on_fallback": true,
-        "hide_untranslated": true
-      }
-    ]
+   **Need advanced features?** Check out our comprehensive :doc:`Installation Guide <tutorial/02-installation>` for multi-site support, languages, and OpenAPI documentation.
 
 .. toctree::
    :maxdepth: 1
@@ -135,4 +71,4 @@ Installation Guide
 ~~~~~~~~~~~~~~~~~~
 Follow our installation guide to setup additional features like multi-site support, languages support and open api documentation.
 
-- :doc:`tutorial/01-installation`
+- :doc:`tutorial/02-installation`

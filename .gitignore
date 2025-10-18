@@ -169,3 +169,4 @@ cython_debug/
 /.idea/jsLinters/eslint.xml
 /.idea/ruff.xml
 /coverage_html/
+.idea/copilot.data.migration.agent.xml

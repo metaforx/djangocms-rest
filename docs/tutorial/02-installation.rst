@@ -249,7 +249,7 @@ Docs
 .. note::
 
     You need to have CORS configured correctly to allow the frontend app to access the API.
-    See `CORS Support <../tutorial/01-installation.html#cors-support>`_.
+    See `CORS Support <../tutorial/02-installation.html#cors-support>`_.
 
 Configuration
 ~~~~~~~~~~~~~
@@ -356,7 +356,7 @@ Docs
 .. note::
 
     You need to have CORS configured correctly to allow the frontend app to access the API.
-    See `CORS Support <../tutorial/01-installation.html#cors-support>`_.
+    See `CORS Support <../tutorial/02-installation.html#cors-support>`_.
 
 Configuration
 ~~~~~~~~~~~~~
@@ -393,81 +393,12 @@ Testing
     http://localhost:8080/api/en/pages/?preview=true
 
 
-OpenAPI Specification
+OpenAPI Documentation
 ---------------------
 
-djangocms-rest is fully typed and supports OpenAPI 3 schema generation using `drf-spectacular <https://drf-spectacular.readthedocs.io/en/latest/>`_.
-Swagger UI and Redoc are also supported and highly recommended for development.
+For interactive API documentation and client SDK generation, follow the :doc:`03-openapi-documentation` tutorial.
 
-Docs
-~~~~
-
-Follow the drf-spectacular documentation to configure the schema generation in-depth.
-
-- `drf-spectacular <https://drf-spectacular.readthedocs.io/en/latest/>`_
-
-Configuration
-~~~~~~~~~~~~~
-
-This is a simple configuration to get you started.
-
-.. code-block:: bash
-
-    poetry add drf-spectacular
-
-
-.. code-block:: python
-
-    INSTALLED_APPS = [
-        ...
-        'drf_spectacular',
-        ...
-    ]
-
-    # Add REST Framework settings
-    REST_FRAMEWORK = {
-        'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-        ... # other settings
-    }
-
-
-    # recommended settings, but not required
-    SPECTACULAR_SETTINGS = {
-    'TITLE': 'Your Project API',
-    'DESCRIPTION': 'Your project description',
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
-    # other settings
-    }
-
-.. code-block:: python
-    urlpatterns = [
-        ...
-        # OpenAPI schema and documentation
-        path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-        path("api/schema-json/", SpectacularJSONAPIView.as_view(), name="schema-json"),
-        path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-        path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
-        ...
-    ]
-..
-
- 
-.. note::
-
-    Using `heyapi.dev <https://heyapi.dev/>`_ you can generate a client sdk for your frontend app.
-
-
-Testing
-~~~~~~~
-
-You can check now your:
-
-- API documentation at `http://localhost:8080/api/docs/ <http://localhost:8080/api/docs/>`_
-- OpenAPI specification as JSON at `http://localhost:8080/api/schema-json/ <http://localhost:8080/api/schema-json/>`_
-
-
-Implementation Guide
-~~~~~~~~~~~~~~~~~~~~
-
-- :doc:`../how-to/05-sdk-generation`
+This highly recommended step enables:
+- Interactive API documentation with Swagger UI
+- OpenAPI schema generation for client SDKs
+- Type-safe frontend development

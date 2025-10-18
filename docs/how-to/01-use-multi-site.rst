@@ -8,7 +8,7 @@ guide can easily be adapted to other frontend frameworks.
 
 .. warning::
     This guide assumes you have a running Django CMS project with multiple sites.
-    If you haven't configured django CMS for multi-site yet, please follow the `Multi-Site Support <../tutorial/01-installation.html#multi-site-support>`_ guide.
+    If you haven't configured django CMS for multi-site yet, please follow the `Multi-Site Support <../tutorial/02-installation.html#multi-site-support>`_ guide.
 
 CMS Reference
 ~~~~~~~~~~~~~
@@ -48,14 +48,14 @@ You should get your page tree for each site as a response described in the :doc:
 
 .. hint::
 
-    Alternatively you can use swagger (see :doc:`../tutorial/01-installation`) to test the API endpoints or a app like `Bruno <https://www.usebruno.com/>`_
+    Alternatively you can use swagger (see :doc:`../tutorial/02-installation`) to test the API endpoints or a app like `Bruno <https://www.usebruno.com/>`_
 
 
 Enable CORS
 ~~~~~~~~~~~
 
 This works fine from console, but for frontend requests we have to ensure that ``CORS`` is configured correctly.
-See the `CORS Support <../tutorial/01-installation.html#cors-support>`_ guide for more information.
+See the `CORS Support <../tutorial/02-installation.html#cors-support>`_ guide for more information.
 
 
 
@@ -148,4 +148,4 @@ You should see the page tree for the selected site in the browser or an error me
 .. error::
 
     if you get error you likely forgot to set the ``X-Site-ID`` header as allowed in the CORS settings or the domain or port is not allowed in the CORS settings.
-    See the :doc:`../tutorial/01-installation` guide for more information.
+    See the :doc:`../tutorial/02-installation` guide for more information.
