@@ -1,96 +1,151 @@
-Use Multi-Site in your frontend
-===============================
+Multi-Site setup with single CMS instance
+=========================================
 
 In this short guide, we will show you how to use the multi-site functionality in your frontend app.
-As you are reading this we assume you have a basic understanding of decoupled architecture and frontend frameworks. There are plenty of articles and guides on the internet to get you started, like:
 
-- `Decoupled Architecture Microservices <https://medium.com/@saurabh.engg.it/decoupled-architecture-microservices-29f7b201bd87>`_
-
-We will use ``vue.js`` to show how to fetch data from different sites. This implemenation
+We will use ``vue.js``  to fetch data from a single django CMS instance with multiple sites. This implemenation
 guide can easily be adapted to other frontend frameworks.
 
-.. note::
+.. warning::
     This guide assumes you have a running Django CMS project with multiple sites.
-    If you haven't set up multi-site yet, please follow the :doc:`../tutorial/01-installation` guide...
-
-.. hint::
-    Setup a basic vue.js project using `Vue.js Quick Start <https://vuejs.org/guide/quick-start>`_
+    If you haven't configured django CMS for multi-site yet, please follow the `Multi-Site Support <../tutorial/01-installation.html#multi-site-support>`_ guide.
 
 CMS Reference
--------------
+~~~~~~~~~~~~~
+
 - `Django CMS User Docs - Pages <https://user-guide.django-cms.org/en/latest/tutorial/05-pagetree.html>`_
 
-Example
--------
 
-1. Adjust the primary site details for site A (Site ID 1)
-2. Create a new site for site B (Site ID 2)
-3. Create a page tree for site A
-4. Create a page tree for site B
-5. Fetch the page tree for site A.
-6. Fetch the page tree for site B.
+Setup Django CMS for Multi-Site
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+1. Start your django CMS project
+
+.. code-block:: bash
+
+    python manage.py runserver localhost:8080
+
+
+2. Adjust the primary site details in django admin for site A (Site ID 1)
+3. Create a new site in django admin for site B (Site ID 2)
+4. Create a nested pages structure for site A and site B using django CMS page tree admin.
+5. Before building the frontend we want to make sure the page tree is working and returned as expected.
 
 
 .. code-block:: bash
 
     # Fetch the page tree for site A
-    curl -H "X-Site-ID: 1" \
+    curl -v -H "X-Site-ID: 1" \
         -H "Content-Type: application/json" \
-        http://localhost:8080/api/cms/en/pages-tree/
+        -H "Accept: application/json" \
+        http://localhost:8080/api/en/pages-tree/
+
+**Response**
+
+You should get your page tree for each site as a response described in the :doc:`../reference/pages` documentation.
 
 
-Response
---------
+.. hint::
 
-You should get a response described in the :doc:`../reference/pages` documentation.
+    Alternatively you can use swagger (see :doc:`../tutorial/01-installation`) to test the API endpoints or a app like `Bruno <https://www.usebruno.com/>`_
 
 
-Vue.js Sample
--------------
+Enable CORS
+~~~~~~~~~~~
 
-Before using this example, you should set up a basic Vue.js project.
-If you are familiar with JavaScript frameworks, you can get started right away.
+This works fine from console, but for frontend requests we have to ensure that ``CORS`` is configured correctly.
+See the `CORS Support <../tutorial/01-installation.html#cors-support>`_ guide for more information.
+
+
+
+
+
+Setup Vue.js Project
+~~~~~~~~~~~~~~~~~~~~
+
+Before continuing, you should set up a basic Vue.js project.
 
 - `Vue.js Quick Start <https://vuejs.org/guide/quick-start>`_
 
+.. note::
 
-Simple Vue.js example to fetch page tree with X-Site-ID header:
+    We use TypeScript for this example. Make sure to enable it in your Vue.js project.
+
+
+Now we will create a simple Vue.js project to fetch the page tree with the X-Site-ID header:
+
+Replace the content of ``App.vue`` with the following code:
 
 .. code-block:: vue
 
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    </head>
-    <body>
-        <div id="app">
-            <select v-model="siteId" @change="fetchData">
-                <option value="1">Site 1</option>
-                <option value="2">Site 2</option>
-            </select>
-            <button @click="fetchData">Fetch Page Tree</button>
-            <pre>{{ data }}</pre>
-        </div>
+    <script setup lang="ts">
+    import { ref } from 'vue';
 
-        <script>
-            const { createApp } = Vue;
-            createApp({
-                data() {
-                    return {
-                        siteId: '1',
-                        data: null
-                    }
-                },
-                methods: {
-                    async fetchData() {
-                        const response = await fetch('http://localhost:8080/api/cms/en/pages-tree/', {
-                            headers: { 'X-Site-ID': this.siteId }
-                        });
-                        this.data = await response.json();
-                    }
-                }
-            }).mount('#app');
-        </script>
-    </body>
-    </html>
+    const siteId = ref('1');
+    const data = ref(null);
+    const error = ref(null);
+    const errorCode = ref(null);
+
+    async function fetchData() {
+        error.value = null;
+        errorCode.value = null;
+        try {
+            const response = await fetch('http://localhost:8080/api/en/pages-tree/', {
+                headers: { 'X-Site-ID': siteId.value }
+            });
+            if (!response.ok) {
+                error.value = `HTTP error: ${response.statusText}`;
+                errorCode.value = response.status;
+                data.value = null;
+                return;
+            }
+            data.value = await response.json();
+        } catch (err) {
+            error.value = err.message || 'Unknown error';
+            errorCode.value = err.code || null;
+            data.value = null;
+        }
+    }
+    </script>
+
+    <template>
+    <select v-model="siteId" @change="fetchData">
+        <option value="1">Site 1</option>
+        <option value="2">Site 2</option>
+    </select>
+    <button @click="fetchData">Fetch Page Tree</button>
+    <pre v-if="data">{{ data }}</pre>
+    <div v-if="error" style="color: red;">
+        Error: {{ error }}<br>
+        <span v-if="errorCode">Error Code: {{ errorCode }}</span>
+    </div>
+    </template>
+
+
+Testing
+~~~~~~~
+
+Run your Vue.js project:
+
+.. code-block:: bash
+
+    npm run dev
+
+
+Visit `http://localhost:5173/ <http://localhost:5173/>`_ in your browser, assuming you are using the default port for Vue.js.
+
+You can now click the ``"Fetch Page Tree"`` button to fetch the page tree for the selected site.
+You should see the page tree for the selected site in the browser or an error message if the request fails.
+
+
+.. admonition:: Success
+
+    You should see the page tree for the selected site in the browser.
+    See the :doc:`../reference/pages` documentation for the expected response.
+
+
+.. error::
+
+    if you get error you likely forgot to set the ``X-Site-ID`` header as allowed in the CORS settings or the domain or port is not allowed in the CORS settings.
+    See the :doc:`../tutorial/01-installation` guide for more information.

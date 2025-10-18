@@ -125,11 +125,13 @@ Configuration
     ...,
     ]
 
+    # add the allowed origins (your frontend apps) to the CORS settings
     CORS_ALLOWED_ORIGINS = [
-    "https://example.com",
-    "https://sub.example.com",
-    "http://localhost:8080",
-    "http://127.0.0.1:9000",
+    ...,
+    "https://example.com", # set your own domain here, likely via env variable in production
+    "http://localhost:300", # common js frontend app port
+    "http://localhost:5173", # vue.js from our examples
+    ...,
     ]
 
 
@@ -217,21 +219,21 @@ Multi-Site Support
 
 djangocms-rest supports 2 ways to handle multi-site support:
 
-1. **Multi-Instance Setup:** Follow the guide howto setup a multi-site django CMS project. 
-2. **Single Instance Setup:** Using the ``SiteContextMiddleware`` to set the site context on the request.
+1. **Multi-Instance Setup:** Usually multiple instances of the CMS running on different domains. See the official CMS documentation for more information. 
+2. **Single Instance Setup:** Run Django CMS in headless mode and serve multiple sites from a single instance. Using the ``SiteContextMiddleware`` to set the site context on the request.
 
 **Option 1:**
 
-1. foo.example.com/api/cms/pages/ < REQUEST > Content foo site  
-2. bar.example.com/api/cms/pages/ < REQUEST > Content bar site
+1. foo.example.com/api/pages/ < REQUEST > Content foo site  
+2. bar.example.com/api/pages/ < REQUEST > Content bar site
 
 **Option 2:**
 
-1. cms.example.com/api/cms/pages/ < REQUEST HEADERS X-Site-ID: 1 > Content foo site
-2. cms.example.com/api/cms/pages/ < REQUEST HEADERS X-Site-ID: 2 > Content bar site
+1. cms.example.com/api/pages/ < REQUEST HEADERS X-Site-ID: 1 > Content foo site
+2. cms.example.com/api/pages/ < REQUEST HEADERS X-Site-ID: 2 > Content bar site
 
 If you want to serve multiple sites from a single instance, you can use the ``SiteContextMiddleware`` to set the site context on the request.
-This requires django `sites` framework to be installed and configured.
+This requires ``Django Sites`` framework to be installed and configured.
 
 Your can pass the site ID in the request headers with the ``X-Site-ID`` property set to the site ID. 
 The Middleware will then set the site context on the request.
@@ -242,9 +244,12 @@ Docs
 - `Enabling Sites Framework <https://docs.djangoproject.com/en/5.2/ref/contrib/sites/#enabling-the-sites-framework>`_
 - `Django CMS - Multi-Site installation <https://docs.django-cms.org/en/stable/how_to/03-multi-site.html#multi-site-installation>`_
 
-For Option 2, you do not need to configure the webserver running the CMS as the frontend runs headless on a different domain.
-Otherwise follow the guide how to setup a multi-site django CMS project.
+ For Option 2, you do not need to configure the webserver to manage multiples sites as the frontend apps are decoupled and run on a different domain.
 
+.. note::
+
+    You need to have CORS configured correctly to allow the frontend app to access the API.
+    See `CORS Support <../tutorial/01-installation.html#cors-support>`_.
 
 Configuration
 ~~~~~~~~~~~~~
@@ -257,7 +262,24 @@ Configuration
         ...
     ]
 
+    # default site id, you likely wnat to change this using env variable in production
     SITE_ID = 1
+
+.. code-block:: python
+    
+    CORS_ALLOW_ALL_ORIGINS=True # development seting, disable in production
+    CORS_ALLOWED_ORIGINS = [
+        "https://frontend.com", # your production frontend domain
+        "http://localhost:3000", # common js frontend app port
+        "http://localhost:5173", # vue.js from our examples
+    ]
+
+    # we need to add the X-Site-ID header to the allowed headers
+    # Only required for single instance setup
+    CORS_ALLOW_HEADERS = (
+        *default_headers,
+        "X-Site-ID",
+    )
 
 **Manage Sites in Django Admin**
 
@@ -268,14 +290,14 @@ Example:
 
 .. code-block:: json
 
+    // Manually configured via Django Admin
+    // you can seed the ID in the browser url while editing the site object
     [
       {
-        "id": 1,
         "domain": "foo.example.com",
         "name": "Foo Site"
       },
       {
-        "id": 2,
         "domain": "bar.example.com", 
         "name": "Bar Site"
       }
@@ -308,7 +330,7 @@ Testing
     curl -H "X-Site-ID: 2" http://localhost:8080/api/cms/pages/
 
 .. note::
-    The ``X-Site-ID`` header is not required. If not set, the middleware will use the current site defined in the settings.
+    The ``X-Site-ID`` header is required to query a single CMS instance. If not set, the middleware will use the current site defined in the settings.
 
 Implementation Guide
 ~~~~~~~~~~~~~~~~~~~~
@@ -316,6 +338,60 @@ Implementation Guide
 If the basic configuration is working you can embed it into your frontend app.
 
 - :doc:`../how-to/01-use-multi-site`
+
+Authentication
+--------------
+
+djangocms-rest currently uses ``Session Authentication`` as the only authentication method. 
+This means that users must be logged into the Django CMS admin using the standard admin login page to access protected API endpoints.
+In order to access the API from the frontend app, you need to configure Django ``CORS`` and
+``CSRF``.
+
+- Only authenticated users can access the API using the ``preview`` query parameter.
+
+Docs
+~~~~
+- `Django CMS - Internationalisation and Localisation <https://docs.django-cms.org/en/stable/explanation/i18n.html>`_
+
+.. note::
+
+    You need to have CORS configured correctly to allow the frontend app to access the API.
+    See `CORS Support <../tutorial/01-installation.html#cors-support>`_.
+
+Configuration
+~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    # Additional CORS configuration for session authentication
+    CORS_ALLOW_CREDENTIALS = True
+
+    # add your frontend domain(s) here
+    CSRF_TRUSTED_ORIGINS = [
+        "https://frontend.com",
+        "http://localhost:3000",
+        "http://localhost:5173",
+    ]
+
+    # allow session and csrf cookies to be sent to frontend
+    # required for session authentication to work
+    SESSION_COOKIE_SAMESITE = "None"
+    CSRF_COOKIE_SAMESITE = "None"
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
+Testing
+~~~~~~~
+
+1. Login to Django admin at `http://localhost:8080/admin/ <http://localhost:8080/admin/>`_
+2. Change the home page name, but do not publish it.
+3. Visit and api endpoint with the ``preview`` query parameter.  
+
+.. code-block:: bash
+
+    # Adjust language if necessary
+    http://localhost:8080/api/en/pages/?preview=true
+
 
 OpenAPI Specification
 ---------------------
@@ -385,7 +461,7 @@ This is a simple configuration to get you started.
 Testing
 ~~~~~~~
 
- You can check now your:
+You can check now your:
 
 - API documentation at `http://localhost:8080/api/docs/ <http://localhost:8080/api/docs/>`_
 - OpenAPI specification as JSON at `http://localhost:8080/api/schema-json/ <http://localhost:8080/api/schema-json/>`_
