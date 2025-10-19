@@ -94,7 +94,7 @@ This is handy if you want to have a separate API for different parts of your app
     ]
 
 .. note::
-    When you autocreate clients and types from OpenAPI specification with tools like `heyapi.dev <https://heyapi.dev/>`_, this will also affect the naming of those components and types,eg.
+    When you autocreate clients and types from OpenAPI specification with tools like `heyapi.dev <https://heyapi.dev/>`_, this will also affect the naming of those components and types, e.g.
     ``RetrieveLanguages`` will become ``CmsRetrieveLanguages`` in the client sdk.
 
 CORS Support
