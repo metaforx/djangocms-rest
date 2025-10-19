@@ -74,7 +74,7 @@ Depending on your projects configuration, you might have to configure placeholde
 After adding the plugin to a placeholder, you can retrieve the content of the placeholder using the :doc:`Pages <../reference/pages>` and :doc:`Placeholders <../reference/placeholders>` endpoints.
 
 .. note::
-    We first have to retrieve the page object and then the associated placeholder objects. This is necessary because django CMS placeholders are linked to the page object, not part of the page object. This allows to use preview mode and versioning.
+    First, we have to retrieve the page object, and then the associated placeholder objects. This is necessary because Django CMS placeholders are linked to, but not part of, the page object. This enables us to use preview mode and versioning.
 
 
 .. code-block:: bash
