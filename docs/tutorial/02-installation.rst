@@ -145,7 +145,7 @@ Configuration
 Languages Support
 -----------------
 
-- djnagocms-rest supports languages out of the box. 
+- djangocms-rest supports languages out of the box. 
 - Djnago CMS needs to be configured to use languages. 
 - A single language must always be set in order to use the API.
 
