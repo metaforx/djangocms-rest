@@ -225,6 +225,9 @@ Fetch the content of the placeholder using the :doc:`Placeholders <../reference/
 
 You have received the serialized data for the plugin. You can now render the plugin in the front end, likely using a matching component for the HeroPlugin that references the set properties.
 
+.. hint::
+    If you want to use the actual frontend URL, you can either create a custom serializer or create a utility function in your frontend to generate the required URL.
+
 Type Definitions
 ~~~~~~~~~~~~~~~~
 
