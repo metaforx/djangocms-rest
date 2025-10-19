@@ -15,7 +15,7 @@ Plugins Endpoints
 
 Howto
 ------
-- :doc:`Plugin Creation & Serialization <../how-to/011-plugin-creation>`
+- :doc:`Plugin Creation & Serialization <../how-to/02-plugin-creation>`
 
 CMS Reference
 -------------
