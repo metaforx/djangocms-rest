@@ -19,7 +19,7 @@ Installation
 Using Poetry
 ~~~~~~~~~~~~
 
-We recommend using ``Poetry`` to manage your dependencies. It it is used as default for this documentation.
+We recommend using ``Poetry`` to manage your dependencies. It is used by default in this documentation.
 ``pip`` can be used as equivalent.
 
 .. code-block:: bash
