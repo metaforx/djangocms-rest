@@ -3,7 +3,7 @@ Multi-Site setup with single CMS instance
 
 In this short guide, we will show you how to use the multi-site functionality in your frontend app.
 
-We will use ``vue.js``  to fetch data from a single django CMS instance with multiple sites. This implemenation
+We will use ``vue.js``  to fetch data from a single django CMS instance with multiple sites. This implementation
 guide can easily be adapted to other frontend frameworks.
 
 .. warning::
