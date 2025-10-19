@@ -400,7 +400,9 @@ OpenAPI Documentation
 
 For interactive API documentation and client SDK generation, follow the :doc:`03-openapi-documentation` tutorial.
 
-This highly recommended step enables:
+
+**OpenAPI Documentation Benefits:**
+
 - Interactive API documentation with Swagger UI
 - OpenAPI schema generation for client SDKs
 - Type-safe frontend development
