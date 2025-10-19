@@ -216,7 +216,7 @@ Fetch the content of the placeholder using the :doc:`Placeholders <../reference/
                 "title": "A custom page hero",
                 "description": "We can add some important teaser content.",
                 "image": "http://localhost:8080/media/hero_images/demo.png",
-                "link_text": null,
+                "link_text": "Read more",
                 "link": "http://localhost:8080/api/en/pages/unterseite/"
             }
         ],
