@@ -40,12 +40,12 @@ For the latest features, you can install a version from the GitHub repository at
 
 .. code-block:: bash
 
-    poetry add git+https://github.com/fsbraun/djangocms-rest.git
+    poetry add git+https://github.com/django-cms/djangocms-rest.git
 
 .. code-block:: bash
 
     # install a specific branch
-    poetry add git+https://github.com/fsbraun/djangocms-rest.git@feat/extended-search 
+    poetry add git+https://github.com/django-cms/djangocms-rest.git@feat/extended-search 
 
 Basic Configuration
 --------------------
