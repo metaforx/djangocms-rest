@@ -235,7 +235,7 @@ djangocms-rest supports 2 ways to handle multi-site support:
 If you want to serve multiple sites from a single instance, you can use the ``SiteContextMiddleware`` to set the site context on the request.
 This requires ``Django Sites`` framework to be installed and configured.
 
-Your can pass the site ID in the request headers with the ``X-Site-ID`` property set to the site ID. 
+You can pass the site ID in the request headers with the ``X-Site-ID`` property set to the site ID. 
 The Middleware will then set the site context on the request.
 
 Docs
