@@ -33,8 +33,8 @@ Use Cases
 
 You can also nest plugins inside other plugins as you would normally do in Django CMS.
 
-Example
-~~~~~~~
+Example "Hello World"
+~~~~~~~~~~~~~~~~~~~~~~
 
 Create your plugin as you would normally do in Django CMS.
 
@@ -112,7 +112,7 @@ After adding the plugin to a placeholder, you can retrieve the content of the pl
 ..
 
 .. note::
-    ?html=1 will render the plugin as HTML.
+    ?html=1 will render plugins as HTML.
 
 
 **Response from the placeholders endpoint:**
@@ -142,6 +142,138 @@ You can retrieve all plugin details using the :doc:`Plugins <../reference/plugin
 .. hint::
     You can setup a vue.js frontend application to handle the rendering of json data. Follow the guide `Setup Vue.js Project <01-use-multi-site.html#setup-vue-js-project>`_ to get started.
 
+Example "Basic Serialization"
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The previous example had no data to serialize, beside the generic plugin properties. Now we will create a plugin that has some actual data to serialize.
+
+Create a new model ``HeroPluginModel`` in ``models.py``, which will be used to store the data for the plugin.
+
+In this example we will create a plugin that displays a hero image with a title, description and a link to an existing django CMS page.
+
+.. code-block:: python
+
+    # models.py
+    from cms.models.fields import PageField
+    from django.db import models
+    from cms.models import CMSPlugin
+
+    class HeroPluginModel(CMSPlugin):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    image = models.ImageField(upload_to='hero_images')
+    link = PageField(blank=True, null=True)
+    link_text = models.CharField(max_length=200, blank=True, null=True)
+
+    def __unicode__(self):
+        return self.title
+..
+
+We now have to run migrations when creating new models.
+
+.. code-block:: bash
+
+    # using app name is optional, but recommended.
+    python manage.py makemigrations <your_app_name> 
+    python manage.py migrate <your_app_name>
+..
+
+We now need to configure the plugin in ``cms_plugins.py``.
+
+.. code-block:: python
+
+    # cms_plugins.py
+    @plugin_pool.register_plugin
+    class HeroPlugin(CMSPluginBase):
+        model = HeroPluginModel
+        render_template = "my_app/hero_plugin.html"
+        name = _("Hero Plugin")
+
+..
+    
+To be sure changes are applied, you can restart the development server.
+
+.. code-block:: bash
+
+    python manage.py runserver 8080
+..
+
+Add the plugin to a placeholder in a page.
+
+Fetch the content of the placeholder using the :doc:`Placeholders <../reference/placeholders>` endpoint. See `Example "Hello World" <02-plugin-creation.html#example-hello-world>`_.
+
+**Response from the placeholders endpoint:**
+
+.. code-block:: json
+
+    {
+        "slot": "content",
+        "label": "Content",
+        "language": "en",
+        "content": [
+            {
+                "plugin_type": "HeroPlugin",
+                "title": "A custom page hero",
+                "description": "We can add some important teaser content.",
+                "image": "http://localhost:8080/media/hero_images/demo.png",
+                "link_text": null,
+                "link": "http://localhost:8080/api/en/pages/unterseite/"
+            }
+        ],
+        "html": ""
+    }
+
+You have received the serialized data for the plugin. You can now render the plugin in the front end, likely using a matching component for the HeroPlugin that references the set properties.
+
+Type Definitions
+~~~~~~~~~~~~~~~~
+
+Type definitions are used to define the structure of the data that is returned by the API. They are used to validate the data in the frontend application.
+
+You can retrieve the type definition for the plugin using the :doc:`Plugins <../reference/plugins>` endpoint.
+
+.. code-block:: bash
+
+    curl -X GET "http://localhost:8080/api/plugins/" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+..
+
+**Response from the plugins endpoint:**
+
+.. code-block:: json
+
+    {
+        "plugin_type": "HeroPlugin",
+        "title": "Hero Plugin",
+        "type": "object",
+        "properties": {
+            "plugin_type": {
+                "type": "string"
+            },
+            "title": {
+                "type": "string"
+            },
+            "description": {
+                "type": "string"
+            },
+            "image": {
+                "type": "string",
+                "format": "uri"
+            },
+            "link_text": {
+                "type": "string"
+            },
+            "link": {
+                "type": "integer"
+            }
+        }
+    }
+
+..
+
+.. hint::
+    You can automatically generate type-safe schemas for your typescript frontend application using tools like `QuickType <https://quicktype.io/typescript>`_ or `heyapi.dev <https://heyapi.dev/>`_ which integrates with `Zod <https://zod.dev/>`_ schema validation.
 
 
 Custom Serialization
