@@ -351,7 +351,9 @@ In order to access the API from the frontend app, you need to configure Django `
 
 Docs
 ~~~~
-- `Django CMS - Internationalisation and Localisation <https://docs.django-cms.org/en/stable/explanation/i18n.html>`_
+- `Django - Default authentication <https://docs.djangoproject.com/en/5.2/topics/auth/default/>`_
+- `Django CMS - Custom User Requirements <https://docs.django-cms.org/en/latest/reference/configuration.html#custom-user-requirements>`_
+- `Security Enhancements for Django CMS <https://www.django-cms.org/en/blog/2022/02/22/security-enhancements-for-django-cms/>`_
 
 .. note::
 
