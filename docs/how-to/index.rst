@@ -28,7 +28,7 @@ All of this features can already be implemented using the API, but we plan to cr
 Contribute
 ----------
 
-We are always looking for contributions to improve the documentation. If you are working on an implementation scenario. Plese share your experience and create a small implementation guide for others to follow.
+We are always looking for contributions to improve the documentation. If you are working on an implementation scenario. Please share your experience and create a small implementation guide for others to follow.
 
 - **GitHub Repository**: `djangocms-rest <https://github.com/django-cms/djangocms-rest>`_
 
