@@ -24,7 +24,8 @@ try:
             )
         ]
     )
-except ImportError: # pragma: no cover
+except ImportError:  # pragma: no cover
+
     class OpenApiTypes:
         BOOL = "boolean"
 
@@ -40,10 +41,12 @@ except ImportError: # pragma: no cover
     def extend_schema(*_args, **_kwargs):  # pragma: no cover
         def _decorator(obj: T) -> T:
             return obj
+
         return _decorator
 
-    def preview_schema(obj: T) -> T: # pragma: no cover
+    def preview_schema(obj: T) -> T:  # pragma: no cover
         return obj
+
 
 @preview_schema
 class BaseAPIMixin:
@@ -62,9 +65,12 @@ class BaseAPIMixin:
         return site if site is not None else get_current_site(self.request)
 
     def _preview_requested(self):
-        return "preview" in self.request.GET and self.request.GET.get(
-            "preview", ""
-        ).lower() not in ("0", "false")
+        preview_mode = "preview" in self.request.GET and self.request.GET.get("preview", "").lower() not in (
+            "0",
+            "false",
+        )
+        self.request.toolbar.preview_mode_active = preview_mode
+        return preview_mode
 
     @property
     def content_getter(self):

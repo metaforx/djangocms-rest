@@ -328,7 +328,7 @@ class MenuView(BaseAPIView):
 
         request.api_endpoint = api_endpoint
         request.LANGUAGE_CODE = language
-        request.current_page = get_object(self.site, path)
+        request.current_page = get_object(self.site, path)  # Used to identify the current page in menus
         self.check_object_permissions(request, request.current_page)
         menu_renderer = menu_pool.get_renderer(request)
         menu_renderer.site = self.site
