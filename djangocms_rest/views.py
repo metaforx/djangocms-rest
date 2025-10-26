@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, Callable, ParamSpec, TypeVar
+from typing import Any, ParamSpec, TypeVar
+from collections.abc import Callable
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django.utils.functional import lazy
@@ -177,7 +178,7 @@ class PageDetailView(BaseAPIView):
 
         try:
             page_content = getattr(page, self.content_getter)(language, fallback=True)
-            if page_content is None:
+            if not page_content:
                 raise PageContent.DoesNotExist()
             serializer = self.serializer_class(page_content, read_only=True, context={"request": request})
             return Response(serializer.data)
@@ -328,7 +329,7 @@ class MenuView(BaseAPIView):
 
         request.api_endpoint = api_endpoint
         request.LANGUAGE_CODE = language
-        request.current_page = get_object(self.site, path)
+        request.current_page = get_object(self.site, path)  # Used to identify the current page in menus
         self.check_object_permissions(request, request.current_page)
         menu_renderer = menu_pool.get_renderer(request)
         menu_renderer.site = self.site
