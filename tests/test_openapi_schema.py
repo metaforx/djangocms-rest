@@ -289,7 +289,7 @@ class OpenAPISchemaTestCase(RESTTestCase):
         """
         Test MenuSchema.get_operation_id when _url_name is set on view class (not instance).
         """
-        from djangocms_rest.schemas import MenuSchema
+        import djangocms_rest.schemas
         from djangocms_rest.views import MenuView
 
         # Create a view instance without _url_name on the instance
@@ -301,7 +301,7 @@ class OpenAPISchemaTestCase(RESTTestCase):
         self.assertEqual(getattr(view_instance, "_url_name"), None)
         self.assertEqual(getattr(view_instance.__class__, "_url_name"), "test-menu-class")
 
-        schema = MenuSchema()
+        schema = djangocms_rest.schemas.MenuSchema()
         schema.view = view_instance
         operation_id = schema.get_operation_id()
         self.assertEqual(operation_id, "test_menu_class_retrieve")
