@@ -22,8 +22,7 @@ try:
                     url_name = getattr(self.view.__class__, "_url_name", None)
 
                 if url_name:
-                    operation_id = url_name.replace("-", "_") + "_retrieve"
-                    return operation_id
+                    return url_name.replace("-", "_") + "_retrieve"
 
                 # Fallback to default
                 return super().get_operation_id()
