@@ -9,7 +9,6 @@ class NavigationNodeSerializer(serializers.Serializer):
     namespace = serializers.CharField(allow_null=True)
     title = serializers.CharField()
     url = serializers.URLField(allow_null=True)
-    path = serializers.CharField(allow_null=True)
     api_endpoint = serializers.URLField(allow_null=True)
     visible = serializers.BooleanField()
     selected = serializers.BooleanField()
@@ -28,12 +27,18 @@ class NavigationNodeSerializer(serializers.Serializer):
 
     def to_representation(self, obj: NavigationNode) -> dict:
         """Customize the base representation of the NavigationNode."""
+        path = getattr(obj, "api_endpoint", "")
+        api_endpoint = get_absolute_frontend_url(self.request, path) if path else ""
+        if self.request._preview_mode:
+            if "?" in api_endpoint:
+                api_endpoint += "&preview=1"
+            else:
+                api_endpoint += "?preview=1"
         return {
             "namespace": getattr(obj, "namespace", None),
             "title": obj.title,
             "url": get_absolute_frontend_url(self.request, obj.url) or "",
-            "api_endpoint": get_absolute_frontend_url(self.request, getattr(obj, "api_endpoint", None)) or "",
-            "path": getattr(obj, "api_endpoint", ""),
+            "api_endpoint": api_endpoint,
             "visible": obj.visible,
             "selected": obj.selected or obj.attr.get("is_home", False) and getattr(self.request, "is_home", False),
             "attr": obj.attr,
