@@ -70,18 +70,18 @@ try:
         ]
     )
 
-except ImportError:  # pragma: no cover
+except ImportError:
 
-    def method_schema_decorator(method):  # pragma: no cover
-        return method  # pragma: no cover
+    def method_schema_decorator(method):
+        return method
 
-    def menu_schema_class(view_class):  # pragma: no cover
+    def menu_schema_class(view_class):
         return view_class
 
-    def create_view_with_url_name(view_class, url_name):  # pragma: no cover
+    def create_view_with_url_name(view_class, url_name):
         """No-op when drf-spectacular is not available."""
         return view_class.as_view()
 
-    def extend_placeholder_schema(func):  # pragma: no cover
+    def extend_placeholder_schema(func):
         """No-op when drf-spectacular is not available."""
         return func
