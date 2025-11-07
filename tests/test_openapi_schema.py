@@ -309,6 +309,55 @@ class OpenAPISchemaTestCase(RESTTestCase):
         # Clean up
         delattr(view_instance.__class__, "_url_name")
 
+    def test_menu_schema_get_operation_id_fallback_when_no_url_name(self):
+        """
+        Test MenuSchema.get_operation_id falls back to default when _url_name is not set.
+        This covers line 28 (fallback to default).
+        """
+        import djangocms_rest.schemas
+        from djangocms_rest.views import MenuView
+        from drf_spectacular.openapi import AutoSchema
+        from unittest.mock import patch
+
+        # Create a view instance without _url_name
+        view_instance = MenuView()
+        schema = djangocms_rest.schemas.MenuSchema()
+        schema.view = view_instance
+
+        # Mock the parent's get_operation_id to verify it's called
+        with patch.object(AutoSchema, "get_operation_id", return_value="default_operation_id") as mock_super:
+            operation_id = schema.get_operation_id()
+            self.assertEqual(operation_id, "default_operation_id")
+            mock_super.assert_called_once()
+
+    def test_menu_schema_get_operation_id_exception_handler(self):
+        """
+        Test MenuSchema.get_operation_id handles exceptions and falls back to default.
+        This covers line 30 (exception handler fallback).
+        """
+        import djangocms_rest.schemas
+        from djangocms_rest.views import MenuView
+        from drf_spectacular.openapi import AutoSchema
+        from unittest.mock import patch
+
+        # Create a view where accessing __class__ raises an exception
+        class ViewWithRaisingAttribute(MenuView):
+            def __getattribute__(self, name):
+                if name == "__class__":
+                    raise RuntimeError("Test exception")
+                return super().__getattribute__(name)
+
+        view_instance = ViewWithRaisingAttribute()
+        schema = djangocms_rest.schemas.MenuSchema()
+        schema.view = view_instance
+
+        # Mock the parent's get_operation_id to verify it's called
+        with patch.object(AutoSchema, "get_operation_id", return_value="default_from_exception") as mock_super:
+            # hasattr will try to access __class__, which raises, triggering the exception handler
+            operation_id = schema.get_operation_id()
+            self.assertEqual(operation_id, "default_from_exception")
+            mock_super.assert_called_once()
+
     def test_schemas_fallback_when_drf_spectacular_not_available(self):
         """
         Test schema fallback implementations when drf-spectacular is not available.
