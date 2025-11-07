@@ -286,20 +286,13 @@ class OpenAPISchemaTestCase(RESTTestCase):
             self.fail(f"No preview parameter found in any of the relevant endpoints: {preview_endpoints}")
 
     def test_menu_schema_get_operation_id_with_url_name_on_class(self):
-        """
-        Test MenuSchema.get_operation_id when _url_name is set on view class (not instance).
-        """
+        """Test MenuSchema.get_operation_id when _url_name is set on view class (not instance)."""
         import djangocms_rest.schemas
         from djangocms_rest.views import MenuView
 
-        # Create a view instance without _url_name on the instance
         view_instance = MenuView()
         view_instance._url_name = None
         view_instance.__class__._url_name = "test-menu-class"
-
-        # Verify: instance has _url_name=None, class has _url_name="test-menu-class"
-        self.assertEqual(getattr(view_instance, "_url_name"), None)
-        self.assertEqual(getattr(view_instance.__class__, "_url_name"), "test-menu-class")
 
         schema = djangocms_rest.schemas.MenuSchema()
         schema.view = view_instance
@@ -310,37 +303,28 @@ class OpenAPISchemaTestCase(RESTTestCase):
         delattr(view_instance.__class__, "_url_name")
 
     def test_menu_schema_get_operation_id_fallback_when_no_url_name(self):
-        """
-        Test MenuSchema.get_operation_id falls back to default when _url_name is not set.
-        This covers line 28 (fallback to default).
-        """
+        """Test MenuSchema.get_operation_id falls back to default when _url_name is not set."""
         import djangocms_rest.schemas
         from djangocms_rest.views import MenuView
         from drf_spectacular.openapi import AutoSchema
         from unittest.mock import patch
 
-        # Create a view instance without _url_name
         view_instance = MenuView()
         schema = djangocms_rest.schemas.MenuSchema()
         schema.view = view_instance
 
-        # Mock the parent's get_operation_id to verify it's called
         with patch.object(AutoSchema, "get_operation_id", return_value="default_operation_id") as mock_super:
             operation_id = schema.get_operation_id()
             self.assertEqual(operation_id, "default_operation_id")
             mock_super.assert_called_once()
 
     def test_menu_schema_get_operation_id_exception_handler(self):
-        """
-        Test MenuSchema.get_operation_id handles exceptions and falls back to default.
-        This covers line 30 (exception handler fallback).
-        """
+        """Test MenuSchema.get_operation_id handles exceptions and falls back to default."""
         import djangocms_rest.schemas
         from djangocms_rest.views import MenuView
         from drf_spectacular.openapi import AutoSchema
         from unittest.mock import patch
 
-        # Create a view where accessing __class__ raises an exception
         class ViewWithRaisingAttribute(MenuView):
             def __getattribute__(self, name):
                 if name == "__class__":
@@ -351,38 +335,24 @@ class OpenAPISchemaTestCase(RESTTestCase):
         schema = djangocms_rest.schemas.MenuSchema()
         schema.view = view_instance
 
-        # Mock the parent's get_operation_id to verify it's called
         with patch.object(AutoSchema, "get_operation_id", return_value="default_from_exception") as mock_super:
-            # hasattr will try to access __class__, which raises, triggering the exception handler
             operation_id = schema.get_operation_id()
             self.assertEqual(operation_id, "default_from_exception")
             mock_super.assert_called_once()
 
     def test_method_schema_decorator(self):
-        """
-        Test method_schema_decorator decorator.
-        This covers line 50 (return statement) in method_schema_decorator.
-        """
+        """Test method_schema_decorator decorator."""
         import djangocms_rest.schemas
 
-        # Create a test method
         def test_method():
             return "test"
 
-        # Apply the decorator
         decorated = djangocms_rest.schemas.method_schema_decorator(test_method)
-
-        # Verify the decorator returns a callable (the decorated method)
         self.assertTrue(callable(decorated))
-        # The decorated method should still work
         self.assertEqual(decorated(), "test")
 
     def test_schemas_fallback_when_drf_spectacular_not_available(self):
-        """
-        Test schema fallback implementations when drf-spectacular is not available.
-        These tests ensure that the no-op fallback functions work correctly when
-        drf-spectacular is not installed.
-        """
+        """Test schema fallback implementations when drf-spectacular is not available."""
         import importlib
         import sys
         from unittest.mock import patch
@@ -393,12 +363,10 @@ class OpenAPISchemaTestCase(RESTTestCase):
             if "djangocms_rest.schemas" in sys.modules:
                 del sys.modules["djangocms_rest.schemas"]
 
-            # Also remove any submodules that might be cached
             modules_to_remove = [key for key in sys.modules.keys() if key.startswith("djangocms_rest.schemas")]
             for module_name in modules_to_remove:
                 del sys.modules[module_name]
 
-            # Mock import to raise ImportError for drf_spectacular
             original_import = __import__
 
             def mock_import(name, globals=None, locals=None, fromlist=(), level=0):
@@ -406,25 +374,21 @@ class OpenAPISchemaTestCase(RESTTestCase):
                     raise ImportError(f"No module named '{name}'")
                 return original_import(name, globals, locals, fromlist, level)
 
-            # Patch import and import/reload module
             with patch("builtins.__import__", side_effect=mock_import):
                 import djangocms_rest.schemas
 
                 importlib.reload(djangocms_rest.schemas)
                 self.assertFalse(hasattr(djangocms_rest.schemas, "MenuSchema"))
-
                 return djangocms_rest.schemas
 
         # Test create_view_with_url_name fallback
         schemas = _reload_schemas_without_spectacular()
         view_func = schemas.create_view_with_url_name(MenuView, "test-menu")
-        self.assertIsNotNone(view_func)
         self.assertTrue(callable(view_func))
 
         # Test menu_schema_class fallback
         schemas = _reload_schemas_without_spectacular()
-        decorated = schemas.menu_schema_class(MenuView)
-        self.assertEqual(decorated, MenuView)
+        self.assertEqual(schemas.menu_schema_class(MenuView), MenuView)
 
         # Test method_schema_decorator fallback
         schemas = _reload_schemas_without_spectacular()
