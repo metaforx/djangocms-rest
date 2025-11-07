@@ -325,13 +325,8 @@ class OpenAPISchemaTestCase(RESTTestCase):
         from drf_spectacular.openapi import AutoSchema
         from unittest.mock import patch
 
-        class ViewWithRaisingAttribute(MenuView):
-            def __getattribute__(self, name):
-                if name == "__class__":
-                    raise RuntimeError("Test exception")
-                return super().__getattribute__(name)
-
-        view_instance = ViewWithRaisingAttribute()
+        view_instance = MenuView()
+        view_instance._url_name = object()
         schema = djangocms_rest.schemas.MenuSchema()
         schema.view = view_instance
 
