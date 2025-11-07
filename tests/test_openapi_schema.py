@@ -358,6 +358,25 @@ class OpenAPISchemaTestCase(RESTTestCase):
             self.assertEqual(operation_id, "default_from_exception")
             mock_super.assert_called_once()
 
+    def test_method_schema_decorator(self):
+        """
+        Test method_schema_decorator decorator.
+        This covers line 50 (return statement) in method_schema_decorator.
+        """
+        import djangocms_rest.schemas
+
+        # Create a test method
+        def test_method():
+            return "test"
+
+        # Apply the decorator
+        decorated = djangocms_rest.schemas.method_schema_decorator(test_method)
+
+        # Verify the decorator returns a callable (the decorated method)
+        self.assertTrue(callable(decorated))
+        # The decorated method should still work
+        self.assertEqual(decorated(), "test")
+
     def test_schemas_fallback_when_drf_spectacular_not_available(self):
         """
         Test schema fallback implementations when drf-spectacular is not available.
