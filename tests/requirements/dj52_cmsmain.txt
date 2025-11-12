@@ -1,0 +1,5 @@
+-r base.txt
+
+Django>=5.2,<5.3
+git+https://github.com/django-cms/django-cms.git@main
+

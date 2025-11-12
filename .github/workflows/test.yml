@@ -16,11 +16,16 @@ jobs:
           dj51_cms50.txt,
           dj52_cms50.txt,
           dj60_cms50.txt,
+          dj52_cmsmain.txt
         ]
         os: [
           ubuntu-latest,
         ]
         exclude:
+          - python-version: "3.10"
+            requirements-file: dj60_cms50.txt
+          - python-version: "3.11"
+            requirements-file: dj60_cms50.txt
           - python-version: "3.14"
             requirements-file: dj42_cms41.txt
             os: ubuntu-latest
@@ -47,11 +52,6 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install uv
       run: curl -LsSf https://astral.sh/uv/install.sh | sh
-    - name: Install system deps (cairo stack)
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y \
-          build-essential libcairo2-dev pkg-config python3-dev
     - name: Install dependencies
       run: |
         uv venv

@@ -9,3 +9,6 @@ drf-spectacular
 # other requirements
 coverage
 tox
+
+# avoid having to install cairo stack for testing
+svglib!=1.6.0

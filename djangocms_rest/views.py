@@ -32,8 +32,7 @@ from djangocms_rest.utils import (
     get_site_filtered_queryset,
 )
 from djangocms_rest.views_base import BaseAPIView, BaseListAPIView
-from djangocms_rest.schemas import extend_placeholder_schema, menu_schema_class
-
+from djangocms_rest.schemas import extend_placeholder_schema, extend_page_search_schema, menu_schema_class
 
 # Generate the plugin definitions once at module load time
 # This avoids the need to import the plugin definitions in every view
@@ -83,6 +82,20 @@ class PageListView(BaseListAPIView):
             return pages
         except PageContent.DoesNotExist:
             raise NotFound()
+
+
+class PageSearchView(PageListView):
+    @extend_page_search_schema
+    def get(self, request, language: str | None = None) -> Response:
+        self.search_term = request.GET.get("q", "")
+        self.language = language
+        return super().get(request)
+
+    def get_queryset(self):
+        if not self.search_term:
+            return PageContent.objects.none()
+        qs = Page.objects.search(self.search_term, language=self.language, current_site_only=False).on_site(self.site)
+        return PageContent.objects.filter(page__in=qs).distinct()
 
 
 class PageTreeListView(BaseAPIView):

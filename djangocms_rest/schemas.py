@@ -69,6 +69,18 @@ try:
         ]
     )
 
+    extend_page_search_schema = extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="q",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                description="Search for an exact match of the search term to find pages",
+                required=False,
+            ),
+        ]
+    )
+
 except ImportError:
 
     def method_schema_decorator(method):
@@ -82,5 +94,9 @@ except ImportError:
         return view_class.as_view()
 
     def extend_placeholder_schema(func):
+        """No-op when drf-spectacular is not available."""
+        return func
+
+    def extend_page_search_schema(func):
         """No-op when drf-spectacular is not available."""
         return func
