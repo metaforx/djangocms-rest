@@ -131,6 +131,9 @@ class PageMetaSerializer(BasePageSerializer, BasePageContentMixin):
 
 
 class PageContentSerializer(BasePageSerializer, BasePageContentMixin):
+    """
+    Serialize the page content with the placeholders in the order they are declared in the template.
+    """
     placeholders = PlaceholderSerializer(many=True, required=False)
 
     def __init__(self, *args, **kwargs):
@@ -138,10 +141,17 @@ class PageContentSerializer(BasePageSerializer, BasePageContentMixin):
         self.request = self.context.get("request")
 
     def to_representation(self, page_content: PageContent) -> dict:
-        declared_slots = [placeholder.slot for placeholder in get_declared_placeholders_for_obj(page_content)]
+        declared_placeholders = get_declared_placeholders_for_obj(page_content)
+        placeholder_map = {
+            placeholder.slot: placeholder
+            for placeholder in page_content.placeholders.all()
+        }
         placeholders = [
-            placeholder for placeholder in page_content.placeholders.all() if placeholder.slot in declared_slots
+            placeholder_map[declared.slot]
+            for declared in declared_placeholders
+            if declared.slot in placeholder_map
         ]
+
         data = self.get_base_representation(page_content)
         data["placeholders"] = PlaceholderSerializer(
             placeholders,
