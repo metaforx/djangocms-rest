@@ -110,7 +110,7 @@ TypeScript-friendly frameworks.
 
 ## FAQ
 
-### Are there js packages for drop-in support of frontend editing in the javascript framework of my choice?
+### Are there JavaScript packages for drop-in support of frontend editing in the JavaScript framework of my choice?
 
 The good news first: django CMS headless mode is fully backend supported and works independently
 of the javascript framework. It is fully compatible with the javascript framework of your choosing.
