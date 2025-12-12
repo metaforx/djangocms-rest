@@ -47,7 +47,7 @@ INSTALLED_APPS = [
 ]
 ```
 
-> `rest_framework` is installed as a dependency but doesn't need to be in `INSTALLED_APPS` unless you're creating additional DRF endpoints beyond djangocms-rest.
+> `rest_framework` is installed as a dependency. Add it to `INSTALLED_APPS` if you want to use the browsable API UI or create additional DRF endpoints beyond djangocms-rest.
 
 Add the API endpoints to your project's `urls.py`:
 
@@ -65,8 +65,7 @@ urlpatterns = [
 
 ### Usage
 
-Make sure you have existing pages and navigate to Django REST Framework's browsable API at
-`http://localhost:8000/api/`.
+Make sure you have existing pages. If `rest_framework` is in `INSTALLED_APPS`, you can navigate to Django REST Framework's browsable API at `http://localhost:8080/api/`.
 
 ## Documentation
 
