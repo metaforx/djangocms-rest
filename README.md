@@ -19,7 +19,7 @@ via drf-spectacular.
 - **Multi-Site Support** – Serve multiple websites from a single instance with isolated API responses
 - **Multi-language Content** – Use the robust i18n integration of Django CMS in your frontend
 - **Preview & Draft Access** – Fetch unpublished or draft content in your frontend for editing previews
-- **Permissions & Authentication** – Uses DRF- and Django-permissions for secure access control
+- **Permissions & Authentication** – Uses DRF and Django permissions for secure access control
 - **Menus & Breadcrumbs** – Exposes the built-in navigation handlers from Django CMS
 - **Caching & Performance** – Works with Django cache backends like Redis and Memcached
 
