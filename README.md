@@ -65,7 +65,7 @@ urlpatterns = [
 
 ### Usage
 
-Make sure you have existing pages. If `rest_framework` is in `INSTALLED_APPS`, you can navigate to Django REST Framework's browsable API at `http://localhost:8080/api/`.
+Make sure you have existing pages. If `rest_framework` is in `INSTALLED_APPS`, you can navigate to Django REST Framework's browsable API at `http://localhost:8000/api/`.
 
 ## Documentation
 
