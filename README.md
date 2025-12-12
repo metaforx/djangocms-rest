@@ -180,7 +180,7 @@ can be serialized.
 
 Custom DRF serializers can be declared for custom plugins by setting its `serializer_class` property.
 
-### Does the TextPlugin (Rich Text Editor, RTE) provide a json representation of the rich text?
+### Does the TextPlugin (Rich Text Editor, RTE) provide a JSON representation of the rich text?
 
 Yes, djangocms-text has both HTML blob and structured JSON support for rich text.
 
