@@ -19,7 +19,7 @@ via drf-spectacular.
 - **Multi-Site Support** – Serve multiple websites from a single instance with isolated API responses
 - **Multi-language Content** – Use the robust i18n integration of Django CMS in your frontend
 - **Preview & Draft Access** – Fetch unpublished or draft content in your frontend for editing previews
-- **Permissions & Authentication** – Uses DRF- and Django-permissions for secure access control
+- **Permissions & Authentication** – Uses DRF and Django permissions for secure access control
 - **Menus & Breadcrumbs** – Exposes the built-in navigation handlers from Django CMS
 - **Caching & Performance** – Works with Django cache backends like Redis and Memcached
 
@@ -110,7 +110,7 @@ TypeScript-friendly frameworks.
 
 ## FAQ
 
-### Are there js packages for drop-in support of frontend editing in the javascript framework of my choice?
+### Are there JavaScript packages for drop-in support of frontend editing in the JavaScript framework of my choice?
 
 The good news first: django CMS headless mode is fully backend supported and works independently
 of the javascript framework. It is fully compatible with the javascript framework of your choosing.
@@ -180,7 +180,7 @@ can be serialized.
 
 Custom DRF serializers can be declared for custom plugins by setting its `serializer_class` property.
 
-### Does the TextPlugin (Rich Text Editor, RTE) provide a json representation of the rich text?
+### Does the TextPlugin (Rich Text Editor, RTE) provide a JSON representation of the rich text?
 
 Yes, djangocms-text has both HTML blob and structured JSON support for rich text.
 
