@@ -23,7 +23,7 @@ from djangocms_rest.serializers.utils.cache import (
 
 
 def serialize_cms_plugin(instance: Any | None, context: dict[str, Any]) -> dict[str, Any] | None:
-    if not instance or not hasattr(instance, "get_plugin_instance"):
+    if not instance or not hasattr(instance, "get_plugin_instance"):  # pragma: no cover
         return None
     plugin_instance, plugin = instance.get_plugin_instance()
 

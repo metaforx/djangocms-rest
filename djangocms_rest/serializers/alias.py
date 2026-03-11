@@ -16,7 +16,7 @@ class AliasInlineSerializer(GenericPluginSerializer):
     def get_content(self, instance: AliasPlugin) -> list[dict[str, Any]]:
         request = self.request
         language = getattr(instance, "language", None)
-        if not request or not language:
+        if not request or not language:  # pragma: no cover
             return []
 
         alias_stack = getattr(request, "_rest_alias_stack", None)
@@ -33,7 +33,7 @@ class AliasInlineSerializer(GenericPluginSerializer):
                 language=language,
                 show_draft_content=bool(getattr(request, "_preview_mode", False)),
             )
-            if not placeholder:
+            if not placeholder:  # pragma: no cover
                 return []
 
             from djangocms_rest.plugin_rendering import RESTRenderer

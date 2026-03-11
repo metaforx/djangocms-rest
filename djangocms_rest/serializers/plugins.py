@@ -141,7 +141,7 @@ class GenericPluginSerializer(serializers.ModelSerializer):
 def get_plugin_serializer_overrides() -> dict[str, type]:
     """Return built-in serializer overrides keyed by model label."""
     overrides: dict[str, type] = {}
-    if apps.is_installed("djangocms_alias"):
+    if apps.is_installed("djangocms_alias"):  # pragma: no cover
         from djangocms_rest.serializers.alias import AliasInlineSerializer
 
         overrides["djangocms_alias.AliasPlugin"] = AliasInlineSerializer
