@@ -30,6 +30,7 @@ def serialize_cms_plugin(instance: Any | None, context: dict[str, Any]) -> dict[
     model_cls = plugin_instance.__class__
     serializer_cls = resolve_plugin_serializer(plugin, model_cls)
     serializer_cls = serializer_cls or get_auto_model_serializer(model_cls)
+    plugin.__class__.serializer_class = serializer_cls
 
     return serializer_cls(plugin_instance, context=context).data
 
