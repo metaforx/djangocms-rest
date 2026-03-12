@@ -27,14 +27,17 @@ try:
                     url_name = getattr(self.view.__class__, "_url_name", None)
 
                 if url_name:
-                    tokenized_path = self._tokenize_path()
-                    first_name_token = url_name.split("-")[0].replace("-", "_")
                     prefix = []
-                    for token in tokenized_path:
-                        normalized = token.replace("-", "_")
-                        if normalized == first_name_token:
-                            break
-                        prefix.append(normalized)
+                    try:
+                        tokenized_path = self._tokenize_path()
+                        first_name_token = url_name.split("-")[0].replace("-", "_")
+                        for token in tokenized_path:
+                            normalized = token.replace("-", "_")
+                            if normalized == first_name_token:
+                                break
+                            prefix.append(normalized)
+                    except (AttributeError, TypeError):
+                        pass
                     parts = prefix + [url_name.replace("-", "_"), "retrieve"]
                     return "_".join(parts)
 
