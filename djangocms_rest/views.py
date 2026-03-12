@@ -16,6 +16,7 @@ from rest_framework.exceptions import NotFound
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from djangocms_rest.permissions import CanViewPage, IsAllowedPublicLanguage
 from djangocms_rest.serializers.languages import LanguageSerializer
@@ -41,6 +42,16 @@ from djangocms_rest.schemas import extend_placeholder_schema, extend_page_search
 # plugin definitions.
 # If you need to update the plugin definitions, you need to reassign the variable.
 PLUGIN_DEFINITIONS = lazy(PluginDefinitionSerializer.generate_plugin_definitions, dict)()
+
+
+class HealthCheckView(APIView):
+    """Minimal health check endpoint for monitoring tools."""
+
+    http_method_names = ("get", "options")
+
+    def get(self, request: Request) -> Response:
+        """Return a simple status response."""
+        return Response({"status": "ok"})
 
 
 class LanguageListView(BaseAPIView):

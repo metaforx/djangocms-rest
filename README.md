@@ -219,8 +219,9 @@ The following endpoints are available:
 | `/api/{language}/menu/...` | Fetch menu navigation (supports optional `{from_level}/{to_level}/{extra_inactive}/{extra_active}`, `{root_id}`, and `{path}` parameters) |
 | `/api/{language}/submenu/...` | Fetch submenu navigation (supports optional `{levels}`, `{root_level}`, `{nephews}`, and `{path}` parameters) |
 | `/api/{language}/breadcrumbs/...` | Fetch breadcrumb navigation (supports optional `{start_level}` and `{path}` parameters) |
+| `/api/healthcheck/` | Health check endpoint for monitoring tools |
 
-> **Documentation**  
+> **Documentation**
 > For complete endpoint documentation, request/response schemas, and authentication details, see the [API Reference](https://djangocms-rest.readthedocs.io/en/latest/reference/index.html).
 
 ### Private API (Preview)
