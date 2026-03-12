@@ -28,12 +28,13 @@ try:
 
                 if url_name:
                     tokenized_path = self._tokenize_path()
-                    first_name_token = url_name.split("-")[0]
+                    first_name_token = url_name.split("-")[0].replace("-", "_")
                     prefix = []
                     for token in tokenized_path:
-                        if token.replace("-", "_") == first_name_token:
+                        normalized = token.replace("-", "_")
+                        if normalized == first_name_token:
                             break
-                        prefix.append(token.replace("-", "_"))
+                        prefix.append(normalized)
                     parts = prefix + [url_name.replace("-", "_"), "retrieve"]
                     return "_".join(parts)
 
