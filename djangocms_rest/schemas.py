@@ -15,14 +15,27 @@ try:
         """
 
         def get_operation_id(self):
-            """Override to use URL name stored in view as operation_id."""
+            """Override to use URL name stored in view as operation_id.
+
+            Derives a path prefix from the URL (via _tokenize_path) so that
+            the operation_id reflects the mount point chosen by the project
+            (e.g. ``cms_menu_retrieve`` when mounted under ``/api/cms/``).
+            """
             try:
                 url_name = getattr(self.view, "_url_name", None)
                 if not url_name and hasattr(self.view, "__class__"):
                     url_name = getattr(self.view.__class__, "_url_name", None)
 
                 if url_name:
-                    return url_name.replace("-", "_") + "_retrieve"
+                    tokenized_path = self._tokenize_path()
+                    first_name_token = url_name.split("-")[0]
+                    prefix = []
+                    for token in tokenized_path:
+                        if token.replace("-", "_") == first_name_token:
+                            break
+                        prefix.append(token.replace("-", "_"))
+                    parts = prefix + [url_name.replace("-", "_"), "retrieve"]
+                    return "_".join(parts)
 
                 # Fallback to default
                 return super().get_operation_id()
