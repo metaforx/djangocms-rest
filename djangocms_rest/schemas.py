@@ -37,6 +37,8 @@ try:
                                 break
                             prefix.append(normalized)
                     except (AttributeError, TypeError):
+                        # _tokenize_path requires path/path_prefix attributes
+                        # that may be absent outside drf-spectacular's request cycle.
                         pass
                     parts = prefix + [url_name.replace("-", "_"), "retrieve"]
                     return "_".join(parts)
