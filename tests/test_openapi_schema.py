@@ -302,6 +302,28 @@ class OpenAPISchemaTestCase(RESTTestCase):
         # Clean up
         delattr(view_instance.__class__, "_url_name")
 
+    def test_menu_schema_get_operation_id_includes_path_prefix(self):
+        """Test MenuSchema.get_operation_id includes URL path prefix in operation_id."""
+        import djangocms_rest.schemas
+        from djangocms_rest.views import MenuView
+
+        view_instance = MenuView()
+        view_instance._url_name = "menu-levels"
+
+        schema = djangocms_rest.schemas.MenuSchema()
+        schema.view = view_instance
+        schema.path = "/api/cms/{language}/menu/{from_level}/{to_level}/{extra_inactive}/{extra_active}/"
+        schema.path_prefix = "/api/"
+
+        operation_id = schema.get_operation_id()
+        self.assertEqual(operation_id, "cms_menu_levels_retrieve")
+
+        # When url_name token is not found in path, all tokens become prefix
+        view_instance._url_name = "custom-endpoint"
+        schema.path = "/api/cms/"
+        operation_id = schema.get_operation_id()
+        self.assertEqual(operation_id, "cms_custom_endpoint_retrieve")
+
     def test_menu_schema_get_operation_id_fallback_when_no_url_name(self):
         """Test MenuSchema.get_operation_id falls back to default when _url_name is not set."""
         import djangocms_rest.schemas
