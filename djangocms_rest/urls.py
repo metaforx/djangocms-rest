@@ -24,12 +24,12 @@ urlpatterns = [
     ),
     path(
         "<slug:language>/pages/",
-        views.PageDetailView.as_view(),
+        create_view_with_url_name(views.PageDetailView, "page-root"),
         name="page-root",
     ),
     path(
         "<slug:language>/pages/<path:path>/",
-        views.PageDetailView.as_view(),
+        create_view_with_url_name(views.PageDetailView, "page-detail"),
         name="page-detail",
     ),
     path(
