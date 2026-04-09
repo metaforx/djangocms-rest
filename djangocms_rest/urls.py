@@ -5,6 +5,7 @@ from .schemas import create_view_with_url_name
 
 
 urlpatterns = [
+    path("healthcheck/", views.HealthCheckView.as_view(), name="healthcheck"),
     # Published content endpoints
     path(
         "languages/",
