@@ -58,7 +58,9 @@ class PlaceholdersAPITestCase(BaseCMSRestTestCase):
         type_checks = PLACEHOLDER_FIELD_TYPES
 
         plugin_type_checks = {
+            "id": int,
             "plugin_type": str,
+            "parent_plugin_type": (str, type(None)),
             "body": str,
             "json": dict,
             "rte": str,
