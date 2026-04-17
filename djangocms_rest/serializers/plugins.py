@@ -99,7 +99,6 @@ def serialize_soft_refs(request: HttpRequest, data: Any) -> Any:
 
 
 base_exclude = {
-    "id",
     "placeholder",
     "language",
     "position",
@@ -117,9 +116,15 @@ JSON_FIELDS = tuple(
 
 
 class GenericPluginSerializer(serializers.ModelSerializer):
+    parent_plugin_type = serializers.SerializerMethodField()
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.request = self.context.get("request", None)
+
+    def get_parent_plugin_type(self, obj) -> str | None:
+        parent = obj.parent
+        return parent.plugin_type if parent else None
 
     def to_representation(self, instance: CMSPlugin):
         request = getattr(self, "request", None)

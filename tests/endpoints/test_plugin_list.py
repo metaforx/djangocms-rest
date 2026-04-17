@@ -20,6 +20,7 @@ class PluginListTestCase(BaseCMSRestTestCase):
             "title": "Dummy Number Plugin",
             "type": "object",
             "properties": {
+                "id": {"type": "integer"},
                 "integer": {"type": "integer"},
                 "json": {"type": "object"},
                 "float": {"type": "number"},
