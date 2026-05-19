@@ -191,7 +191,7 @@ class PluginDefinitionSerializer(serializers.Serializer):
         definitions = {}
 
         for plugin in plugin_pool.plugins.values():
-            # Fall back to Generic            # Fall back to GenericPluginSerializer to match the runtime auto-serializer.PluginSerializer to match the runtime auto-serializer.
+            #Fall back to GenericPluginSerializer to match the runtime auto-serializer.
             serializer_cls = getattr(plugin, "serializer_class", None)
 
             if not serializer_cls:
