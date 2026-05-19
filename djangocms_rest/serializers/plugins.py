@@ -191,15 +191,17 @@ class PluginDefinitionSerializer(serializers.Serializer):
         definitions = {}
 
         for plugin in plugin_pool.plugins.values():
-            # Use plugin's serializer_class or create a simple fallback
+            # Fall back to Generic            # Fall back to GenericPluginSerializer to match the runtime auto-serializer.PluginSerializer to match the runtime auto-serializer.
             serializer_cls = getattr(plugin, "serializer_class", None)
 
             if not serializer_cls:
+                real_fields = {f.name for f in plugin.model._meta.get_fields()}
+                plugin_exclude = tuple(base_exclude & real_fields)
 
-                class DynamicModelSerializer(serializers.ModelSerializer):
+                class DynamicModelSerializer(GenericPluginSerializer):
                     class Meta:
                         model = plugin.model
-                        fields = "__all__"
+                        exclude = plugin_exclude
 
                 serializer_cls = DynamicModelSerializer
 
