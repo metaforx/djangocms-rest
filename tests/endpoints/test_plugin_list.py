@@ -73,4 +73,7 @@ class PluginListTestCase(BaseCMSRestTestCase):
             ),
             None,
         )
+        self.assertIsNotNone(dummy_plugin, "DummyNumberPlugin not found in response")
+        # "position" is a base_exclude member and must be skipped from the schema.
+        self.assertNotIn("position", dummy_plugin["properties"])
         self.assertDictEqual(dummy_plugin, expected_dummy_plugin_signature)

@@ -10,6 +10,8 @@ class CustomSerializer(serializers.Serializer):
         default="title",
     )
     json = serializers.JSONField()
+    # Exercises base_exclude skip in schema generation; see test_plugin_list.
+    position = serializers.IntegerField(default=0)
 
     class KeyValuePairSerializer(serializers.Serializer):
         prop1 = serializers.CharField()
