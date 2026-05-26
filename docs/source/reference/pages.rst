@@ -61,7 +61,7 @@ object that includes its placeholders together with their serialized content.
 * ``placeholders``: Array of placeholders, each with ``slot``, ``label``, ``language``, ``content`` (serialized plugin tree), ``details`` (link to the placeholder endpoint), and ``html`` (empty unless ``?html=1`` is set)
 
 .. note::
-    You can use the `application_namespace` identifer to render your django app in a decoupled frontend application.
+    You can use the `application_namespace` identifier to render your django app in a decoupled frontend application.
     Similar to how you would render a django app using `app_hooks`.
 
 
