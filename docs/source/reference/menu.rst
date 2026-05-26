@@ -190,7 +190,61 @@ Get the menu structure filtered by level range, active/inactive states, and spec
     }
 
 List Menu by Root ID and Level Range
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**GET** ``/api/{language}/menu/{root_id}/{from_level}/{to_level}/{extra_inactive}/{extra_active}/``
+
+Get the menu structure for a given root ID, filtered by level range and active/inactive states.
+
+**Path Parameters:**
+
+* ``language`` (string, required): Language code (e.g., "en", "de")
+* ``root_id`` (string, required): Root ID to start the menu from
+* ``from_level`` (integer, required): Starting level for menu items
+* ``to_level`` (integer, required): Ending level for menu items
+* ``extra_inactive`` (integer, required): Number of extra inactive items to include
+* ``extra_active`` (integer, required): Number of extra active items to include
+
+**Query Parameters:**
+
+* ``preview`` (boolean, optional): Set to true to preview unpublished content (admin access required)
+
+**Example Request:**
+
+.. code-block:: bash
+
+    GET /api/en/menu/1/0/2/1/1/?preview=true
+
+**Example Response:**
+
+.. code-block:: json
+
+    {
+        "namespace": null,
+        "title": "Home",
+        "url": "http://localhost:8080/en/",
+        "api_endpoint": "http://localhost:8080/api/en/pages/",
+        "visible": true,
+        "selected": false,
+        "attr": null,
+        "level": 0,
+        "children": [
+            {
+                "namespace": null,
+                "title": "About Us",
+                "url": "http://localhost:8080/en/about/",
+                "api_endpoint": "http://localhost:8080/api/en/pages/about/",
+                "visible": true,
+                "selected": false,
+                "attr": null,
+                "level": 1,
+                "children": []
+            }
+        ]
+    }
+
+List Menu by Root ID, Level Range and Path
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **GET** ``/api/{language}/menu/{root_id}/{from_level}/{to_level}/{extra_inactive}/{extra_active}/{path}/``
 
