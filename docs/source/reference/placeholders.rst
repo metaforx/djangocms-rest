@@ -90,5 +90,6 @@ You can get a direct link to build the query or all attributes from the :doc:`Pa
                 "rte": "tiptap"
             }
         ],
+        "details": "http://localhost:8080/api/en/placeholders/5/9/content/?html=1",
         "html": "<p>Hello World!</p>"
     }

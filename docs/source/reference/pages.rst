@@ -9,7 +9,10 @@ Pages Endpoints
 * Pages can be retrieved as a nested tree structure or a list of pages with pagination support
 
 .. note::
-    This does only return page meta informaiton. To retrieve the page content, you need to use the :doc:`Placeholders <placeholders>`.
+    The single-page endpoints (``/pages/`` and ``/pages/{path}/``) embed each placeholder
+    together with its serialized ``content``. The list and tree endpoints
+    (``/pages-list/`` and ``/pages-tree/``) return page meta information only; use the
+    :doc:`Placeholders <placeholders>` endpoint to retrieve their content.
 
 .. warning::
     Fetching a deeply nested tree of pages can be very slow for large page sets. Use the :ref:`Pages List API <list-pages-paginated>` instead.
@@ -24,12 +27,13 @@ CMS Reference
 Endpoints
 ---------
 
-List Pages
-~~~~~~~~~~
+Retrieve Home Page
+~~~~~~~~~~~~~~~~~~
 
 **GET** ``/api/{language}/pages/``
 
-Retrieve a list of all pages for the specified language.
+Retrieve the home (root) page for the specified language. The response is a single page
+object that includes its placeholders together with their serialized content.
 
 **Response Attributes:**
 
@@ -54,10 +58,10 @@ Retrieve a list of all pages for the specified language.
 * ``creation_date``: Page creation date (ISO format)
 * ``changed_date``: Last modification date (ISO format)
 * ``details``: Page details/description
-* ``placeholders``: Array of placeholder relations with content_type_id, object_id, slot, and details
+* ``placeholders``: Array of placeholders, each with ``slot``, ``label``, ``language``, ``content`` (serialized plugin tree), ``details`` (link to the placeholder endpoint), and ``html`` (empty unless ``?html=1`` is set)
 
 .. note::
-    You can use the `application_namespace` identifer to render your django app in a decoupled frontend application.
+    You can use the `application_namespace` identifier to render your django app in a decoupled frontend application.
     Similar to how you would render a django app using `app_hooks`.
 
 
@@ -107,16 +111,25 @@ Retrieve a list of all pages for the specified language.
         "details": "http://localhost:8080/api/en/pages/",
         "placeholders": [
             {
-                "content_type_id": 5,
-                "object_id": 11,
                 "slot": "content",
-                "details": "http://localhost:8080/api/en/placeholders/5/11/content/"
+                "label": "Content",
+                "language": "en",
+                "content": [
+                    {
+                        "plugin_type": "TextPlugin",
+                        "body": "<p>Hello World!</p>"
+                    }
+                ],
+                "details": "http://localhost:8080/api/en/placeholders/5/11/content/",
+                "html": ""
             },
             {
-                "content_type_id": 5,
-                "object_id": 11,
                 "slot": "cta",
-                "details": "http://localhost:8080/api/en/placeholders/5/11/cta/"
+                "label": "CTA",
+                "language": "en",
+                "content": [],
+                "details": "http://localhost:8080/api/en/placeholders/5/11/cta/",
+                "html": ""
             }
         ]
     }
@@ -191,7 +204,8 @@ List Pages (Paginated)
 
 **GET** ``/api/{language}/pages-list/``
 
-Retrieve a simplified list of pages with basic information.
+Retrieve a paginated list of pages for the specified language. Each entry contains the
+same page meta fields as a single page (without ``placeholders``).
 
 **Path Parameters:**
 
@@ -220,17 +234,112 @@ Retrieve a simplified list of pages with basic information.
         "results": [
             {
                 "title": "Home",
-                "absolute_url": "http://localhost:8080/en/",
+                "page_title": "Home",
+                "menu_title": "Home",
+                "meta_description": "",
+                "redirect": "",
+                "in_navigation": true,
+                "soft_root": false,
+                "template": "INHERIT",
+                "xframe_options": "",
+                "limit_visibility_in_menu": false,
+                "language": "en",
                 "path": "/en/",
+                "absolute_url": "http://localhost:8080/en/",
                 "is_home": true,
-                "in_navigation": true
+                "login_required": false,
+                "languages": ["de", "en"],
+                "is_preview": false,
+                "application_namespace": "",
+                "creation_date": "2025-05-22T19:30:49.343177Z",
+                "changed_date": "2025-05-22T19:30:49.343248Z",
+                "details": "http://localhost:8080/api/en/pages/"
             },
             {
                 "title": "About Us",
-                "absolute_url": "http://localhost:8080/en/about/",
+                "page_title": "About Us - Our Company",
+                "menu_title": "About",
+                "meta_description": "Learn more about our company",
+                "redirect": "",
+                "in_navigation": true,
+                "soft_root": false,
+                "template": "INHERIT",
+                "xframe_options": "",
+                "limit_visibility_in_menu": false,
+                "language": "en",
                 "path": "/en/about/",
+                "absolute_url": "http://localhost:8080/en/about/",
                 "is_home": false,
-                "in_navigation": true
+                "login_required": false,
+                "languages": ["de", "en"],
+                "is_preview": false,
+                "application_namespace": "",
+                "creation_date": "2025-05-22T19:30:49.343177Z",
+                "changed_date": "2025-05-22T19:30:49.343248Z",
+                "details": "http://localhost:8080/api/en/pages/about/"
+            }
+        ]
+    }
+
+Search Pages
+~~~~~~~~~~~~
+
+**GET** ``/api/{language}/page_search/``
+
+Search for pages matching a search term. Returns the same paginated structure as the
+:ref:`Pages List API <list-pages-paginated>`.
+
+**Path Parameters:**
+
+* ``language`` (string, required): Language code (e.g., "en", "de")
+
+**Query Parameters:**
+
+* ``q`` (string, optional): Search term used to find matching pages
+* ``limit`` (integer, optional): Number of items to return
+* ``offset`` (integer, optional): Number of items to skip
+* ``preview`` (boolean, optional): Set to true to preview unpublished content (admin access required)
+
+.. note::
+    Without a ``q`` parameter the search returns an empty result set.
+
+**Example Request:**
+
+.. code-block:: bash
+
+    GET /api/en/page_search/?q=about
+
+**Example Response:**
+
+.. code-block:: json
+
+    {
+        "count": 1,
+        "next": null,
+        "previous": null,
+        "results": [
+            {
+                "title": "About Us",
+                "page_title": "About Us - Our Company",
+                "menu_title": "About",
+                "meta_description": "Learn more about our company",
+                "redirect": "",
+                "in_navigation": true,
+                "soft_root": false,
+                "template": "INHERIT",
+                "xframe_options": "",
+                "limit_visibility_in_menu": false,
+                "language": "en",
+                "path": "/en/about/",
+                "absolute_url": "http://localhost:8080/en/about/",
+                "is_home": false,
+                "login_required": false,
+                "languages": ["de", "en"],
+                "is_preview": false,
+                "application_namespace": "",
+                "creation_date": "2025-05-22T19:30:49.343177Z",
+                "changed_date": "2025-05-22T19:30:49.343248Z",
+                "details": "http://localhost:8080/api/en/pages/about/"
             }
         ]
     }
@@ -240,7 +349,9 @@ Pages Tree
 
 **GET** ``/api/{language}/pages-tree/``
 
-Retrieve pages in a hierarchical tree structure.
+Retrieve pages in a hierarchical tree structure. The response is an array of root page
+nodes; each node carries the full page meta fields plus a ``children`` array of the same
+shape.
 
 **Path Parameters:**
 
@@ -260,28 +371,54 @@ Retrieve pages in a hierarchical tree structure.
 
 .. code-block:: json
 
-    {
-        "title": "Home",
-        "absolute_url": "http://localhost:8080/en/",
-        "path": "/en/",
-        "is_home": true,
-        "in_navigation": true,
-        "children": [
-            {
-                "title": "About Us",
-                "absolute_url": "http://localhost:8080/en/about/",
-                "path": "/en/about/",
-                "is_home": false,
-                "in_navigation": true,
-                "children": []
-            },
-            {
-                "title": "Contact",
-                "absolute_url": "http://localhost:8080/en/contact/",
-                "path": "/en/contact/",
-                "is_home": false,
-                "in_navigation": true,
-                "children": []
-            }
-        ]
-    }
+    [
+        {
+            "title": "Home",
+            "page_title": "Home",
+            "menu_title": "Home",
+            "meta_description": "",
+            "redirect": "",
+            "in_navigation": true,
+            "soft_root": false,
+            "template": "INHERIT",
+            "xframe_options": "",
+            "limit_visibility_in_menu": false,
+            "language": "en",
+            "path": "/en/",
+            "absolute_url": "http://localhost:8080/en/",
+            "is_home": true,
+            "login_required": false,
+            "languages": ["de", "en"],
+            "is_preview": false,
+            "application_namespace": "",
+            "creation_date": "2025-05-22T19:30:49.343177Z",
+            "changed_date": "2025-05-22T19:30:49.343248Z",
+            "details": "http://localhost:8080/api/en/pages/",
+            "children": [
+                {
+                    "title": "About Us",
+                    "page_title": "About Us - Our Company",
+                    "menu_title": "About",
+                    "meta_description": "Learn more about our company",
+                    "redirect": "",
+                    "in_navigation": true,
+                    "soft_root": false,
+                    "template": "INHERIT",
+                    "xframe_options": "",
+                    "limit_visibility_in_menu": false,
+                    "language": "en",
+                    "path": "/en/about/",
+                    "absolute_url": "http://localhost:8080/en/about/",
+                    "is_home": false,
+                    "login_required": false,
+                    "languages": ["de", "en"],
+                    "is_preview": false,
+                    "application_namespace": "",
+                    "creation_date": "2025-05-22T19:30:49.343177Z",
+                    "changed_date": "2025-05-22T19:30:49.343248Z",
+                    "details": "http://localhost:8080/api/en/pages/about/",
+                    "children": []
+                }
+            ]
+        }
+    ]
