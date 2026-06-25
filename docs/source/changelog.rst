@@ -5,6 +5,71 @@ Changelog
 .. changelog::
    :towncrier: ../
 
+1.2.0 (2026-05-14)
+==================
+
+Features
+--------
+
+* feat: add ``parent_plugin_type`` field and remove ``id`` from ``base_exclude`` (#103)
+
+1.1.0 (2026-04-10)
+==================
+
+Features
+--------
+
+* feat: add django CMS 5.1 support (#101)
+* feat: Add health check endpoint and documentation (#95)
+
+Bugfixes
+--------
+
+* fix: OpenAPI endpoint naming respects user URL paths (#96)
+
+1.0.0 (2025-12-31)
+==================
+
+Features
+--------
+
+* feat: Add menu endpoints (#49)
+* feat: Add site middleware (#50)
+* feat: add OpenAPI support for "preview" query parameter (#53)
+* feat: Add page search endpoint (#64)
+* feat: Add ``path`` field to menu endpoints (#65)
+* feat: Remove PlaceholderRelationSerializer and add Placeholder content instead (#73)
+* feat: Add readthedocs support (#75)
+* feat: add package data configuration for static and template files (#81)
+* feat: Preserve placeholder order from template declaration (#83)
+
+Bugfixes
+--------
+
+* fix: Page serializer returned null for empty meta_description (#56)
+* fix: Add menu endpoint with root_id for the root page (#57)
+* fix: OpenAPI schema for nested navigation (#58)
+* fix: Respect ``?preview`` for menu views (#70)
+* fix: Check for toolbar attribute before setting preview mode on ``?preview=1`` request (#71)
+* fix: Coverage files not uploading (#74)
+* fix: readthedocs build (#76)
+* fix: Add page path to node attributes (#78)
+* fix: Add tests to verify caching behavior (#85)
+
+Documentation
+-------------
+
+* docs: Initial documentation structure (#67)
+* docs: Update README features and documentation links (#88)
+
+Development
+-----------
+
+* refactor: add distinct operationId in OpenAPI schema for menu endpoint (#80)
+* feat: Add Django 6.0 support to CI (#72)
+* chore: Replace Django 6.0a1 with 6.0 in test requirements (#86)
+* chore: Update djangocms-versioning dependency (#87)
+
 0.8.1 (2025-08-29)
 ==================
 
